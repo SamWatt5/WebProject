@@ -1,4 +1,5 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
+from flask_jwt_extended import create_access_token
 from ..models import create_user, find_user_by_username, verify_password
 
 auth_bp = Blueprint('auth', __name__)
@@ -15,6 +16,7 @@ def signup():
     email = data.get("email")
     username = data.get("username")
     password = data.get("password")
+    profile_pic_url = data.get("profilePicUrl", "default_profile.png")
 
     if not fname or not lname or not email or not username or not password:
         return {"error": "Missing required fields"}, 400
@@ -22,7 +24,7 @@ def signup():
     if find_user_by_username(username):
         return {"error": "User already exists"}, 400
 
-    create_user(fname, lname, email, username, password)
+    create_user(fname, lname, email, username, password, profile_pic_url)
     return {"message": "User created successfully"}, 201
 
 
@@ -42,6 +44,7 @@ def login():
         return {"error": "User not found"}, 404
 
     if verify_password(user["password"], password):
-        return {"message": "Login successful"}, 200
+        access_token = create_access_token(identity=username)
+        return jsonify(access_token=access_token), 200
     else:
         return {"error": "Invalid credentials"}, 401

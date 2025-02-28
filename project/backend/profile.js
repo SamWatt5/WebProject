@@ -3,12 +3,26 @@ const user = params.get("user");
 const detailsDiv = document.getElementById("userDetails");
 let userData = {};
 
-fetch(`http://localhost:8000/api/user/profile/${user}`)
-    .then((response) => response.json())
-    .then((data) => {
-        console.log(data);
-        userData = data;
-        detailsDiv.innerHTML = `
+const token = localStorage.getItem("token");
+
+if (!token) {
+    alert("You are not logged in!");
+    window.location.href = "login.html";
+} else {
+    fetch(`http://localhost:8000/api/user/profile/${user}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.error) {
+                detailsDiv.innerHTML = `<p>${data.error}</p>`;
+                return;
+            }
+            console.log(data);
+            userData = data;
+            detailsDiv.innerHTML = `
         <h2>${data.first_name} ${data.last_name}</h2>
         <ul>
             <li>Email: ${data.email}</li>
@@ -19,4 +33,9 @@ fetch(`http://localhost:8000/api/user/profile/${user}`)
         </ul>
         <a href="index.html">Back To Home</a><br>
     `;
-    });
+        })
+        .catch((error) => {
+            console.error("Error fetching user data:", error);
+            detailsDiv.innerHTML = `<p>Error fetching user data. Please try again later.</p>`;
+        });
+}

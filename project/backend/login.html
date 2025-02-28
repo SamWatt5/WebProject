@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Log In</title>
+        <meta name="description" content="Login page">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h2>Log In</h2>
+        <label for="loginUsername">Username:</label><br>
+        <input type="text" id="loginUsername" name="loginUsername" placeholder="Username"><br>
+        <label for="loginPassword">Password:</label><br>
+        <input type="password" id="loginPassword" name="loginPassword" placeholder="Password"><br><br>
+        <button onclick="handleLogin()">Log In</button>
+        <script>
+            function handleLogin() {
+                const username = document.getElementById('loginUsername').value;
+                const password = document.getElementById('loginPassword').value;
+
+                fetch('http://localhost:8000/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.access_token) {
+                        localStorage.setItem('token', data.access_token);
+                        window.location.href = 'profile.html?user=' + username;
+                    } else {
+                        alert(data.error);
+                    }
+                })
+                .catch(err => console.error(err));
+            }
+        </script>
+    </body>
+</html>
