@@ -14,7 +14,12 @@ if (!token) {
             Authorization: `Bearer ${token}`,
         },
     })
-        .then((response) => response.json())
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+            }
+            return response.json();
+        })
         .then((data) => {
             if (data.error) {
                 detailsDiv.innerHTML = `<p>${data.error}</p>`;

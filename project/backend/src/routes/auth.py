@@ -24,7 +24,7 @@ def signup():
     if find_user_by_username(username):
         return {"error": "User already exists"}, 400
 
-    create_user(fname, lname, email, username, password, profile_pic_url)
+    create_user(fname, lname, email, username, password)
     return {"message": "User created successfully"}, 201
 
 
@@ -45,6 +45,7 @@ def login():
 
     if verify_password(user["password"], password):
         access_token = create_access_token(identity=username)
+        print("WORKING!", username, password)
         return jsonify(access_token=access_token), 200
     else:
         return {"error": "Invalid credentials"}, 401
