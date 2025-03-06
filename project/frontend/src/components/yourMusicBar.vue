@@ -2,20 +2,21 @@
 </script>
 
 <template>
-    <div>
+    <div class="flex-grow">
      <p>Test</p>   
     </div>
 </template>
 
 <style scoped>
 div{
-    width:35%;
+    width:30%;
     margin-left:20px;
     margin-top:20px;
     background-color: antiquewhite;
+    border-radius:25px;
 }
 
 p{
-    height:200px;
+    height:90%;
 }
 </style>
