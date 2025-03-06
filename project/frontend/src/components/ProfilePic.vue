@@ -2,7 +2,7 @@
 </script>
 
 <template>
-    <img src="favicon.ico">
+    <img src="/favicon.ico">
 </template>
 
 <style scoped></style>
