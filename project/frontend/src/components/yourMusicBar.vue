@@ -2,8 +2,7 @@
 </script>
 
 <template>
-    <div class="flex-grow w-30 h-800 ml-20 mt-20 bg-antiquewhite rounded-25 border-1 border-black">
-        <p>Test</p>
+    <div class="w-1/3 h-800 ml-20 mt-20 bg-antiquewhite rounded-lg border-1 border-black">
      <p>Test</p>   
     </div>
 </template>
