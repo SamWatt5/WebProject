@@ -1,9 +1,10 @@
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 
-client = MongoClient("mongodb://localhost:27017/")
-db = client["user_test"]
-collection = db["users"]
+client = MongoClient(
+    "mongodb+srv://2508240:2508240@webproject.u0mcu.mongodb.net/?retryWrites=true&w=majority&appName=WebProject")
+db = client["Project"]
+collection = db["Users"]
 
 
 def create_user(fname, lname, email, username, password):
