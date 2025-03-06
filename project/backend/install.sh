@@ -6,5 +6,6 @@ source .venv/bin/activate
 
 # Install the required packages
 echo "Installing packages..."
-pip install python-dotenv spotipy flask
+pip intall --upgrade pip
+pip install python-dotenv spotipy flask pymongo
 echo "Packages installed"
