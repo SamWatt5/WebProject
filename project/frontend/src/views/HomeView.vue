@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import Header from "../components/Header.vue"
+import LogoBar from "../components/logoBar.vue"
 </script>
 
 <template>
+  <LogoBar />
   <div>
     <h1 class="text-5xl">Testing</h1>
-    <Component />
+    
   </div>
 </template>
