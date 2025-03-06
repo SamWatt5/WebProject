@@ -1,10 +1,13 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..models import find_user_by_username  # Adjust the import as needed
 
 user_bp = Blueprint('user', __name__)
 
-
+# This route will return the user's profile information
+# based on the username provided in the URL
+# The user must be logged in to access this route
+# The user can only access their own profile
 @user_bp.route('/profile/<username>', methods=['GET'])
 @jwt_required()
 def profile(username):
@@ -28,3 +31,55 @@ def profile(username):
     #     return jsonify({"error": "User ID not found"}), 500
 
     return jsonify(user)
+
+# This route will link the user's Spotify account
+# to the application
+# The user must be logged in to access this route
+# The user can only link their own Spotify account
+# The user must provide a valid Spotify access token
+@user_bp.route('/link-spotify/<username>', methods=['POST'])
+@jwt_required()
+def link_spotify(username):
+    current_user = get_jwt_identity()
+
+    if current_user != username:
+        return jsonify({"error": "Access denied"}), 403
+
+    # Add the code to link the user's Spotify account here
+    return jsonify({"message": "Spotify account linked successfully"})
+
+# This route will Fetch friend list
+# The user must be logged in to access this route
+# The user can only access their own friend list
+@user_bp.route('/friends/<username>', methods=['GET'])
+@jwt_required()
+def friends(username):
+    current_user = get_jwt_identity()
+
+    if current_user != username:
+        return jsonify({"error": "Access denied"}), 403
+
+    # Add the code to fetch the user's friend list here
+    return jsonify({"friends": ["Alice", "Bob", "Charlie"]})
+
+# This route will add a new freind  to the user's friend list
+# The user must be logged in to access this route
+# The user can only add friends to their own friend list
+@user_bp.route('/add-friend/<username>', methods=['POST'])
+@jwt_required()
+def add_friend(username):
+    current_user = get_jwt_identity()
+
+    if current_user != username:
+        return jsonify({"error": "Access denied"}), 403
+
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No JSON data provided"}), 400
+
+    friend = data.get("friend")
+    if not friend:
+        return jsonify({"error": "Missing friend field"}), 400
+
+    # Add the code to add the friend to the user's friend list here
+    return jsonify({"message": f"{friend} added to friend list"})
