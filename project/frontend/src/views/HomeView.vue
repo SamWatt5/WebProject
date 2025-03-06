@@ -8,8 +8,4 @@ import YourMusicBar from "../components/yourMusicBar.vue"
 
   <YourMusicBar />
 
-  <div>
-    <h1 class="text-5xl">Testing</h1>
-    
-  </div>
 </template>
