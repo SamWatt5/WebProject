@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import LogoBar from "../components/logoBar.vue"
+import MainLayout from '../layouts/mainLayout.vue'
 </script>
 
 <template>
-  <LogoBar />
-  <div>
-    <h1 class="text-5xl">Testing</h1>
-    
-  </div>
+  <MainLayout>
+    <h1>Home</h1>
+  </MainLayout>
 </template>
