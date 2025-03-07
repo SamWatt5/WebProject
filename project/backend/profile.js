@@ -4,7 +4,7 @@ const detailsDiv = document.getElementById("userDetails");
 let userData = {};
 
 const token = localStorage.getItem("token");
-
+const user = jwt_decode(token).sub;
 if (!token) {
     alert("You are not logged in!");
     window.location.href = "login.html";
@@ -38,11 +38,11 @@ if (!token) {
 
 function renderProfileDetails() {
     detailsDiv.innerHTML = `
+    <img src="${userData.profile_pic_url}" alt="Profile Picture" />
         <h2>${userData.first_name} ${userData.last_name}</h2>
         <ul>
             <li>Email: ${userData.email}</li>
             <li>Username: ${userData.username}</li>
-            <li>Profile Picture: <img src="${userData.profile_pic_url}" alt="Profile Picture" /></li>
             <li>Spotify Connected: ${userData.spotify_connected}</li>
             <li>Friends: ${userData.friends.join(", ")}</li>
         </ul>
