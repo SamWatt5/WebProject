@@ -25,5 +25,30 @@ def find_user_by_username(username):
     return collection.find_one({"username": username}, {"_id": False})
 
 
+def remove_user(username):
+    collection.delete_one({"username": username})
+
+
 def verify_password(stored_password, provided_password):
     return check_password_hash(stored_password, provided_password)
+
+
+def get_user_friends(username):
+    user = find_user_by_username(username)
+    if user:
+        return user.get("friends", [])
+    return []
+
+
+def make_friends(user1, user2):
+    collection.update_one({"username": user1}, {
+                          "$addToSet": {"friends": user2}})
+    collection.update_one({"username": user2}, {
+                          "$addToSet": {"friends": user1}})
+
+
+def remove_friends(user1, user2):
+    collection.update_one({"username": user1}, {
+                          "$pull": {"friends": user2}})
+    collection.update_one({"username": user2}, {
+                          "$pull": {"friends": user1}})

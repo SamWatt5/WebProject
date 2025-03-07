@@ -2,7 +2,7 @@
 </script>
 
 <template>
-    <div class="side-panel w-1/3 h-screen bg-gray-200 p-5">
+    <div class="side-panel w-1/1 h-screen bg-gray-200 p-5 float-left">
         <h1 class="text-xl font-bold mb-4">Side Panel</h1>
         <ul>
             <li class="mb-2"><a href="#home" class="text-gray-800 hover:text-red-500">Home</a></li>
@@ -13,5 +13,4 @@
     </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

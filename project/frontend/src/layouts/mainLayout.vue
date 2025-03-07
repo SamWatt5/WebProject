@@ -1,21 +1,24 @@
 <script setup lang="ts">
-import LogoBar from '../components/logoBar.vue'
-import SidePanel from '../components/SidePanel.vue'
-import Content from '../components/mainContent.vue'
+import Nav from '../components/NavBar.vue'
+import SidePanel from '@/components/SidePanel.vue';
+import LogoBar from '@/components/logoBar.vue';
 </script>
 
 <template>
-    <body class="bg-blue-400 text-white grid gap-0">
-        <LogoBar />
-        <SidePanel />
-        <Content />
-        <slot />
-    </body>
+    <LogoBar />
+    <div class="flex h-screen">
+        <div class="w-1/3 bg-gray-100">
+            <SidePanel />
+        </div>
+        <div class="flex-1 bg-white p-5">
+            <Nav />
+            <slot />
+        </div>
+    </div>
 </template>
 
 <style scoped>
-    body {
-        font-family: "Carlito", san-serif;
-        min-height: 100vh;
-        }
+body {
+    font-family: "Carlito", sans-serif;
+}
 </style>

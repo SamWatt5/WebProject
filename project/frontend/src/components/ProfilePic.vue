@@ -2,7 +2,7 @@
 </script>
 
 <template>
-    <img src="/favicon.ico">
+    <img src="/default_profile.png" class="rounded-full h-16">
 </template>
 
 <style scoped></style>
