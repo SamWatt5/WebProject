@@ -2,7 +2,7 @@
 </script>
 
 <template>
-    <img src="/default_profile.png" class="rounded-full h-16">
+    <img src="" class="rounded-full h-16">
 </template>
 
 <style scoped></style>

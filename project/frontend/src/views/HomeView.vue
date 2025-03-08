@@ -5,7 +5,7 @@ import SidebarProvider from "@/components/ui/sidebar/SidebarProvider.vue";
 
 <template>
   <main>
-    <SidebarProvider>
+    <SidebarProvider :default-open="false" :open="false">
       <Sidebar />
     </SidebarProvider>
   </main>
