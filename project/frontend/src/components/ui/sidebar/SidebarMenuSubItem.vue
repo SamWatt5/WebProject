@@ -1,8 +1,9 @@
 <script setup lang="ts">
+
 </script>
 
 <template>
-    <img src="/favicon.ico">
+  <li>
+    <slot />
+  </li>
 </template>
-
-<style scoped></style>

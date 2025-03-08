@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import MainLayout from '../layouts/mainLayout.vue'
+import Sidebar from "@/components/Sidebar.vue";
+import SidebarProvider from "@/components/ui/sidebar/SidebarProvider.vue";
 </script>
 
 <template>
-  <MainLayout>
-    <h1>Home</h1>
-  </MainLayout>
+  <main>
+    <SidebarProvider>
+      <Sidebar />
+    </SidebarProvider>
+  </main>
 </template>
