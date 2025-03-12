@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { Icon } from '@iconify/vue'
 import { useColorMode } from '@vueuse/core'
 
@@ -11,13 +11,15 @@ const mode = useColorMode()
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
-      <Button variant="ghost" class="rounded-full p-2 m-1">
+      <Button variant="outline" class="rounded-full p-2 m-1">
         <Icon icon="radix-icons:sun" class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
         <Icon icon="radix-icons:moon" class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
         <span class="sr-only">Toggle theme</span>
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
+      <DropdownMenuLabel>Theme Selector</DropdownMenuLabel>
+      <DropdownMenuSeparator />
       <DropdownMenuItem @click="mode = 'light'">
         Light
       </DropdownMenuItem>
@@ -26,7 +28,7 @@ const mode = useColorMode()
       </DropdownMenuItem>
       <DropdownMenuItem @click="mode = 'auto'">
         System
-      </DropdownMenuItem>z
+      </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 </template>
