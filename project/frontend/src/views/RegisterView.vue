@@ -112,6 +112,7 @@ const showPassword = () => {
                         </FormItem>
                     </FormField>
                     <Button type="submit" class="mt-4">Register</Button>
+                    <Button type="button" class="mt-4" variant="link" @click="$router.push('/login')">Login</Button>
                 </form>
             </CardContent>
             <CardFooter></CardFooter>
