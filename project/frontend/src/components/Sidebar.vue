@@ -29,7 +29,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
                 <DropdownMenuContent>
                     <DropdownMenuLabel>My account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Logout</DropdownMenuItem>
+                    <RouterLink to="/login">
+                        <DropdownMenuItem>Logout</DropdownMenuItem>
+                    </RouterLink>
                 </DropdownMenuContent>
             </DropdownMenu>
         </SidebarFooter>
