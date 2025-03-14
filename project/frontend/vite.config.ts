@@ -9,6 +9,15 @@ import tailwind from 'tailwindcss'
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    port: 8080, // Run Vite on a different port
+    proxy: {
+        '/api': {
+            target: 'http://localhost:8000', // Flask backend
+            changeOrigin: true,
+        },
+    },
+  },
   css: {
     postcss: {
       plugins: [tailwind(), autoprefixer()]

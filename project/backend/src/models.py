@@ -15,10 +15,16 @@ def create_user(fname, lname, email, username, password):
         "username": username,
         "profile_pic_url": "default_profile.png",
         "password": generate_password_hash(password),
-        "spotify_connected": False,
+        "spotify_id": None,
+        "spotify_token": None,
         "friends": []
     }
     collection.insert_one(user_doc)
+
+
+def link_spotify(email, spotify_id, access_token):
+    collection.update_one({"email": email}, {
+                          "$set": {"spotify_id": spotify_id, "spotify_token": access_token}})
 
 
 def find_user_by_username(username):

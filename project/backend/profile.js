@@ -50,6 +50,7 @@ function renderProfileDetails() {
         <input type="text" id="friendUsername" placeholder="Enter friend's username" />
         <button onclick="addFriend()">Add Friend</button>
         <button onclick="removeFriend()">Remove Friend</button>
+        <button onclick="linkSpotify()">Link Spotify</button>
     `;
 }
 
@@ -114,4 +115,9 @@ function removeFriend() {
             console.error("Error removing friend:", error);
             detailsDiv.innerHTML = `<p>Error removing friend. Please try again later.</p>`;
         });
+}
+
+function linkSpotify() {
+    // Redirect the user to the Spotify authorization URL
+    window.location.href = `http://localhost:8000/api/spotify/login`;
 }

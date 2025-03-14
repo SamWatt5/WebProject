@@ -10,5 +10,5 @@ class Config:
     SPOTIPY_CLIENT_ID = os.getenv('CLIENT_ID')
     SPOTIPY_CLIENT_SECRET = os.getenv('CLIENT_SECRET')
     SPOTIPY_REDIRECT_URI = os.getenv(
-        'REDIRECT_URI', 'http://localhost:5000/callback')
+        'REDIRECT_URI', 'http://localhost:8000/api/spotify/callback')
     SPOTIPY_SCOPE = "playlist-read-private playlist-read-collaborative"
