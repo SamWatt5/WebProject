@@ -14,7 +14,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
         </SidebarHeader>
         <SidebarContent class="p-1 pt-4">
             <SidebarMenuButton><RouterLink to="/"><Tooltips item="Home"><House /></Tooltips></RouterLink></SidebarMenuButton>
-            <SidebarMenuButton><RouterLink to="#"><Tooltips item="Playlists"><ListMusic /></Tooltips></RouterLink></SidebarMenuButton>
+            <SidebarMenuButton><RouterLink to="/playlists"><Tooltips item="Playlists"><ListMusic /></Tooltips></RouterLink></SidebarMenuButton>
             <SidebarMenuButton><RouterLink to="/friends"><Tooltips item="Friends"><Users /></Tooltips></RouterLink></SidebarMenuButton>
             <SidebarMenuButton><RouterLink to="#"><Tooltips item="Settings"><Settings /></Tooltips></RouterLink></SidebarMenuButton>
         </SidebarContent>
