@@ -72,8 +72,9 @@ def spotify_callback():
     user_info = sp.current_user()
     spotify_id = user_info.get("id")
     # Assuming email is passed as a query parameter
-    email = request.args.get("email")
+    email = user_info.get("email")
 
+    print(email, spotify_id, access_token)
     link_spotify(email, spotify_id, access_token)
 
     # Create a new JWT token with the access token
@@ -81,8 +82,8 @@ def spotify_callback():
     jwt_token = create_access_token(
         identity=email, additional_claims=additional_claims)
 
-    # Redirect to your frontend profile page with the JWT token
-    return redirect(f"http://127.0.0.1:5500/backend/profile.html")
+    # Return the new JWT token in the response body
+    return jsonify(token=jwt_token), 200
 
 
 @spotify_bp.route("/link-spotify")
