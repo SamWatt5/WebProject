@@ -30,7 +30,9 @@ def hello_world():
 @spotify_bp.route("/me_playlists")
 @jwt_required()
 def me_playlists():
+    print("Getting claims...")
     claims = get_jwt()
+    print("JWT Claims: ", claims)
     access_token = claims.get("spotify_access_token")
     if not access_token:
         return jsonify({"msg": "Token not found"}), 401

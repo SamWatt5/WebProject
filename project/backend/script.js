@@ -1,8 +1,14 @@
 async function fetchUserPlaylists() {
     let data = localStorage.getItem("user_playlists");
     if (!data) {
-        const response = await fetch("http://localhost:8000/api/spotify/me_playlists");
+        const token = localStorage.getItem("token"); // Assuming the JWT token is stored in localStorage
+        const response = await fetch("http://localhost:8000/api/spotify/me_playlists", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
         if (!response.ok) {
+            console.log("it threw an error here");
             throw new Error(`Server error: ${response.status}`);
         }
         data = await response.json();
