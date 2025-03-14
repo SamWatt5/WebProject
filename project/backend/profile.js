@@ -121,3 +121,19 @@ function linkSpotify() {
     // Redirect the user to the Spotify authorization URL
     window.location.href = `http://localhost:8000/api/spotify/login`;
 }
+
+function handleSpotifyCallback() {
+    console.log("Handling spotify callback");
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+    console.log(token);
+    if (token) {
+        // Update the token in localStorage
+        localStorage.setItem("token", token);
+        console.log("Token updated in localStorage");
+    } else {
+        console.error("Token not found in URL");
+    }
+}
+
+handleSpotifyCallback();

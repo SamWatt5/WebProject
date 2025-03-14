@@ -82,8 +82,8 @@ def spotify_callback():
     jwt_token = create_access_token(
         identity=email, additional_claims=additional_claims)
 
-    # Return the new JWT token in the response body
-    return jsonify(token=jwt_token), 200
+    # Redirect to your frontend profile page with the JWT token
+    return redirect(f"http://localhost:5500/backend/profile.html?token={jwt_token}")
 
 
 @spotify_bp.route("/link-spotify")
