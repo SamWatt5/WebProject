@@ -6,7 +6,7 @@ from spotipy.oauth2 import SpotifyOAuth
 from flask import Flask, redirect, session, request, jsonify, Blueprint
 from flask_cors import CORS
 
-from ..models import link_spotify
+from ..models import add_jwt, link_spotify
 
 load_dotenv()
 
@@ -83,6 +83,8 @@ def spotify_callback():
     additional_claims = {"spotify_access_token": access_token}
     jwt_token = create_access_token(
         identity=email, additional_claims=additional_claims)
+
+    add_jwt(email, jwt_token)
 
     # Redirect to your frontend profile page with the JWT token
     return redirect(f"http://localhost:5500/backend/profile.html?token={jwt_token}")

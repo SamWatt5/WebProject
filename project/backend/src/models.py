@@ -27,6 +27,11 @@ def link_spotify(email, spotify_id, access_token):
                           "$set": {"spotify_id": spotify_id, "spotify_token": access_token}})
 
 
+def add_jwt(email, jwt):
+    collection.update_one({"email": email}, {
+                          "$set": {"jwt": jwt}})
+
+
 def find_user_by_username(username):
     return collection.find_one({"username": username}, {"_id": False})
 

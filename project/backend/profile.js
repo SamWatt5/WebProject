@@ -1,10 +1,7 @@
-// const params = new URLSearchParams(window.location.search);
-// const user = params.get("user");
 const detailsDiv = document.getElementById("userDetails");
 let userData = {};
 
-const token = localStorage.getItem("token");
-const user = jwt_decode(token).sub;
+let token = localStorage.getItem("token");
 if (!token) {
     alert("You are not logged in!");
     window.location.href = "login.html";
@@ -123,12 +120,9 @@ function linkSpotify() {
 }
 
 function handleSpotifyCallback() {
-    console.log("Handling spotify callback");
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get("token");
-    console.log(token);
     if (token) {
-        // Update the token in localStorage
         localStorage.setItem("token", token);
         console.log("Token updated in localStorage");
     } else {
