@@ -4,12 +4,11 @@ from ..models import find_user_by_username, get_user_friends, make_friends, remo
 
 user_bp = Blueprint('user', __name__)
 
+
 # This route will return the user's profile information
 # based on the username provided in the URL
 # The user must be logged in to access this route
 # The user can only access their own profile
-
-
 @user_bp.route('/profile/<username>', methods=['GET'])
 @jwt_required()
 def profile(username):
@@ -34,13 +33,12 @@ def profile(username):
 
     return jsonify(user)
 
+
 # This route will link the user's Spotify account
 # to the application
 # The user must be logged in to access this route
 # The user can only link their own Spotify account
 # The user must provide a valid Spotify access token
-
-
 @user_bp.route('/link-spotify/<username>', methods=['POST'])
 @jwt_required()
 def link_spotify(username):
@@ -52,11 +50,10 @@ def link_spotify(username):
     # Add the code to link the user's Spotify account here
     return jsonify({"message": "Spotify account linked successfully"})
 
+
 # This route will Fetch friend list
 # The user must be logged in to access this route
 # The user can only access their own friend list
-
-
 @user_bp.route('/friends/<username>', methods=['GET'])
 # @jwt_required()
 def friends(username):
@@ -69,11 +66,10 @@ def friends(username):
     print(get_user_friends(username))
     return jsonify(get_user_friends(username))
 
+
 # This route will add a new freind  to the user's friend list
 # The user must be logged in to access this route
 # The user can only add friends to their own friend list
-
-
 @user_bp.route('/add-friend/<username>', methods=['POST'])
 @jwt_required()
 def add_friend(username):

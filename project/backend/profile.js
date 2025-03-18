@@ -1,10 +1,7 @@
-// const params = new URLSearchParams(window.location.search);
-// const user = params.get("user");
 const detailsDiv = document.getElementById("userDetails");
 let userData = {};
 
-const token = localStorage.getItem("token");
-const user = jwt_decode(token).sub;
+let token = localStorage.getItem("token");
 if (!token) {
     alert("You are not logged in!");
     window.location.href = "login.html";
@@ -50,6 +47,7 @@ function renderProfileDetails() {
         <input type="text" id="friendUsername" placeholder="Enter friend's username" />
         <button onclick="addFriend()">Add Friend</button>
         <button onclick="removeFriend()">Remove Friend</button>
+        <button onclick="linkSpotify()">Link Spotify</button>
     `;
 }
 
@@ -115,3 +113,21 @@ function removeFriend() {
             detailsDiv.innerHTML = `<p>Error removing friend. Please try again later.</p>`;
         });
 }
+
+function linkSpotify() {
+    // Redirect the user to the Spotify authorization URL
+    window.location.href = `http://localhost:8000/api/spotify/login`;
+}
+
+function handleSpotifyCallback() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+    if (token) {
+        localStorage.setItem("token", token);
+        console.log("Token updated in localStorage");
+    } else {
+        console.error("Token not found in URL");
+    }
+}
+
+handleSpotifyCallback();

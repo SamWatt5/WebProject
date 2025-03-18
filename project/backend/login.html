@@ -29,9 +29,29 @@
                 })
                 .then(res => res.json())
                 .then(data => {
+                    
                     if (data.access_token) {
-                        localStorage.setItem('token', data.access_token);
-                        window.location.href = 'profile.html'
+                        jwt = data.access_token
+                        
+                        fetch('http://localhost:8000/api/auth/login', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ username})
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.jwt){
+                                jwt = data.jwt
+                            }
+                            else{
+                                console.log("DIDNT WORK")
+                            }
+                        })
+                        .catch(err => console.error(err));
+                        localStorage.setItem('token', jwt);
+                        window.location.href = `profile.html?token=${jwt}`
                     } else {
                         alert(data.error);
                     }
