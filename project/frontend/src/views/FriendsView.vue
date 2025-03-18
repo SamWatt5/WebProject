@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { Card, CardHeader, CardDescription, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import UserCard from '@/components/UserCard.vue';
+// import UserCard from '@/components/UserCard.vue';
 import FriendManage from '@/components/FriendManage.vue';
 
 const music: string[] = Array.from({ length: 50 }).map(
