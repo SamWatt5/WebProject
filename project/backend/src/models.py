@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
+from bson.objectid import ObjectId
 
 client = MongoClient(
     "mongodb+srv://2508240:2508240@webproject.u0mcu.mongodb.net/?retryWrites=true&w=majority&appName=WebProject")
@@ -22,9 +23,10 @@ def create_user(fname, lname, email, username, password):
     collection.insert_one(user_doc)
 
 
-def link_spotify(email, spotify_id, access_token):
-    collection.update_one({"email": email}, {
-                          "$set": {"spotify_id": spotify_id, "spotify_token": access_token}})
+def link_spotify(token, spotify_id, access_token):
+    print(token, spotify_id, access_token)
+    result = collection.update_one({"_id": ObjectId(token)}, {"$set": {"spotify_id": str(spotify_id), "spotify_token": str(access_token)}})
+    print("Matched:", result.matched_count, "Modified:", result.modified_count)
 
 
 def add_jwt(email, jwt):
@@ -33,7 +35,7 @@ def add_jwt(email, jwt):
 
 
 def find_user_by_username(username):
-    return collection.find_one({"username": username}, {"_id": False})
+    return collection.find_one({"username": username})
 
 
 def remove_user(username):
@@ -63,3 +65,7 @@ def remove_friends(user1, user2):
                           "$pull": {"friends": user2}})
     collection.update_one({"username": user2}, {
                           "$pull": {"friends": user1}})
+
+def get_user_from_token(token):
+    id = ObjectId(token)
+    return collection.find_one({"_id": id}, { "_id": False })

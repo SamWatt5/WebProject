@@ -21,7 +21,7 @@
                 const password = document.getElementById('loginPassword').value;
 
                 fetch('http://localhost:8000/api/auth/login', {
-                    method: 'GET',
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -31,7 +31,8 @@
                 .then(data => {
                     if (data.message === "Login successful") {
                         // Redirect to the profile page after successful login
-                        window.location.href = `profile.html`;
+                        console.log(data)
+                        window.location.href = "http://localhost:8000/api/auth/callback?code=" + data.code;
                     } else {
                         alert(data.error);
                     }

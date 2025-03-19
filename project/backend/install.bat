@@ -3,5 +3,5 @@ py -m venv .venv
 call .venv/scripts/activate
 
 echo "Installing packages..."
-pip install python-dotenv spotipy flask flask_cors flask_jwt_extended pymongo
+pip install python-dotenv spotipy flask flask_cors flask_jwt_extended pymongo flask_session
 echo "Packages installed"

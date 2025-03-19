@@ -1,8 +1,24 @@
 from flask import Blueprint, jsonify, request, session
-from ..models import find_user_by_username, get_user_friends, make_friends, remove_friends
+from ..models import find_user_by_username, get_user_friends, make_friends, remove_friends, get_user_from_token
 
 user_bp = Blueprint('user', __name__)
 
+
+@user_bp.route("/me", methods=["GET"])
+def me():
+    if not 'token' in session:
+        return {"error": "Token not set"}, 400
+
+    token = session.get("token", "Guest")
+    if not token:
+        return {"error": "Token not set" }, 400
+    
+    user = get_user_from_token(token)
+
+    if not user:
+        return {"error": "User not found"}, 404
+
+    return jsonify(user), 200
 
 # This route will return the user's profile information
 # based on the username provided in the URL

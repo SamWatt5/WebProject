@@ -2,9 +2,14 @@ const detailsDiv = document.getElementById("userDetails");
 let userData = {};
 
 // Fetch the user's profile data
-fetch(`http://localhost:8000/api/user/profile`, {
+fetch(`http://localhost:8000/api/user/me`, {
     method: "GET",
     credentials: "include", // Ensures the session cookie is sent with the request
+    // headers: {
+    //     "Access-Control-Allow-Origin": "*",
+    //     "Access-Control-Allow-Credentials": true,
+
+    // }
 })
     .then((response) => {
         if (!response.ok) {

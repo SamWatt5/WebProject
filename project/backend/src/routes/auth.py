@@ -27,7 +27,7 @@ def signup():
     return {"message": "User created successfully"}, 201
 
 
-@auth_bp.route("/login", methods=["GET"])
+@auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
     if not data:
@@ -41,15 +41,20 @@ def login():
     user = find_user_by_username(username)
     if not user:
         return {"error": "User not found"}, 404
+    
+    print(user)
 
     if verify_password(user["password"], password):
-        session["username"] = username
-        session["email"] = user["email"]
-        print("WORKING!", username, password)
-        return {"message": "Login successful"}, 200
+        # session["username"] = username
+        # session["email"] = user["email"]
+        return {"message": "Login successful", "code": str(user["_id"])}, 200
     else:
         return {"error": "Invalid credentials"}, 401
 
+@auth_bp.route("/callback", methods=["GET"])
+def callback():
+    session["token"] = request.args.get("code")
+    return {"message": "Callback successful"}, 200
 
 @auth_bp.route("/logout")
 def logout():
