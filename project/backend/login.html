@@ -21,7 +21,7 @@
                 const password = document.getElementById('loginPassword').value;
 
                 fetch('http://localhost:8000/api/auth/login', {
-                    method: 'POST',
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -29,29 +29,9 @@
                 })
                 .then(res => res.json())
                 .then(data => {
-                    
-                    if (data.access_token) {
-                        jwt = data.access_token
-                        
-                        fetch('http://localhost:8000/api/auth/login', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ username})
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.jwt){
-                                jwt = data.jwt
-                            }
-                            else{
-                                console.log("DIDNT WORK")
-                            }
-                        })
-                        .catch(err => console.error(err));
-                        localStorage.setItem('token', jwt);
-                        window.location.href = `profile.html?token=${jwt}`
+                    if (data.message === "Login successful") {
+                        // Redirect to the profile page after successful login
+                        window.location.href = `profile.html`;
                     } else {
                         alert(data.error);
                     }

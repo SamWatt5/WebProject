@@ -1,5 +1,4 @@
-from flask import Blueprint, jsonify, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import Blueprint, jsonify, request, session
 from ..models import find_user_by_username, get_user_friends, make_friends, remove_friends
 
 user_bp = Blueprint('user', __name__)
@@ -10,9 +9,8 @@ user_bp = Blueprint('user', __name__)
 # The user must be logged in to access this route
 # The user can only access their own profile
 @user_bp.route('/profile/<username>', methods=['GET'])
-@jwt_required()
 def profile(username):
-    current_user = get_jwt_identity()
+    current_user = session.get("username")
     print(current_user)
 
     if current_user != username:
@@ -40,9 +38,8 @@ def profile(username):
 # The user can only link their own Spotify account
 # The user must provide a valid Spotify access token
 @user_bp.route('/link-spotify/<username>', methods=['POST'])
-@jwt_required()
 def link_spotify(username):
-    current_user = get_jwt_identity()
+    current_user = session.get("username")
 
     if current_user != username:
         return jsonify({"error": "Access denied"}), 403
@@ -71,9 +68,8 @@ def friends(username):
 # The user must be logged in to access this route
 # The user can only add friends to their own friend list
 @user_bp.route('/add-friend/<username>', methods=['POST'])
-@jwt_required()
 def add_friend(username):
-    current_user = get_jwt_identity()
+    current_user = session.get("username")
 
     if current_user != username:
         return jsonify({"error": "Access denied"}), 403
@@ -95,9 +91,8 @@ def add_friend(username):
 
 
 @user_bp.route('/remove-friend/<username>', methods=['POST'])
-@jwt_required()
 def remove_friend(username):
-    current_user = get_jwt_identity()
+    current_user = session.get("username")
 
     if current_user != username:
         return jsonify({"error": "Access denied"}), 403

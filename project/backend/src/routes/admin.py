@@ -10,9 +10,7 @@ admin_bp = Blueprint('admin', __name__)
 
 
 @admin_bp.route('/remove-user/<id>', methods=['DELETE'])
-@jwt_required()
 def remove_user(id):
-    current_user = get_jwt_identity()
 
     # Add the code to remove the user from the database here
     return jsonify({"message": "User removed successfully"})

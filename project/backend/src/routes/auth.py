@@ -1,5 +1,4 @@
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token
+from flask import Blueprint, request, jsonify, session
 from ..models import add_jwt, create_user, find_user_by_username, verify_password
 
 auth_bp = Blueprint('auth', __name__)
@@ -28,14 +27,7 @@ def signup():
     return {"message": "User created successfully"}, 201
 
 
-@auth_bp.route("/get_jwt", methods=["POST"])
-def get_jwt():
-    user = find_user_by_username(request.get_json().get("username"))
-    jwt = user["jwt"]
-    return jsonify(jwt=jwt)
-
-
-@auth_bp.route("/login", methods=["POST"])
+@auth_bp.route("/login", methods=["GET"])
 def login():
     data = request.get_json()
     if not data:
@@ -51,9 +43,15 @@ def login():
         return {"error": "User not found"}, 404
 
     if verify_password(user["password"], password):
-        access_token = create_access_token(identity=username)
-        add_jwt(user["email"], access_token)
+        session["username"] = username
+        session["email"] = user["email"]
         print("WORKING!", username, password)
-        return jsonify(access_token=access_token), 200
+        return {"message": "Login successful"}, 200
     else:
         return {"error": "Invalid credentials"}, 401
+
+
+@auth_bp.route("/logout")
+def logout():
+    session.clear()
+    return {"message": "Logged out successfully"}, 200

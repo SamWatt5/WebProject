@@ -1,11 +1,8 @@
 async function fetchUserPlaylists() {
     let data = localStorage.getItem("user_playlists");
     if (!data) {
-        const token = localStorage.getItem("token"); // Assuming the JWT token is stored in localStorage
         const response = await fetch("http://localhost:8000/api/spotify/me_playlists", {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            credentials: "include", // Ensures the session cookie is sent with the request
         });
         if (!response.ok) {
             console.log("it threw an error here");
@@ -22,7 +19,9 @@ async function fetchUserPlaylists() {
 async function fetchPlaylistContents(playlistId) {
     let data = localStorage.getItem(playlistId);
     if (!data) {
-        const response = await fetch(`http://localhost:8000/api/spotify/playlist/${playlistId}/tracks`);
+        const response = await fetch(`http://localhost:8000/api/spotify/playlist/${playlistId}/tracks`, {
+            credentials: "include", // Ensures the session cookie is sent with the request
+        });
         if (!response.ok) {
             throw new Error(`Server error: ${response.status}`);
         }

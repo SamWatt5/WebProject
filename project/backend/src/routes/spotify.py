@@ -28,12 +28,8 @@ def hello_world():
 
 
 @spotify_bp.route("/me_playlists")
-@jwt_required()
 def me_playlists():
-    print("Getting claims...")
-    claims = get_jwt()
-    print("JWT Claims: ", claims)
-    access_token = claims.get("spotify_access_token")
+    access_token = session.get("spotify_access_token")
     if not access_token:
         return jsonify({"msg": "Token not found"}), 401
 
@@ -43,10 +39,8 @@ def me_playlists():
 
 
 @spotify_bp.route("/playlist/<playlist_id>/tracks")
-@jwt_required()
 def playlist(playlist_id):
-    claims = get_jwt()
-    access_token = claims.get("spotify_access_token")
+    access_token = session.get("spotify_access_token")
     if not access_token:
         return jsonify({"msg": "Token not found"}), 401
 
@@ -77,17 +71,14 @@ def spotify_callback():
     email = user_info.get("email")
 
     print(email, spotify_id, access_token)
+
+    session["email"] = email
+    session["spotify_access_token"] = access_token
+
     link_spotify(email, spotify_id, access_token)
 
-    # Create a new JWT token with the access token
-    additional_claims = {"spotify_access_token": access_token}
-    jwt_token = create_access_token(
-        identity=email, additional_claims=additional_claims)
-
-    add_jwt(email, jwt_token)
-
     # Redirect to your frontend profile page with the JWT token
-    return redirect(f"http://localhost:5500/backend/profile.html?token={jwt_token}")
+    return redirect(f"http://localhost:5500/backend/profile.html")
 
 
 @spotify_bp.route("/link-spotify")

@@ -1,37 +1,30 @@
 const detailsDiv = document.getElementById("userDetails");
 let userData = {};
 
-let token = localStorage.getItem("token");
-if (!token) {
-    alert("You are not logged in!");
-    window.location.href = "login.html";
-} else {
-    const user = jwt_decode(token).sub;
-    fetch(`http://localhost:8000/api/user/profile/${user}`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
+// Fetch the user's profile data
+fetch(`http://localhost:8000/api/user/profile`, {
+    method: "GET",
+    credentials: "include", // Ensures the session cookie is sent with the request
+})
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+        return response.json();
     })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`Server error: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then((data) => {
-            if (data.error) {
-                detailsDiv.innerHTML = `<p>${data.error}</p>`;
-                return;
-            }
-            console.log(data);
-            userData = data;
-            renderProfileDetails();
-        })
-        .catch((error) => {
-            console.error("Error fetching user data:", error);
-            detailsDiv.innerHTML = `<p>Error fetching user data. Please try again later.</p>`;
-        });
-}
+    .then((data) => {
+        if (data.error) {
+            detailsDiv.innerHTML = `<p>${data.error}</p>`;
+            return;
+        }
+        console.log(data);
+        userData = data;
+        renderProfileDetails();
+    })
+    .catch((error) => {
+        console.error("Error fetching user data:", error);
+        detailsDiv.innerHTML = `<p>Error fetching user data. Please try again later.</p>`;
+    });
 
 function renderProfileDetails() {
     detailsDiv.innerHTML = `
@@ -53,12 +46,12 @@ function renderProfileDetails() {
 
 function addFriend() {
     const friendUsername = document.getElementById("friendUsername").value;
-    fetch(`http://localhost:8000/api/user/add-friend/${user}`, {
+    fetch(`http://localhost:8000/api/user/add-friend`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
         },
+        credentials: "include", // Ensures the session cookie is sent with the request
         body: JSON.stringify({ friend: friendUsername }),
     })
         .then((response) => {
@@ -72,25 +65,24 @@ function addFriend() {
                 alert(data.error);
                 return;
             }
-            // alert(data.message);
             // Update the userData object and re-render the profile details
             userData.friends.push(friendUsername);
             renderProfileDetails();
         })
         .catch((error) => {
-            console.error("Error fetching user data:", error);
-            detailsDiv.innerHTML = `<p>Error fetching user data. Please try again later.</p>`;
+            console.error("Error adding friend:", error);
+            detailsDiv.innerHTML = `<p>Error adding friend. Please try again later.</p>`;
         });
 }
 
 function removeFriend() {
     const friendUsername = document.getElementById("friendUsername").value;
-    fetch(`http://localhost:8000/api/user/remove-friend/${user}`, {
+    fetch(`http://localhost:8000/api/user/remove-friend`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
         },
+        credentials: "include", // Ensures the session cookie is sent with the request
         body: JSON.stringify({ friend: friendUsername }),
     })
         .then((response) => {
@@ -118,16 +110,3 @@ function linkSpotify() {
     // Redirect the user to the Spotify authorization URL
     window.location.href = `http://localhost:8000/api/spotify/login`;
 }
-
-function handleSpotifyCallback() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get("token");
-    if (token) {
-        localStorage.setItem("token", token);
-        console.log("Token updated in localStorage");
-    } else {
-        console.error("Token not found in URL");
-    }
-}
-
-handleSpotifyCallback();
