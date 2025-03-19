@@ -17,14 +17,14 @@ defineProps({
 </script>
 
 <template>
-    <Card class="">
+    <Card class="cursor-pointer">
         <CardHeader class="flex flex-row">
         <Avatar class="w-20 h-20 mt-2">
             <AvatarFallback class="text-3xl">{{ avatar }}</AvatarFallback>
         </Avatar>
         <div class="flex flex-col pl-3">
-            <CardTitle class="text-5xl">@{{ name }}</CardTitle>
-            <CardDescription class="flex flex-row"><CalendarDays class="h-8 w-8 mt-1" /><span class="mt-[3px] text-2xl ml-1"> Joined {{ joined }}</span></CardDescription>
+            <CardTitle class="text-4xl">@{{ name }}</CardTitle>
+            <CardDescription class="flex flex-row"><CalendarDays class="h-8 w-8 mt-1" /><span class="mt-[3px] text-lg ml-1"> Joined {{ joined }}</span></CardDescription>
             <Spotify class="mt-2 cursor-pointer" @click="spotifyClick" />
         </div>
         </CardHeader>

@@ -62,7 +62,7 @@ def spotify_login():
 
 
 @spotify_bp.route("/callback")
-def spotify_callback():
+async def spotify_callback():
     code = request.args.get("code")
     if not code:
         return jsonify({"msg": "Authorization failed"}), 400
@@ -76,8 +76,8 @@ def spotify_callback():
     # Assuming email is passed as a query parameter
     email = user_info.get("email")
 
-    print(email, spotify_id, access_token)
-    link_spotify(email, spotify_id, access_token)
+    print("SPOTIFY: " + email, spotify_id, access_token)
+    await link_spotify(email, spotify_id, access_token)
 
     # Create a new JWT token with the access token
     additional_claims = {"spotify_access_token": access_token}
@@ -87,7 +87,7 @@ def spotify_callback():
     add_jwt(email, jwt_token)
 
     # Redirect to your frontend profile page with the JWT token
-    return redirect(f"http://localhost:5500/backend/profile.html?token={jwt_token}")
+    return redirect(f"http://localhost:5500/project/backend/profile.html?token={jwt_token}")
 
 
 @spotify_bp.route("/link-spotify")

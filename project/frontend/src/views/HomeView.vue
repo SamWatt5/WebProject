@@ -40,33 +40,35 @@ const spotifyClick = () => {
       </div>
       <Separator orientation="vertical" class="mx-10" />
     </main>
-    <div class="grid grid-cols-3 grid-rows-10 pt-10 gap-4">
-      <div>
+    <div class="grid grid-cols-3 pt-10 gap-4">
+      <div class="w-full">
         <UserCard name="John Doe" avatar="JD" joined="January 2021" />
       </div>
-      <div class="col-span-2"></div>
-      <ListeningToCard />
-      <div class="col-span-2"></div>
-      <ScrollArea class="border rounded-md col-span-3 w-[95%] whitespace-nowrap">
-        <div class="flex p-4 space-x-4 w-max">
-          <ListeningToCard />
-          <ListeningToCard />
-          <ListeningToCard />
-          <ListeningToCard />
-          <ListeningToCard />
-          <ListeningToCard />
-          <ListeningToCard />
-          <ListeningToCard />
-          <ListeningToCard />
-          <ListeningToCard />
-          <ListeningToCard />
-          <ListeningToCard />
-          <ListeningToCard />
-          <ListeningToCard />
-          <ListeningToCard />
-        </div>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+      <!-- <div class="col-span-2"></div> -->
+      <div class="w-full col-span-3">
+        <ListeningToCard class="w-1/3" />
+
+        <ScrollArea class="border rounded-md col-span-3 w-[95%] mt-4 whitespace-nowrap">
+          <div class="flex p-4 space-x-4 w-max">
+            <ListeningToCard />
+            <ListeningToCard />
+            <ListeningToCard />
+            <ListeningToCard />
+            <ListeningToCard />
+            <ListeningToCard />
+            <ListeningToCard />
+            <ListeningToCard />
+            <ListeningToCard />
+            <ListeningToCard />
+            <ListeningToCard />
+            <ListeningToCard />
+            <ListeningToCard />
+            <ListeningToCard />
+            <ListeningToCard />
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+      </div>
     </div>
   </div>
 </template>
