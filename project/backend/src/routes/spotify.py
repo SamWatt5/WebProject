@@ -56,7 +56,7 @@ def spotify_login():
 
 
 @spotify_bp.route("/callback")
-def spotify_callback():
+async def spotify_callback():
     code = request.args.get("code")
     if not code:
         return jsonify({"msg": "Authorization failed"}), 400
