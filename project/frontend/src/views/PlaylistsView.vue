@@ -3,6 +3,8 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import Sidebar from '@/components/Sidebar.vue';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import PlaylistCard from '@/components/PlaylistCard.vue';
 
 const music: string[] = Array.from({ length: 50 }).map(
   (_, i) => `Song ${i + 1}`
@@ -28,8 +30,27 @@ const music: string[] = Array.from({ length: 50 }).map(
             </div>
             <Separator orientation="vertical" class="mx-10" />
         </main>
-        <div class="flex flex-col pt-10 gap-4 mr-4">
-            <h1 class="text-center text-4xl">Your Playlists</h1>
+        <div class="flex flex-col w-full pt-10 gap-4 mr-4">
+            <Card class="w-full">
+                <CardHeader>
+                    <CardTitle class="text-4xl">Playlists</CardTitle>
+                    <CardDescription></CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <ScrollArea class="h-[80vh]">
+                        <PlaylistCard />
+                        <PlaylistCard />
+                        <PlaylistCard />
+                        <PlaylistCard />
+                        <PlaylistCard />
+                        <PlaylistCard />
+                        <PlaylistCard />
+                        <PlaylistCard />
+                        <PlaylistCard />
+                        <ScrollBar />
+                    </ScrollArea>
+                </CardContent>
+            </Card>
         </div>
     </div>
 </template>
