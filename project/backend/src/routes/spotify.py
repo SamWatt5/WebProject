@@ -5,6 +5,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from flask import Flask, redirect, session, request, jsonify, Blueprint
 from flask_cors import CORS
+from ..models import get_user_from_token
 
 from ..models import add_jwt, link_spotify
 
@@ -29,7 +30,9 @@ def hello_world():
 
 @spotify_bp.route("/me_playlists")
 def me_playlists():
-    access_token = session.get("spotify_access_token")
+    token = session.get("token")
+    user = get_user_from_token(token)
+    access_token = user["spotify_token"]
     if not access_token:
         return jsonify({"msg": "Token not found"}), 401
 
@@ -58,10 +61,12 @@ def spotify_login():
 @spotify_bp.route("/callback")
 def spotify_callback():
     code = request.args.get("code")
+    print(code)
     if not code:
         return jsonify({"msg": "Authorization failed"}), 400
 
     token_info = sp_oauth.get_access_token(code)
+    print(token_info)
     access_token = token_info["access_token"]
 
     sp = spotipy.Spotify(auth=access_token)
@@ -82,6 +87,4 @@ def spotify_callback():
 @spotify_bp.route("/link-spotify")
 @jwt_required()
 def link_spotify_route():
-    user = get_jwt_identity()
-    session["email"] = user
     return redirect("/api/spotify/login")

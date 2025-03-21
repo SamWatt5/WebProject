@@ -40,7 +40,17 @@ const form = useForm({
 })
 
 const onSubmit = form.handleSubmit(async (values) => {
-    console.log(values);
+    fetch("/api/auth/signup", {
+        method: "POST",
+        body: JSON.stringify(values),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }).then((res) => {
+        res.json()
+    }).then((data) => {
+        console.log(data);
+    })
 })
 
 const showPassword = () => {

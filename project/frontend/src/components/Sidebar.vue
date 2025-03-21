@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarGroupContent, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarHeader } from './ui/sidebar';
+import { Sidebar, SidebarContent, SidebarMenuButton, SidebarFooter, SidebarHeader } from './ui/sidebar';
 import { House, ListMusic, Users, Settings } from 'lucide-vue-next';
 import Tooltips from './sidebarComponents/Tooltips.vue';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import Darkmode from './Darkmode.vue';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { Skeleton } from './ui/skeleton';
+
+import { useUser } from '@/stores/user';
+import { storeToRefs } from 'pinia';
+
+const { user } = storeToRefs(useUser()); // Ensure reactivity
+const { setUser } = useUser();
 </script>
 
 <template>
@@ -22,15 +29,21 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
             <Darkmode />
             <DropdownMenu>
                 <DropdownMenuTrigger>
-                    <Avatar>
-                        <AvatarFallback>CL</AvatarFallback>
+                    <Avatar v-if="user?.email">
+                        <AvatarFallback>{{ user.first_name?.[0] }}{{ user.last_name?.[0] }}</AvatarFallback>
+                    </Avatar>
+                    <Avatar v-else>
+                        <AvatarFallback><Skeleton class="w-12 h-12 rounded-full" /></AvatarFallback>
                     </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                     <DropdownMenuLabel>My account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <RouterLink to="/login">
+                    <RouterLink v-if="user" to="/api/auth/logout" @click="setUser(null)">
                         <DropdownMenuItem>Logout</DropdownMenuItem>
+                    </RouterLink>
+                    <RouterLink v-else to="/login">
+                        <DropdownMenuItem>Login</DropdownMenuItem>
                     </RouterLink>
                 </DropdownMenuContent>
             </DropdownMenu>

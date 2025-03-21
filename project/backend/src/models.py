@@ -24,9 +24,7 @@ def create_user(fname, lname, email, username, password):
 
 
 def link_spotify(token, spotify_id, access_token):
-    print(token, spotify_id, access_token)
     result = collection.update_one({"_id": ObjectId(token)}, {"$set": {"spotify_id": str(spotify_id), "spotify_token": str(access_token)}})
-    print("Matched:", result.matched_count, "Modified:", result.modified_count)
 
 
 def add_jwt(email, jwt):

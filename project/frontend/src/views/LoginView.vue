@@ -7,6 +7,7 @@ import * as z from "zod";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from 'vee-validate';
 import Darkmode from '@/components/Darkmode.vue';
+import { toast } from 'vue-sonner';
 
 const formSchema = toTypedSchema(z.object({
     username: z.string().nonempty({
@@ -26,7 +27,28 @@ const form = useForm({
 })
 
 const onSubmit = form.handleSubmit(async (values) => {
-    console.log(values);
+    let res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(values)
+    });
+    let body = await res.json();
+    if(body.code) {
+        toast.success('Login successful', {
+            description: 'Redirecting...',
+            duration: 5000
+        });
+        setTimeout(() => {
+            location.href = "/api/auth/callback?code=" + body.code;
+        }, 2000)
+    } else {
+        toast.error('Login attempt failed', {
+            description: body.error,
+            duration: 5000
+        })
+    }
 })
 
 const showPassword = () => {
@@ -44,6 +66,7 @@ const showPassword = () => {
 
 <template>
     <main>
+
         <Card class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 sm:w-1/2 w-[95%]">
             <CardHeader>
                 <CardTitle><h1 class="text-3xl text-center">Login</h1></CardTitle>

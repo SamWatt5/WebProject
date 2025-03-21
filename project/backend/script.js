@@ -1,18 +1,13 @@
 async function fetchUserPlaylists() {
-    let data = localStorage.getItem("user_playlists");
-    if (!data) {
-        const response = await fetch("http://localhost:8000/api/spotify/me_playlists", {
-            credentials: "include", // Ensures the session cookie is sent with the request
-        });
-        if (!response.ok) {
-            console.log("it threw an error here");
-            throw new Error(`Server error: ${response.status}`);
-        }
-        data = await response.json();
-        localStorage.setItem("user_playlists", JSON.stringify(data));
-    } else {
-        data = JSON.parse(data);
+    const response = await fetch("http://localhost:8000/api/spotify/me_playlists", {
+        credentials: "include", // Ensures the session cookie is sent with the request
+    });
+    if (!response.ok) {
+        console.log("it threw an error here");
+        throw new Error(`Server error: ${response.status}`);
     }
+    data = await response.json();
+    // localStorage.setItem("user_playlists", JSON.stringify(data));
     return data;
 }
 
@@ -91,8 +86,10 @@ function contractPlaylist(playlistId) {
 }
 
 async function initialize() {
-    const data = await fetchUserPlaylists();
+    // const data = await fetchUserPlaylists();
+    console.log("teuiefuios")
     createPlaylistArea(data);
 }
 
+console.log("teuiefuios1223444")
 initialize();

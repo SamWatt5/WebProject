@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, redirect
 from ..models import add_jwt, create_user, find_user_by_username, verify_password
 
 auth_bp = Blueprint('auth', __name__)
@@ -54,9 +54,10 @@ def login():
 @auth_bp.route("/callback", methods=["GET"])
 def callback():
     session["token"] = request.args.get("code")
-    return {"message": "Callback successful"}, 200
+    
+    return redirect("http://localhost:8080/")
 
 @auth_bp.route("/logout")
 def logout():
     session.clear()
-    return {"message": "Logged out successfully"}, 200
+    return redirect("https://localhost:8080")
