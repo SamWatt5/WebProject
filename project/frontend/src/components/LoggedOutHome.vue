@@ -6,27 +6,7 @@ import { Button } from './ui/button';
 </script>
 
 <script lang="ts">
-    function getRandPos() {
-        const windowHeight = window.innerHeight;
-        const windowWidth = window.innerWidth;
 
-        const randX = Math.floor(Math.random() * (windowWidth - 200));
-        const randY = Math.floor(Math.random() * (windowHeight - 200));
-
-        return { x: randX, y: randY };
-    }
-
-    function moveShadow() {
-        for(let i = 1; i <= 6; i++) {
-            const shadow = document.getElementById(`shadow${i}`) as HTMLElement;
-            console.log(i)
-            const pos = getRandPos();
-            shadow.style.top = `${pos.y}px`;
-            shadow.style.left = `${pos.x}px`;
-        }
-    }
-
-    setInterval(moveShadow, 2000);
 </script>
 
 <template>
@@ -36,13 +16,8 @@ import { Button } from './ui/button';
         </SidebarProvider>
 
         <div class="flex items-center justify-center flex-col">
-            <div class="absolute inset-0 flex justify-center items-center -z-10">
-                <div id="shadow1" class="transition-all duration-1000 ease-in-out w-96 h-96 bg-cyan-500 opacity-50 blur-3xl rounded-full absolute -top-10 -left-20"></div>
-                <div id="shadow2" class="transition-all duration-1000 ease-in-out w-96 h-96 bg-cyan-500 opacity-50 blur-3xl rounded-full absolute top-20 right-10"></div>
-                <div id="shadow3" class="transition-all duration-1000 ease-in-out w-96 h-96 bg-cyan-500 opacity-50 blur-3xl rounded-full absolute -top-10 -left-20"></div>
-                <div id="shadow4" class="transition-all duration-1000 ease-in-out w-96 h-96 bg-cyan-500 opacity-50 blur-3xl rounded-full absolute top-20 right-10"></div>
-                <div id="shadow5" class="transition-all duration-1000 ease-in-out w-96 h-96 bg-cyan-500 opacity-50 blur-3xl rounded-full absolute -top-10 -left-20"></div>
-                <div id="shadow6" class="transition-all duration-1000 ease-in-out w-96 h-96 bg-cyan-500 opacity-50 blur-3xl rounded-full absolute top-20 right-10"></div>
+            <div class="-z-10">
+                <div class="-translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500 opacity-50 blur-3xl rounded-full absolute top-1/2 left-1/2"></div>
             </div>
             <Card class="">
                 <CardHeader>

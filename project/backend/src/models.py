@@ -18,19 +18,22 @@ def create_user(fname, lname, email, username, password):
         "password": generate_password_hash(password),
         "spotify_id": None,
         "spotify_token": None,
-        "friends": []
+        "friends": [],
+        "admin": False
     }
     collection.insert_one(user_doc)
 
 
 def link_spotify(token, spotify_id, access_token):
-    result = collection.update_one({"_id": ObjectId(token)}, {"$set": {"spotify_id": str(spotify_id), "spotify_token": str(access_token)}})
+    collection.update_one({"_id": ObjectId(token)}, {"$set": {"spotify_id": str(spotify_id), "spotify_token": str(access_token)}})
 
 
 def add_jwt(email, jwt):
     collection.update_one({"email": email}, {
                           "$set": {"jwt": jwt}})
 
+def find_user(id):
+    return collection.find_one({"_id": ObjectId(id)})
 
 def find_user_by_username(username):
     return collection.find_one({"username": username})
@@ -52,18 +55,25 @@ def get_user_friends(username):
 
 
 def make_friends(user1, user2):
-    collection.update_one({"username": user1}, {
-                          "$addToSet": {"friends": user2}})
-    collection.update_one({"username": user2}, {
-                          "$addToSet": {"friends": user1}})
+    collection.update_one({"_id": ObjectId(user1)}, {
+                          "$addToSet": {"friends": ObjectId(user2)}})
+    collection.update_one({"_id": ObjectId(user2)}, {
+                          "$addToSet": {"friends": ObjectId(user1)}})
 
 
 def remove_friends(user1, user2):
-    collection.update_one({"username": user1}, {
-                          "$pull": {"friends": user2}})
-    collection.update_one({"username": user2}, {
-                          "$pull": {"friends": user1}})
+    collection.update_one({"_id": ObjectId(user1)}, {
+                          "$pull": {"friends": ObjectId(user2)}})
+    collection.update_one({"_id": ObjectId(user2)}, {
+                          "$pull": {"friends": ObjectId(user1)}})
 
 def get_user_from_token(token):
     id = ObjectId(token)
     return collection.find_one({"_id": id}, { "_id": False })
+
+def make_admin(user):
+    result = collection.update_one({"_id": ObjectId(user)}, {"$set": {"admin": True}})
+    print(result)
+    
+def remove_admin(user):
+    collection.update_one({"_id": ObjectId(user)}, {"$set": {"admin": False}})

@@ -14,6 +14,7 @@ import { useUser } from "@/stores/user";
 import { onMounted, ref } from "vue";
 import LoggedInHome from "@/components/LoggedInHome.vue";
 import LoggedOutHome from "@/components/LoggedOutHome.vue";
+import { toast } from "vue-sonner";
 
 const music: string[] = Array.from({ length: 50 }).map(
   (_, i) => `Song ${i + 1}`
@@ -21,6 +22,11 @@ const music: string[] = Array.from({ length: 50 }).map(
 
 let { user, setUser } = useUser();
 const isLoading = ref(true);
+toast.loading("Loading user data...", {
+  duration: Infinity,
+  id: "loading-data",
+  dismissible: false
+});
 
 onMounted(async() => {
     try {
@@ -38,6 +44,7 @@ onMounted(async() => {
         user = data;
       }
       isLoading.value = false;
+      toast.dismiss("loading-data");
     } catch(err) {
       console.error(err);
     }
