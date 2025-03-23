@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from ..models import find_user_by_username, find_user, make_admin, remove_admin  # Adjust the import as needed
+# Adjust the import as needed
+from ..models import find_user_by_username, find_user, make_admin, remove_admin
 from ..middleware import admin_auth
 
 admin_bp = Blueprint('admin', __name__)
@@ -13,9 +14,9 @@ admin_bp = Blueprint('admin', __name__)
 @admin_bp.route('/remove-user/<id>', methods=['DELETE'])
 @admin_auth
 def remove_user(user, id):
-
     # Add the code to remove the user from the database here
     return jsonify({"message": "User removed successfully"})
+
 
 @admin_bp.route('/make-admin/<id>', methods=['POST', 'GET'])
 @admin_auth
@@ -26,6 +27,7 @@ def make_admin_route(user, id):
 
     make_admin(id)
     return jsonify({"message": "User is now an admin"}), 200
+
 
 @admin_bp.route('/remove-admin/<id>', methods=['POST', 'GET'])
 @admin_auth
