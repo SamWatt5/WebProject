@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, session
-from ..models import find_user_by_username, get_user_friends, make_friends, remove_friends, get_user_from_token
+from ..models import find_user_by_username, get_user_friends, make_friends, remove_friends, get_user_from_token, find_user
 from ..middleware import auth
 
 user_bp = Blueprint('user', __name__)
@@ -29,20 +29,33 @@ def link_spotify(username):
     return jsonify({"message": "Spotify account linked successfully"})
 
 
+@user_bp.route("/find/<id>", methods=["GET"])
+def find(id):
+    user = find_user(id, False)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    return jsonify(user)
+
 # This route will Fetch friend list
 # The user must be logged in to access this route
 # The user can only access their own friend list
 @user_bp.route('/friends', methods=['GET'])
 @auth
 def friends(user):
-    friends = get_user_friends(user["username"])
-    return jsonify(friends)
+    friendsList = get_user_friends(user["username"])
+    list = []
+    for friend in friendsList:
+        list.append(find_user(str(friend), False))
+
+    print(list)
+    return jsonify(list)
+
 
 
 # This route will add a new freind  to the user's friend list
 # The user must be logged in to access this route
 # The user can only add friends to their own friend list
-@user_bp.route('/add-friend/<username>', methods=['POST'])
+@user_bp.route('/add-friend/<username>', methods=['GET', 'POST'])
 @auth
 def add_friend(user, token, username):
     existing_friends = get_user_friends(user["username"])
@@ -66,7 +79,9 @@ def remove_friend(user, token, username):
     if not person:
         return jsonify({"error": "User not found"}), 404 
 
-    if not person["_id"] in existing_friends:
+    print(existing_friends)
+
+    if not str(person["_id"]) in existing_friends:
         return jsonify({"error": "User is not a friend"}), 400
     
     

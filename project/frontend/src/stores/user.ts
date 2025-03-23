@@ -15,7 +15,7 @@ export type User = {
 
 export const useUser = defineStore('user', {
   state: () => ({
-    user: null as User | null,  // Define the state object with `user` initialized to `null`
+    user: null as User | null,
   }),
   actions: {
     setUser(newUser: User | null) {

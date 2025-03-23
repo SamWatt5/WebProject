@@ -32,8 +32,8 @@ def add_jwt(email, jwt):
     collection.update_one({"email": email}, {
                           "$set": {"jwt": jwt}})
 
-def find_user(id):
-    return collection.find_one({"_id": ObjectId(id)})
+def find_user(id, includeId = False):
+    return collection.find_one({"_id": ObjectId(id)}, { "_id": includeId })
 
 def find_user_by_username(username):
     return collection.find_one({"username": username})
@@ -56,16 +56,16 @@ def get_user_friends(username):
 
 def make_friends(user1, user2):
     collection.update_one({"_id": ObjectId(user1)}, {
-                          "$addToSet": {"friends": ObjectId(user2)}})
+                          "$addToSet": {"friends": str(user2)}})
     collection.update_one({"_id": ObjectId(user2)}, {
-                          "$addToSet": {"friends": ObjectId(user1)}})
+                          "$addToSet": {"friends": str(user1)}})
 
 
 def remove_friends(user1, user2):
     collection.update_one({"_id": ObjectId(user1)}, {
-                          "$pull": {"friends": ObjectId(user2)}})
+                          "$pull": {"friends": str(user2)}})
     collection.update_one({"_id": ObjectId(user2)}, {
-                          "$pull": {"friends": ObjectId(user1)}})
+                          "$pull": {"friends": str(user1)}})
 
 def get_user_from_token(token):
     id = ObjectId(token)
