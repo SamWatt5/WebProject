@@ -35,8 +35,8 @@ def add_jwt(email, jwt):
 def find_user(id, includeId = False):
     return collection.find_one({"_id": ObjectId(id)}, { "_id": includeId })
 
-def find_user_by_username(username):
-    return collection.find_one({"username": username})
+def find_user_by_username(username, includeId = False):
+    return collection.find_one({"username": username}, { "_id": includeId })
 
 
 def remove_user(username):

@@ -29,12 +29,21 @@ def link_spotify(username):
     return jsonify({"message": "Spotify account linked successfully"})
 
 
-@user_bp.route("/find/<id>", methods=["GET"])
-def find(id):
-    user = find_user(id, False)
-    if not user:
+@user_bp.route("/find/<target>", methods=["GET"])
+@auth
+def find(user, target):
+    foundTarget = find_user_by_username(target)
+
+    if not foundTarget:
+        try:
+            foundTarget = find_user(target)
+        except:
+            pass
+
+    if not foundTarget:
         return jsonify({"error": "User not found"}), 404
-    return jsonify(user)
+    
+    return jsonify(foundTarget)
 
 # This route will Fetch friend list
 # The user must be logged in to access this route
@@ -59,7 +68,7 @@ def friends(user):
 @auth
 def add_friend(user, token, username):
     existing_friends = get_user_friends(user["username"])
-    person = find_user_by_username(username)
+    person = find_user_by_username(username, True)
     if not person:
         return jsonify({"error": "User not found"}), 404 
     
@@ -75,7 +84,7 @@ def add_friend(user, token, username):
 @auth
 def remove_friend(user, token, username):
     existing_friends = get_user_friends(user["username"])
-    person = find_user_by_username(username)
+    person = find_user_by_username(username, True)
     if not person:
         return jsonify({"error": "User not found"}), 404 
 

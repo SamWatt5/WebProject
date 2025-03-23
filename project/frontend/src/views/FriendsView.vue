@@ -12,6 +12,7 @@ import { onMounted, ref } from 'vue';
 import { useUser, type User } from '@/stores/user';
 import { toast } from 'vue-sonner';
 import { useFriends } from '@/stores/friends';
+import FriendSearch from '@/components/FriendSearch.vue';
 
 const music: string[] = Array.from({ length: 50 }).map(
   (_, i) => `Song ${i + 1}`
@@ -95,8 +96,7 @@ onMounted(async() => {
                 </CardHeader>
                 <CardContent>
                     <div class="flex flex-row items-center">
-                        <Input placeholder="Search for friend" />
-                        <Button class="ml-2">Search</Button>
+                        <FriendSearch />
                     </div>
                 </CardContent>
                 <CardFooter>
