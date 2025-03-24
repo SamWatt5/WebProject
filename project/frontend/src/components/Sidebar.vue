@@ -6,12 +6,17 @@ import { Avatar, AvatarFallback } from './ui/avatar';
 import Darkmode from './Darkmode.vue';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { Skeleton } from './ui/skeleton';
-
+import { ShieldUser } from 'lucide-vue-next';
 import { useUser } from '@/stores/user';
 import { storeToRefs } from 'pinia';
+import { RouterLink } from 'vue-router';
 
 const { user } = storeToRefs(useUser()); // Ensure reactivity
 const { setUser } = useUser();
+
+defineProps({
+    admin: Boolean
+})
 </script>
 
 <template>
@@ -24,6 +29,7 @@ const { setUser } = useUser();
             <SidebarMenuButton><RouterLink to="/playlists"><Tooltips item="Playlists"><ListMusic /></Tooltips></RouterLink></SidebarMenuButton>
             <SidebarMenuButton><RouterLink to="/friends"><Tooltips item="Friends"><Users /></Tooltips></RouterLink></SidebarMenuButton>
             <SidebarMenuButton><RouterLink to="#"><Tooltips item="Settings"><Settings /></Tooltips></RouterLink></SidebarMenuButton>
+            <SidebarMenuButton v-if="admin"><RouterLink to="/admin"><Tooltips item="Admin"><ShieldUser /></Tooltips></RouterLink></SidebarMenuButton>
         </SidebarContent>
         <SidebarFooter className="p-1">
             <Darkmode />

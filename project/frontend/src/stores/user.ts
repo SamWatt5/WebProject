@@ -11,6 +11,7 @@ export type User = {
     spotify_id: string
     spotify_token: string
     username: string
+    admin: boolean
 }
 
 export const useUser = defineStore('user', {

@@ -1,4 +1,4 @@
-from flask import request, jsonify, session, redirect
+from flask import request, session, redirect
 from ..models import add_jwt, create_user, find_user_by_username, verify_password
 from flask_restx import Namespace, Resource
 from ..middleware import auth
