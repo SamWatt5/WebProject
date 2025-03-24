@@ -16,6 +16,10 @@ export default defineConfig({
             target: 'http://localhost:8000', // Flask backend
             changeOrigin: true,
         },
+        '/docs': {
+            target: 'http://localhost:8000', // Flask backend
+            changeOrigin: true,
+        }
     },
   },
   css: {

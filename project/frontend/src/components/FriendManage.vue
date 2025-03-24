@@ -2,17 +2,19 @@
 import { Dialog, DialogTrigger, DialogContent, DialogClose, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import UserCard from "./UserCard.vue";
 import { Button } from "./ui/button";
-import { defineComponent } from 'vue';
 import { toast } from "vue-sonner";
-import { useUser } from "@/stores/user";
 import { useFriends } from "@/stores/friends";
-import { ref } from "vue";
+import { storeToRefs } from "pinia";
 
 defineProps({
     userName: String,
     userAvatar: String,
     userJoined: String
 })
+
+let store = useFriends();
+let { friends } = storeToRefs(store); // Ensure `friends` is reactive
+let { setFriends } = store;
 
 const unfriend = async (username) => {
     toast.loading("Unfriending...", {
@@ -27,21 +29,38 @@ const unfriend = async (username) => {
             "Content-Type": "application/json"
         }
     });
+
     const data = await res.json();
-    if(data.message) {
+    if (data.message) {
         toast.success("Unfriended successfully", {
             duration: 5000,
-            id: "unfriending"
+            id: "unfriending",
+            closeButton: true,
+            dismissible: true
         });
+
+        console.log("Before", friends.value);
+        setFriends(friends.value.filter(friend => friend.username !== username));
+        console.log("After", friends.value);
+
+        setTimeout(() => {
+            toast.dismiss("unfriending");
+        }, 5000);
     } else {
         toast.error("Failed to unfriend", {
             description: data.error,
             duration: 5000,
-            id: "unfriending"
+            dismissible: true,
+            id: "unfriending",
+            closeButton: true
         });
+        setTimeout(() => {
+            toast.dismiss("unfriending");
+        }, 5000);
     }
 }
 </script>
+
 
 <template>
     <Dialog>
@@ -50,7 +69,7 @@ const unfriend = async (username) => {
         </DialogTrigger>
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Friend Management</DialogTitle>
+                <DialogTitle>Manage <span class="text-cyan-500 font-semibold">{{ userName }}</span></DialogTitle>
                 <DialogDescription>All buttons pressed on this menu are final and can't be reversed</DialogDescription>
             </DialogHeader>
             

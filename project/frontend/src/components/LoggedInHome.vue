@@ -7,10 +7,13 @@ import { Card, CardDescription, CardTitle, CardHeader, CardContent } from '@/com
 import { CalendarDays } from "lucide-vue-next";
 import UserCard from './UserCard.vue';
 import ListeningToCard from './ListeningToCard.vue';
+import { useUser } from '@/stores/user';
 
 const music: string[] = Array.from({ length: 50 }).map(
   (_, i) => `Song ${i + 1}`
 );
+
+const { user } = useUser();
 
 </script>
 
@@ -36,7 +39,7 @@ const music: string[] = Array.from({ length: 50 }).map(
         </main>
         <div class="grid grid-cols-3 pt-10 gap-4">
             <div class="w-full">
-                <UserCard name="John Doe" avatar="JD" joined="January 2021" />
+                <UserCard :name="user?.username ?? 'Guest'" :avatar="(user?.first_name?.substring(0, 1) ?? '') + (user?.last_name?.substring(0, 1) ?? '')" joined="January 2021" />
             </div>
             <div class="w-full col-span-3">
                 <ListeningToCard class="w-1/3" />

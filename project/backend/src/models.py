@@ -33,10 +33,14 @@ def add_jwt(email, jwt):
                           "$set": {"jwt": jwt}})
 
 def find_user(id, includeId = False):
-    return collection.find_one({"_id": ObjectId(id)}, { "_id": includeId })
+    if includeId == False: 
+        return collection.find_one({"_id": ObjectId(id)}, { "_id": includeId })
+    return collection.find_one({"_id": ObjectId(id)})
 
 def find_user_by_username(username, includeId = False):
-    return collection.find_one({"username": username}, { "_id": includeId })
+    if includeId == False: 
+        return collection.find_one({"username": username}, { "_id": includeId })
+    return collection.find_one({"username": username})
 
 
 def remove_user(username):

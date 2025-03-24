@@ -6,12 +6,17 @@ import { Input } from './ui/input';
 import { toast } from 'vue-sonner';
 import { type User } from '@/stores/user';
 import { Loader2 } from 'lucide-vue-next';
+import { useFriends } from '@/stores/friends';
+import { storeToRefs } from 'pinia';
 
 let open = ref(false);
 let user = ref<User>();
+const store = useFriends();
+const { friends } = storeToRefs(store);
+const { setFriends } = store;
 
 const acceptFriendship = async() => {
-    toast.loading("Accepting friend request...", {
+    toast.loading("Making friends...", {
         duration: Infinity,
         id: "accepting-friendship",
         dismissible: false
@@ -24,18 +29,34 @@ const acceptFriendship = async() => {
         }
     });
     const data = await res.json();
-    console.log(data);
     if(data.message) {
-        toast.success("Accepted friend request", {
+        const userData = await fetch(`/api/user/find/${user.value?.username}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const userDataJson = await userData.json();
+        setFriends([...friends.value, userDataJson]);
+        open.value = false;
+
+        toast.success("You are now friends", {
             duration: 5000,
             id: "accepting-friendship"
         });
+
+        setTimeout(() => {
+            toast.dismiss("accepting-friendship");
+        }, 5000)
     } else {
-        toast.error("Failed to accept friend request", {
+        toast.error("Failed to make friend", {
             description: data.error,
             duration: 5000,
             id: "accepting-friendship"
         });
+        setTimeout(() => {
+            toast.dismiss("accepting-friendship");
+        }, 5000)
     }
 }
 

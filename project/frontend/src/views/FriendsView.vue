@@ -13,6 +13,7 @@ import { useUser, type User } from '@/stores/user';
 import { toast } from 'vue-sonner';
 import { useFriends } from '@/stores/friends';
 import FriendSearch from '@/components/FriendSearch.vue';
+import { storeToRefs } from 'pinia';
 
 const music: string[] = Array.from({ length: 50 }).map(
   (_, i) => `Song ${i + 1}`
@@ -24,7 +25,9 @@ const friendClick = (friend: string) => {
 }
 
 let { user, setUser } = useUser();
-let { friends, setFriends } = useFriends();
+let store = useFriends();
+const { friends } = storeToRefs(store);
+const { setFriends } = store;
 const isLoading = ref(true);
 toast.loading("Loading user data...", {
   duration: Infinity,
@@ -32,7 +35,7 @@ toast.loading("Loading user data...", {
   dismissible: false
 });
 
-onMounted(async() => {
+const refresh = async () => {
     try {
         const res = await fetch("/api/user/me", {
             method: "GET",
@@ -54,9 +57,10 @@ onMounted(async() => {
                     }
                 });
                 const friendData = await res.json();
-                friends.push(friendData);
+                if(!friendData.error) {
+                    setFriends([...friends.value, friendData]);
+                }
             }
-            setFriends(friends)
         }
 
       isLoading.value = false;
@@ -64,6 +68,10 @@ onMounted(async() => {
     } catch(err) {
       console.error(err);
     }
+}
+
+onMounted(async() => {
+    refresh();
 });
 
 
@@ -105,7 +113,6 @@ onMounted(async() => {
             </Card>
                 <ScrollArea class="border rounded-md whitespace-nowrap h-[60vh] p-4">
                     <div class="grid grid-cols-3 grid-flow-row gap-4" v-for="(friend, index) in friends" :key="index">
-                        {{ console.log(friend) }}
                         <FriendManage :userName="friend.username" :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]" :userJoined="'December 2021'" />
                     </div>
                 </ScrollArea>
