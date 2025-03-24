@@ -38,10 +38,7 @@ const unfriend = async (username) => {
             closeButton: true,
             dismissible: true
         });
-
-        console.log("Before", friends.value);
         setFriends(friends.value.filter(friend => friend.username !== username));
-        console.log("After", friends.value);
 
         setTimeout(() => {
             toast.dismiss("unfriending");
@@ -76,9 +73,6 @@ const unfriend = async (username) => {
             <DialogFooter>
                 <DialogClose asChild>
                     <Button variant="destructive" @click="unfriend(userName)">Unfriend</Button>
-                </DialogClose>
-                <DialogClose asChild>
-                    <Button variant="secondary">Block</Button>
                 </DialogClose>
                 <DialogClose as-child>
                     <Button>Close</Button>

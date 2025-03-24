@@ -27,6 +27,7 @@ class LinkSpotifyRoute(Resource):
 class FindRoute(Resource):
     @auth
     def get(user, self, target):
+        
         foundTarget = find_user_by_username(target)
 
         if not foundTarget:
@@ -36,9 +37,9 @@ class FindRoute(Resource):
                 pass
 
         if not foundTarget:
-            return jsonify({"error": "User not found"}), 404
+            return {"error": "User not found"}, 404
 
-        return jsonify(foundTarget)
+        return foundTarget, 200
 
 @user_ns.route('/friends')
 class FriendsRoute(Resource):
@@ -48,9 +49,8 @@ class FriendsRoute(Resource):
         list = []
         for friend in friendsList:
             list.append(find_user(str(friend), False))
-
-        print(list)
-        return jsonify(list)
+        
+        return list, 200
 
 @user_ns.route('/add-friend/<username>')
 class AddFriendRoute(Resource):

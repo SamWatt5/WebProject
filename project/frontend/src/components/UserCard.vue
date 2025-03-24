@@ -12,7 +12,7 @@ const spotifyClick = () => {
 defineProps({
     name: String,
     avatar: String,
-    joined: String,
+    joined: String
 })
 </script>
 

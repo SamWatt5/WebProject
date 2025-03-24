@@ -4,7 +4,7 @@ from flask_session import Session
 from .config import Config
 from .routes.auth import auth_ns
 from .routes.user import user_ns
-from .routes.admin import admin_bp
+from .routes.admin import admin_ns
 from .routes.spotify import spotify_ns
 from flask_restx import Api
 
@@ -36,5 +36,6 @@ def create_app():
     api.add_namespace(auth_ns, path="/api/auth")
     api.add_namespace(user_ns, path="/api/user")
     api.add_namespace(spotify_ns, path="/api/spotify")
+    api.add_namespace(admin_ns, path="/api/admin")
 
     return app

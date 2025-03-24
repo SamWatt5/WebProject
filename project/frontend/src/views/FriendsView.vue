@@ -14,6 +14,7 @@ import { toast } from 'vue-sonner';
 import { useFriends } from '@/stores/friends';
 import FriendSearch from '@/components/FriendSearch.vue';
 import { storeToRefs } from 'pinia';
+import UserCard from '@/components/UserCard.vue';
 
 const music: string[] = Array.from({ length: 50 }).map(
   (_, i) => `Song ${i + 1}`
@@ -47,7 +48,6 @@ const refresh = async () => {
         
         if(!data.error) {
             setUser(data);
-            console.log("Set user successfully", data);
             user = data;
             for(let friend of data.friends) {
                 const res = await fetch(`/api/user/find/${friend}`, {
@@ -58,6 +58,7 @@ const refresh = async () => {
                 });
                 const friendData = await res.json();
                 if(!friendData.error) {
+                    if(friends.value.length > 0) return;
                     setFriends([...friends.value, friendData]);
                 }
             }
@@ -112,8 +113,13 @@ onMounted(async() => {
                 </CardFooter>
             </Card>
                 <ScrollArea class="border rounded-md whitespace-nowrap h-[60vh] p-4">
-                    <div class="grid grid-cols-3 grid-flow-row gap-4" v-for="(friend, index) in friends" :key="index">
-                        <FriendManage :userName="friend.username" :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]" :userJoined="'December 2021'" />
+                    <div class="grid grid-cols-3 grid-flow-row gap-4">
+                        <div v-for="(friend, index) in friends" :key="index">
+                            <FriendManage :userName="friend.username" :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]" :userJoined="'December 2021'" />
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 grid-flow-row gap-4" v-if="friends.length === 0">
+                        <UserCard :name="'No friends'" :avatar="'NA'" :joined="'Never'" />
                     </div>
                 </ScrollArea>
         </div>

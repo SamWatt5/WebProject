@@ -77,7 +77,9 @@ def get_user_from_token(token):
 
 def make_admin(user):
     result = collection.update_one({"_id": ObjectId(user)}, {"$set": {"admin": True}})
-    print(result)
     
 def remove_admin(user):
     collection.update_one({"_id": ObjectId(user)}, {"$set": {"admin": False}})
+
+def get_users():
+    return list(collection.find({}, { "_id": False }))
