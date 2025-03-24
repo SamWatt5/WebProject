@@ -29,6 +29,42 @@ function createPlaylistArea(data) {
     });
 }
 
+async function fetchRecommendations(seedTracks = [], seedArtists = [], seedGenres = []) {
+    if (!seedTracks.length && !seedArtists.length && !seedGenres.length) {
+        console.error("No seeds provided for recommendations.");
+        return [];
+    }
+    const params = new URLSearchParams();
+    if (seedTracks.length) params.append("seed_tracks", seedTracks.join(","));
+    if (seedArtists.length) params.append("seed_artists", seedArtists.join(","));
+    if (seedGenres.length) params.append("seed_genres", seedGenres.join(","));
+
+    const response = await fetch(`http://127.0.0.1:5000/recommend?${params.toString()}`);
+    const data = await response.json();
+    return data;
+}
+
+function displayRecommendations(recommendations) {
+    const recommendationsContainer = document.querySelector(".recommendations");
+    recommendationsContainer.innerHTML = ""; // Clear previous recommendations
+    recommendations.tracks.forEach((track) => {
+        const trackElement = document.createElement("div");
+        trackElement.className = "recommendation-card";
+        const artists = track.artists.map((artist) => artist.name).join(", ");
+        trackElement.innerHTML = `
+            <div class="card" style="width: 18rem;">
+                <img src="${track.album.images[0].url}" class="card-img-top" alt="${track.name} cover">
+                <div class="card-body">
+                    <h5 class="card-title">${track.name}</h5>
+                    <p class="card-text">By ${artists}</p>
+                    <a href="${track.external_urls.spotify}" class="btn btn-primary" target="_blank">Listen on Spotify</a>
+                </div>
+            </div>
+        `;
+        recommendationsContainer.appendChild(trackElement);
+    });
+}
+
 function createUserPlaylistCard(playlist) {
     const card = document.createElement("div");
     card.className = "col-md-4 mb-3";
@@ -80,8 +116,8 @@ function contractPlaylist(playlistId) {
 }
 
 async function initialize() {
-    const data = await fetchUserPlaylists();
-    createPlaylistArea(data);
+    const recommendations = await fetchRecommendations(["4NHQUGzhtTLFvgF5SZesLK"], ["classical", "country"], ["0c6xIDDpzE81m2q797ordA"]);
+    displayRecommendations(recommendations);
 }
 
 initialize();

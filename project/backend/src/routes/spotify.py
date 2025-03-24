@@ -5,13 +5,17 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from flask import Flask, redirect, session, request, jsonify, Blueprint
 from flask_cors import CORS
+
+from backend.src.middleware import auth
 from ..models import get_user_from_token
+from flask_restx import Namespace, Resource
 
 from ..models import add_jwt, link_spotify
 
 load_dotenv()
 
-spotify_bp = Blueprint('spotify', __name__)
+# spotify_bp = Blueprint('spotify', __name__)
+spotify_ns = Namespace("spotify", description="Spotify API routes")
 
 CLIENT_ID = os.getenv("SP_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SP_CLIENT_SECRET")
@@ -26,6 +30,31 @@ sp_oauth = SpotifyOAuth(client_id=CLIENT_ID, client_secret=CLIENT_SECRET,
 @spotify_bp.route("/")
 def hello_world():
     return "hello world! :)"
+
+
+@spotify_ns.route("/recommend")
+class recommend_route(Resource):
+    @auth
+    def get(user, self):
+        # Get seed parameters from query string
+        seed_artists = request.args.get("seed_artists", "")
+        seed_genres = request.args.get("seed_genres", "")
+        seed_tracks = request.args.get("seed_tracks", "")
+
+        # Ensure at least one seed is provided
+        if not (seed_artists or seed_genres or seed_tracks):
+            return jsonify({"error": "At least one seed parameter (artist, genre, or track) is required"}), 400
+
+        # Call Spotify's recommendations endpoint
+        try:
+            recommendations = sp.recommendations(
+                seed_artists=seed_artists.split(","),
+                seed_genres=seed_genres.split(","),
+                seed_tracks=seed_tracks.split(",")
+            )
+            return jsonify(recommendations)
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
 
 
 @spotify_bp.route("/me_playlists")
