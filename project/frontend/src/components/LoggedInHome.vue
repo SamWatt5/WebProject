@@ -21,7 +21,7 @@ const { user } = useUser();
     <div class="flex flex-row">
         <main class="flex h-screen items-center place-self-start">
             <SidebarProvider :default-open="false" :open="false">
-                <Sidebar :admin="user?.admin" />
+                <Sidebar />
             </SidebarProvider>
 
             <div class="flex flex-col ml-10">
