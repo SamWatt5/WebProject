@@ -5,8 +5,9 @@ from .config import Config
 from .routes.auth import auth_ns
 from .routes.user import user_ns
 from .routes.admin import admin_bp
-from .routes.spotify import spotify_bp
+from .routes.spotify import spotify_ns
 from flask_restx import Api
+
 
 def create_app():
     app = Flask(__name__)
@@ -34,5 +35,6 @@ def create_app():
     # app.register_blueprint(spotify_bp, url_prefix="/api/spotify")
     api.add_namespace(auth_ns, path="/api/auth")
     api.add_namespace(user_ns, path="/api/user")
+    api.add_namespace(spotify_ns, path="/api/spotify")
 
     return app
