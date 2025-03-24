@@ -6,7 +6,7 @@ from spotipy.oauth2 import SpotifyOAuth
 from flask import Flask, redirect, session, request, jsonify, Blueprint
 from flask_cors import CORS
 
-from backend.src.middleware import auth
+from ..middleware import auth
 from ..models import get_user_from_token
 from flask_restx import Namespace, Resource
 
