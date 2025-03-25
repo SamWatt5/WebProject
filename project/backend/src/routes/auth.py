@@ -70,9 +70,9 @@ class CallbackRoute(Resource):
         session["token"] = request.args.get("code")
         return redirect("http://localhost:8080/")
 
-@auth_ns.route("/logout")
+@auth_ns.route("/logout", methods=["POST"])
 class LogoutRoute(Resource):
-    def get(self):
+    def post(self):
         print("I have been called")
         session.clear()
-        return redirect("https://localhost:8080/")
+        return redirect("http://localhost:8080/")

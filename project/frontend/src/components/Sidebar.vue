@@ -1,3 +1,4 @@
+// filepath: /Users/mwaka/Documents/WebProject/project/frontend/src/components/Sidebar.vue
 <script setup lang="ts">
 import { Sidebar, SidebarContent, SidebarMenuButton, SidebarFooter, SidebarHeader } from './ui/sidebar';
 import { House, ListMusic, Users, Settings } from 'lucide-vue-next';
@@ -18,7 +19,7 @@ const router = useRouter();
 const handleLogout = async () => {
     try {
         const response = await fetch('/api/auth/logout', {
-            method: 'GET',
+            method: 'POST',
             credentials: 'include'
         });
         if (response.ok) {
