@@ -11,7 +11,7 @@ from flask_restx import Api
 
 def create_app():
     app = Flask(__name__)
-    CORS(app, supports_credentials=True)
+    CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": "http://localhost:8080"}})
     app.config.from_object(Config)
     app.config['CORS_HEADERS'] = 'Content-Type'
     app.config['SESSION_TYPE'] = 'filesystem'

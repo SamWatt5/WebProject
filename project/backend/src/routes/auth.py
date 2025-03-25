@@ -59,5 +59,6 @@ class CallbackRoute(Resource):
 @auth_ns.route("/logout")
 class LogoutRoute(Resource):
     def get(self):
-        session.clear()
-        return redirect("https://localhost:8080")
+        print("I have been called")
+        session.pop("token", None)
+        return redirect("https://localhost:8080/")

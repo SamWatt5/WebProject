@@ -9,16 +9,33 @@ import { Skeleton } from './ui/skeleton';
 import { ShieldUser } from 'lucide-vue-next';
 import { useUser } from '@/stores/user';
 import { storeToRefs } from 'pinia';
-import { RouterLink } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const { user } = storeToRefs(useUser()); // Ensure reactivity
 const { setUser } = useUser();
+const router = useRouter();
 
+const handleLogout = async () => {
+    try {
+        const response = await fetch('/api/auth/logout', {
+            method: 'GET',
+            credentials: 'include'
+        });
+        if (response.ok) {
+            setUser(null);
+            window.location.href = '/'; // Reload the page to let the backend handle the redirection
+        } else {
+            console.error('Logout failed');
+        }
+    } catch (error) {
+        console.error('Error during logout:', error);
+    }
+};
 </script>
 
 <template>
     <Sidebar collapsible="icon">
-        <SidebarHeader className="p-1">
+        <SidebarHeader class="p-1">
             <img src="/TrackMates.png" class="rounded-full" />
         </SidebarHeader>
         <SidebarContent class="p-1 pt-4">
@@ -28,7 +45,7 @@ const { setUser } = useUser();
             <SidebarMenuButton><RouterLink to="#"><Tooltips item="Settings"><Settings /></Tooltips></RouterLink></SidebarMenuButton>
             <SidebarMenuButton v-if="user?.admin"><RouterLink to="/admin"><Tooltips item="Admin"><ShieldUser /></Tooltips></RouterLink></SidebarMenuButton>
         </SidebarContent>
-        <SidebarFooter className="p-1">
+        <SidebarFooter class="p-1">
             <Darkmode />
             <DropdownMenu>
                 <DropdownMenuTrigger>
@@ -42,9 +59,7 @@ const { setUser } = useUser();
                 <DropdownMenuContent>
                     <DropdownMenuLabel>My account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <RouterLink v-if="user" to="/api/auth/logout" @click="setUser(null)">
-                        <DropdownMenuItem>Logout</DropdownMenuItem>
-                    </RouterLink>
+                    <DropdownMenuItem v-if="user" @click="handleLogout">Logout</DropdownMenuItem>
                     <RouterLink v-else to="/login">
                         <DropdownMenuItem>Login</DropdownMenuItem>
                     </RouterLink>

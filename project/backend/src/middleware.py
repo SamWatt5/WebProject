@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import request, session, jsonify
-from models import get_user_from_token
+from .models import get_user_from_token
 import inspect
 
 def admin_auth(f):
