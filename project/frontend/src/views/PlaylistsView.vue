@@ -6,11 +6,19 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import PlaylistCard from '@/components/PlaylistCard.vue';
 
+// Extra imports for the friends components
+import FriendManage from '@/components/FriendManage.vue';
+import UserCard from '@/components/UserCard.vue';
+import { useFriends } from '@/stores/friends';
+import { storeToRefs } from 'pinia';
+
 const music: string[] = Array.from({ length: 50 }).map(
   (_, i) => `Song ${i + 1}`
 );
 
-
+// Using the friends store to get and set friends data
+const store = useFriends();
+const { friends } = storeToRefs(store);
 
 </script>
 
@@ -34,7 +42,18 @@ const music: string[] = Array.from({ length: 50 }).map(
             <Separator orientation="vertical" class="mx-10" />
             
             <!-- Choose friend area to display their playlist -->
-            
+            <ScrollArea class="border rounded-md whitespace-nowrap h-[60vh] p-4">
+                <div class="grid grid-cols-3 grid-flow-row gap-4">
+                    <div v-for="(friend, index) in friends" :key="index">
+                        <!-- Friend manage component for each friend -->
+                        <FriendManage :userName="friend.username" :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]" :userJoined="'December 2021'" />
+                    </div>
+                </div>
+                <!-- Displaying a message when there are no friends -->
+                <div class="grid grid-cols-3 grid-flow-row gap-4" v-if="friends.length === 0">
+                    <UserCard :name="'No friends'" :avatar="'NA'" :joined="'Never'" />
+                </div>
+            </ScrollArea>
 
         </main>
         <div class="flex flex-col w-full pt-10 gap-4 mr-4">
