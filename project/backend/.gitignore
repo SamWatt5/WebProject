@@ -78,7 +78,7 @@ target/
 # Jupyter Notebook
 .ipynb_checkpoints
 
-flask_session
+/backend/src/flask_session/
 
 # IPython
 profile_default/
