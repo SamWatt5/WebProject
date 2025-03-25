@@ -64,6 +64,7 @@ db.sqlite3-journal
 # Flask stuff:
 instance/
 .webassets-cache
+project/backend/src/flask_session/
 
 # Scrapy stuff:
 .scrapy
@@ -78,7 +79,7 @@ target/
 # Jupyter Notebook
 .ipynb_checkpoints
 
-/backend/src/flask_session/
+flask_session/
 
 # IPython
 profile_default/
