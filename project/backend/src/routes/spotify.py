@@ -1,13 +1,15 @@
+from random import random
 from dotenv import load_dotenv
 import os
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, get_jwt
+import requests
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from flask import redirect, session, request, jsonify
 from flask_cors import CORS
 
 from ..middleware import auth
-from ..models import get_user_from_token
+from ..models import get_user_from_token, filter_popular
 from flask_restx import Namespace, Resource
 
 from ..models import add_jwt, link_spotify
@@ -24,7 +26,7 @@ CLIENT_SECRET = os.getenv("SP_CLIENT_SECRET")
 redirect_uri = "http://localhost:8000/api/spotify/callback"
 
 # Define the required Spotify API scopes
-scopes = "user-read-email playlist-read-private playlist-read-collaborative"
+scopes = "user-read-email playlist-read-private playlist-read-collaborative, playlist-modify-public playlist-modify-private"
 
 # Initialize Spotify OAuth object
 sp_oauth = SpotifyOAuth(client_id=CLIENT_ID, client_secret=CLIENT_SECRET,
@@ -42,61 +44,113 @@ class HelloWorld(Resource):
 class RecommendRoute(Resource):
     @auth
     def get(user, self):
-        # Log a debug message
-        print("it HAS to work here... right?")
+        print("HERE")
+        # Using Reccobeats API instead of Spotify recommendations since its deprecated :/
+        # It doesn't give great recommendations, but it gives something... so that's nice
 
         # Get seed parameters from the query string
-        seed_artists = request.args.get("seed_artists", "")
-        seed_genres = request.args.get("seed_genres", "")
         seed_tracks = request.args.get("seed_tracks", "")
+        if not seed_tracks:
+            return jsonify({"error": "Seed tracks are required"}), 400
 
-        print("ok so the error wasnt here then")
+        # Construct the external API URL
+        url = f"https://api.reccobeats.com/v1/track/recommendation?size=100&seeds={seed_tracks}"
 
-        # Ensure at least one seed parameter is provided
-        if not (seed_artists or seed_genres or seed_tracks):
-            return jsonify({"error": "At least one seed parameter (artist, genre, or track) is required"}), 400
+        print(url)
 
-        # Call Spotify's recommendations endpoint
+        # Define headers and payload for the external API request
+        payload = {}
+        headers = {
+            'Accept': 'application/json'
+        }
+
         try:
-            # Retrieve the Spotify access token from the session
-            access_token = session.get("spotify_access_token")
-            sp = spotipy.Spotify(auth=access_token)
+            # Make the external API request
+            response = requests.get(url, headers=headers, data=payload)
+            response.raise_for_status()  # Raise an exception for HTTP errors
 
-            # Fetch recommendations based on the seed parameters
-            recommendations = sp.recommendations(
-                seed_artists=seed_artists.split(",") if seed_artists else None,
-                seed_genres=seed_genres.split(",") if seed_genres else None,
-                seed_tracks=seed_tracks.split(",") if seed_tracks else None
+            # Parse the response JSON
+            response_data = response.json()
+
+            # Filter popular tracks using the `filter_popular` function
+            response_data_popular = list(
+                filter(filter_popular, response_data.get("content", []))
             )
 
-            # Format the response to be JSON-serializable
-            response = {
-                "seeds": recommendations.get("seeds", []),
-                "tracks": [
-                    {
-                        "id": track.get("id"),
-                        "name": track.get("name"),
-                        "album": {
-                            "images": track.get("album", {}).get("images", []),
-                            "name": track.get("album", {}).get("name"),
-                        },
-                        "artists": [
-                            {"name": artist.get("name")}
-                            for artist in track.get("artists", [])
-                        ],
-                        "external_urls": track.get("external_urls", {}),
-                    }
-                    for track in recommendations.get("tracks", [])
-                ],
-            }
+            # Extract IDs from the filtered data
+            ids = [track.get("href").split("/")[-1]
+                   for track in response_data_popular if "href" in track]
+            # Convert the list of IDs to a comma-separated string
+            ids_string = ",".join(ids)
 
-            return jsonify(response)
-        except spotipy.exceptions.SpotifyException as e:
-            # Handle Spotify API errors
-            return jsonify({"error": f"Spotify API error: {str(e)}"}), 500
+            # Return the IDs and the filtered data
+            return jsonify({
+                "recommendations": response_data_popular,
+                "ids": ids_string
+            })
+        except requests.exceptions.RequestException as e:
+            # Handle HTTP request errors
+            print(f"Error fetching recommendations: {e}")
+            return jsonify({"error": "Failed to fetch recommendations"}), 500
         except Exception as e:
             # Handle general errors
-            return jsonify({"error": f"Internal server error: {str(e)}"}), 500
+            print(f"Unexpected error: {e}")
+            return jsonify({"error": "An unexpected error occurred"}), 500
+
+
+@spotify_ns.route("/create_playlist")
+class CreatePlaylist(Resource):
+    def post(self):
+        # Parse the request body
+        data = request.get_json()
+        print(data)
+        tracks = data.get("track_ids")
+        if not tracks:
+            return {"error": "No track IDs provided"}, 400
+
+            # Retrieve the Spotify access token from the session
+        access_token = session.get("spotify_access_token")
+        if not access_token:
+            return {"msg": "Token not found"}, 401
+
+        try:
+            print("Started TRY")
+            # Initialize Spotify client
+            sp = spotipy.Spotify(auth=access_token)
+            print("Connected to Spotify")
+            # Get the current user's Spotify ID
+            user_id = sp.current_user()["id"]
+            print("Got user id")
+            # Create a new playlist
+            playlist_name = f"Generated Playlist"
+            playlist_description = "A playlist generated by the app"
+            playlist = sp.user_playlist_create(
+                user=user_id,
+                name=playlist_name,
+                description=playlist_description,
+                public=False
+            )
+            print("Created Playlist")
+
+            # Add tracks to the playlist
+            track_uris = [f"spotify:track:{track}" for track in tracks]
+            sp.playlist_add_items(playlist_id=playlist["id"], items=track_uris)
+            print("added to playlist")
+            # Return a success message with playlist details
+            return {
+                "message": "Playlist created successfully!",
+                "playlist_id": playlist["id"],
+                "playlist_name": playlist_name,
+                "playlist_description": playlist_description
+            }, 201
+        except spotipy.exceptions.SpotifyException as e:
+            # Handle Spotify API errors
+            print(f"Spotify API error: {e}")
+            return {"error": "Failed to create playlist"}, 500
+        except Exception as e:
+            # Handle general errors
+            print(f"Unexpected error: {e}")
+            return {"error": "An unexpected error occurred"}, 500
 
 
 @spotify_ns.route("/me_playlists")

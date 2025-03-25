@@ -25,21 +25,24 @@ def create_user(fname, lname, email, username, password):
 
 
 def link_spotify(token, spotify_id, access_token):
-    collection.update_one({"_id": ObjectId(token)}, {"$set": {"spotify_id": str(spotify_id), "spotify_token": str(access_token)}})
+    collection.update_one({"_id": ObjectId(token)}, {
+                          "$set": {"spotify_id": str(spotify_id), "spotify_token": str(access_token)}})
 
 
 def add_jwt(email, jwt):
     collection.update_one({"email": email}, {
                           "$set": {"jwt": jwt}})
 
-def find_user(id, includeId = False):
-    if includeId == False: 
-        return collection.find_one({"_id": ObjectId(id)}, { "_id": includeId })
+
+def find_user(id, includeId=False):
+    if includeId == False:
+        return collection.find_one({"_id": ObjectId(id)}, {"_id": includeId})
     return collection.find_one({"_id": ObjectId(id)})
 
-def find_user_by_username(username, includeId = False):
-    if includeId == False: 
-        return collection.find_one({"username": username}, { "_id": includeId })
+
+def find_user_by_username(username, includeId=False):
+    if includeId == False:
+        return collection.find_one({"username": username}, {"_id": includeId})
     return collection.find_one({"username": username})
 
 
@@ -71,15 +74,24 @@ def remove_friends(user1, user2):
     collection.update_one({"_id": ObjectId(user2)}, {
                           "$pull": {"friends": str(user1)}})
 
+
 def get_user_from_token(token):
     id = ObjectId(token)
-    return collection.find_one({"_id": id}, { "_id": False })
+    return collection.find_one({"_id": id}, {"_id": False})
+
 
 def make_admin(user):
-    result = collection.update_one({"_id": ObjectId(user)}, {"$set": {"admin": True}})
-    
+    result = collection.update_one({"_id": ObjectId(user)}, {
+                                   "$set": {"admin": True}})
+
+
 def remove_admin(user):
     collection.update_one({"_id": ObjectId(user)}, {"$set": {"admin": False}})
 
+
 def get_users():
-    return list(collection.find({}, { "_id": False }))
+    return list(collection.find({}, {"_id": False}))
+
+
+def filter_popular(track):
+    return track["popularity"] > 0 and "GB" in track["availableCountries"]
