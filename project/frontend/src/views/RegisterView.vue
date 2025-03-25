@@ -11,10 +11,10 @@ import { use } from 'react';
 
 
 const formSchema = toTypedSchema(z.object({
-    firstName: z.string().nonempty({
+    fname: z.string().nonempty({
         message: "First Name is required"
     }),
-    lastName: z.string().nonempty({
+    lname: z.string().nonempty({
         message: "Last Name is required"
     }),
     email: z.string().email({
@@ -31,8 +31,8 @@ const formSchema = toTypedSchema(z.object({
 const form = useForm({
     validationSchema: formSchema,
     initialValues: {
-        firstName: '',
-        lastName: '',
+        fname: '',
+        lname: '',
         email: '',
         username: '',
         password: ''
@@ -75,7 +75,7 @@ const showPassword = () => {
             </CardHeader>
             <CardContent>
                 <form @submit="onSubmit">
-                    <FormField v-slot="{ componentField }" name="firstName">
+                    <FormField v-slot="{ componentField }" name="fname">
                         <FormItem class="pb-4">
                             <FormLabel>First Name</FormLabel>
                             <FormControl>
@@ -84,7 +84,7 @@ const showPassword = () => {
                             <FormMessage />
                         </FormItem>
                     </FormField>
-                    <FormField v-slot="{ componentField }" name="lastName">
+                    <FormField v-slot="{ componentField }" name="lname">
                         <FormItem class="pb-4">
                             <FormLabel>Last Name</FormLabel>
                             <FormControl>
