@@ -9,6 +9,9 @@ import PlaylistCard from '@/components/PlaylistCard.vue';
 const music: string[] = Array.from({ length: 50 }).map(
   (_, i) => `Song ${i + 1}`
 );
+
+
+
 </script>
 
 <template>
@@ -29,6 +32,10 @@ const music: string[] = Array.from({ length: 50 }).map(
                 </ScrollArea>
             </div>
             <Separator orientation="vertical" class="mx-10" />
+            
+            <!-- Choose friend area to display their playlist -->
+            
+
         </main>
         <div class="flex flex-col w-full pt-10 gap-4 mr-4">
             <Card class="w-full">
