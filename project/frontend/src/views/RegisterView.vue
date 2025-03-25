@@ -1,20 +1,19 @@
 <script lang="ts" setup>
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from 'vee-validate';
 import Darkmode from '@/components/Darkmode.vue';
-import { use } from 'react';
-
+import { toast } from 'vue-sonner';
 
 const formSchema = toTypedSchema(z.object({
-    firstName: z.string().nonempty({
+    fname: z.string().nonempty({
         message: "First Name is required"
     }),
-    lastName: z.string().nonempty({
+    lname: z.string().nonempty({
         message: "Last Name is required"
     }),
     email: z.string().email({
@@ -31,8 +30,8 @@ const formSchema = toTypedSchema(z.object({
 const form = useForm({
     validationSchema: formSchema,
     initialValues: {
-        firstName: '',
-        lastName: '',
+        fname: '',
+        lname: '',
         email: '',
         username: '',
         password: ''
@@ -40,17 +39,49 @@ const form = useForm({
 })
 
 const onSubmit = form.handleSubmit(async (values) => {
-    fetch("/api/auth/signup", {
+    const res = await fetch("/api/auth/signup", {
         method: "POST",
         body: JSON.stringify(values),
         headers: {
             "Content-Type": "application/json"
         }
-    }).then((res) => {
-        res.json()
-    }).then((data) => {
-        console.log(data);
-    })
+    });
+    let body = await res.json();
+    if (res.ok) {
+        toast.success('Registration successful', {
+            description: 'Logging in...',
+            duration: 5000
+        });
+
+        // Automatically log in the user
+        const loginRes = await fetch("/api/auth/login", {
+            method: "POST",
+            body: JSON.stringify({ username: values.username, password: values.password }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        let loginBody = await loginRes.json();
+        if (loginRes.ok) {
+            toast.success('Login successful', {
+                description: 'Redirecting...',
+                duration: 5000
+            });
+            setTimeout(() => {
+                location.href = "/api/auth/callback?code=" + loginBody.code;
+            }, 2000);
+        } else {
+            toast.error('Login attempt failed', {
+                description: loginBody.error,
+                duration: 5000
+            });
+        }
+    } else {
+        toast.error('Register attempt failed', {
+            description: body.error,
+            duration: 5000
+        });
+    }
 })
 
 const showPassword = () => {
@@ -71,11 +102,10 @@ const showPassword = () => {
         <Card class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 sm:w-1/2 w-[95%]">
             <CardHeader>
                 <CardTitle><h1 class="text-3xl text-center">Register</h1></CardTitle>
-                <!-- <CardDescription>Enter your credentials to Register</CardDescription> -->
             </CardHeader>
             <CardContent>
                 <form @submit="onSubmit">
-                    <FormField v-slot="{ componentField }" name="firstName">
+                    <FormField v-slot="{ componentField }" name="fname">
                         <FormItem class="pb-4">
                             <FormLabel>First Name</FormLabel>
                             <FormControl>
@@ -84,7 +114,7 @@ const showPassword = () => {
                             <FormMessage />
                         </FormItem>
                     </FormField>
-                    <FormField v-slot="{ componentField }" name="lastName">
+                    <FormField v-slot="{ componentField }" name="lname">
                         <FormItem class="pb-4">
                             <FormLabel>Last Name</FormLabel>
                             <FormControl>

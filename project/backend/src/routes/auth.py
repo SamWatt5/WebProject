@@ -9,7 +9,9 @@ auth_ns = Namespace("auth", description="Authentication operations")
 class SignupRoute(Resource):
     def post(self):
         data = request.get_json()
+        print("I've been called")
         if not data:
+            print("No data")
             return {"error": "No JSON data provided"}, 400
 
         fname = data.get("fname")
@@ -20,12 +22,24 @@ class SignupRoute(Resource):
         profile_pic_url = data.get("profilePicUrl", "default_profile.png")
 
         if not fname or not lname or not email or not username or not password:
+            print("Missing fields")
             return {"error": "Missing required fields"}, 400
 
         if find_user_by_username(username):
+            print("User exists")
             return {"error": "User already exists"}, 400
 
+        user_data = {
+            "fname": fname,
+            "lname": lname,
+            "email": email,
+            "username": username,
+            "password": password,
+            "profile_pic_url": profile_pic_url
+        }
+        print(user_data)
         create_user(fname, lname, email, username, password)
+        print("User created")
         return {"message": "User created successfully"}, 201
 
 @auth_ns.route("/login")
@@ -56,8 +70,9 @@ class CallbackRoute(Resource):
         session["token"] = request.args.get("code")
         return redirect("http://localhost:8080/")
 
-@auth_ns.route("/logout")
+@auth_ns.route("/logout", methods=["POST"])
 class LogoutRoute(Resource):
-    def get(self):
+    def post(self):
+        print("I have been called")
         session.clear()
-        return redirect("https://localhost:8080")
+        return redirect("http://localhost:8080/")
