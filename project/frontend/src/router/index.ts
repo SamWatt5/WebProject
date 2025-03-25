@@ -33,6 +33,11 @@ const router = createRouter({
       path: "/admin",
       name: "admin",
       component: () => import("../views/AdminView.vue"),
+    },
+    {
+      path: "/recommend",
+      name: "recommend",
+      component: () => import("../views/RecommendView.vue"),
     }
   ],
 })

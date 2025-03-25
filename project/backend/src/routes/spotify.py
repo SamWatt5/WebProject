@@ -36,10 +36,13 @@ class HelloWorld(Resource):
 class RecommendRoute(Resource):
     @auth
     def get(user, self):
+        print("it HAS to work here... right?")
         # Get seed parameters from query string
         seed_artists = request.args.get("seed_artists", "")
         seed_genres = request.args.get("seed_genres", "")
         seed_tracks = request.args.get("seed_tracks", "")
+
+        print("ok so the error wasnt here then")
 
         # Ensure at least one seed is provided
         if not (seed_artists or seed_genres or seed_tracks):
@@ -47,14 +50,44 @@ class RecommendRoute(Resource):
 
         # Call Spotify's recommendations endpoint
         try:
-            recommendations = sp.recommendations(
-                seed_artists=seed_artists.split(","),
-                seed_genres=seed_genres.split(","),
-                seed_tracks=seed_tracks.split(",")
+            # Fetch recommendations from Spotify
+            print("no problem here1")
+            recommendations = sp_oauth.recommendations(
+                seed_artists=seed_artists.split(",") if seed_artists else None,
+                seed_genres=seed_genres.split(",") if seed_genres else None,
+                seed_tracks=seed_tracks.split(",") if seed_tracks else None
             )
-            return jsonify(recommendations)
+            print("No problem here2")
+
+            print(f"\n\n{recommendations}\n\n")
+
+            # Convert the response to a JSON-serializable format
+            response = {
+                "seeds": recommendations.get("seeds", []),
+                "tracks": [
+                    {
+                        "id": track.get("id"),
+                        "name": track.get("name"),
+                        "album": {
+                            "images": track.get("album", {}).get("images", []),
+                            "name": track.get("album", {}).get("name"),
+                        },
+                        "artists": [
+                            {"name": artist.get("name")}
+                            for artist in track.get("artists", [])
+                        ],
+                        "external_urls": track.get("external_urls", {}),
+                    }
+                    for track in recommendations.get("tracks", [])
+                ],
+            }
+            print("no problem here3")
+
+            return jsonify(response)
+        except spotipy.exceptions.SpotifyException as e:
+            return jsonify({"error": f"Spotify API error: {str(e)}"}), 500
         except Exception as e:
-            return jsonify({"error": str(e)}), 500
+            return jsonify({"error": f"Internal server error: {str(e)}"}), 500
 
 
 @spotify_ns.route("/me_playlists")
