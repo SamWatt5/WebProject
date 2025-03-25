@@ -23,6 +23,7 @@ const { friends } = storeToRefs(store);
 </script>
 
 <template>
+    <!-- Left side -->
     <div class="flex flex-row">
         <main class="flex h-screen items-center place-self-start">
             <SidebarProvider :default-open="false" :open="false">
@@ -41,6 +42,8 @@ const { friends } = storeToRefs(store);
             </div>
             <Separator orientation="vertical" class="mx-10" />
             
+        </main>
+
             <!-- Choose friend area to display their playlist -->
             <ScrollArea class="border rounded-md whitespace-nowrap h-[60vh] p-4">
                 <div class="grid grid-cols-3 grid-flow-row gap-4">
@@ -55,7 +58,6 @@ const { friends } = storeToRefs(store);
                 </div>
             </ScrollArea>
 
-        </main>
         <div class="flex flex-col w-full pt-10 gap-4 mr-4">
             <Card class="w-full">
                 <CardHeader>
