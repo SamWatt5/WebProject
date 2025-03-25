@@ -45,6 +45,10 @@ const fetchRecommendations = async () => {
         console.error(error);
     }
 };
+
+const redirectToSpotifyLogin = () => {
+    window.location.href = "http://localhost:8000/api/spotify/login";
+};
 </script>
 
 <template>
@@ -84,7 +88,7 @@ const fetchRecommendations = async () => {
                         <div>
                             <p class="font-medium">{{ track.name }}</p>
                             <p class="text-sm text-gray-600">
-                                By {{track.artists.map(artist => artist.name).join(", ")}}
+                                By {{ track.artists.map(artist => artist.name).join(", ") }}
                             </p>
                             <a :href="track.external_urls.spotify" target="_blank" class="text-blue-500 underline">
                                 Listen on Spotify
@@ -93,6 +97,13 @@ const fetchRecommendations = async () => {
                     </div>
                 </li>
             </ul>
+        </div>
+
+        <!-- Button to redirect to Spotify login -->
+        <div class="mt-4">
+            <button @click="redirectToSpotifyLogin" class="bg-green-500 text-white px-4 py-2 rounded">
+                Link Spotify Account
+            </button>
         </div>
     </div>
 </template>
