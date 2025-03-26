@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import PlaylistCard from '@/components/PlaylistCard.vue';
 
 // Extra imports for the friends components
-import FriendManage from '@/components/FriendManage.vue';
+import FriendCreate from '@/components/FriendCreate.vue';
 import UserCard from '@/components/UserCard.vue';
 import { useFriends } from '@/stores/friends';
 import { storeToRefs } from 'pinia';
@@ -44,7 +44,7 @@ const { friends } = storeToRefs(store);
         </main>
 
         <!-- Choose friend area to display their playlist -->
-        <ScrollArea class="border rounded-md h-[60vh] p-4 flex-grow pt-10">
+        <ScrollArea class="border rounded-md w-[500px] h-[60vh] p-4 flex-grow pt-10">
             <div class="flex flex-col gap-4">
                 <div v-for="(friend, index) in friends" :key="index" class="flex-grow">
                     <!-- Friend manage component for each friend -->
@@ -57,7 +57,7 @@ const { friends } = storeToRefs(store);
             </div>
         </ScrollArea>
 
-        <div class="flex flex-col w-fit pt-10 gap-4 mr-4 ml-4 pr-[300px]"> 
+        <div class="flex flex-col w-full min-w-[500px] pt-10 gap-4 mr-4 ml-4"> 
             <Card class="w-full">
                 <CardHeader class="w-full">
                     <CardTitle class="text-4xl">Playlists</CardTitle>
