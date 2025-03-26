@@ -9,7 +9,7 @@ from flask import redirect, session, request, jsonify
 from flask_cors import CORS
 
 from ..middleware import auth
-from ..models import get_user_from_token, filter_popular
+from ..models import find_user_by_username, get_user_from_token, filter_popular
 from flask_restx import Namespace, Resource
 
 from ..models import add_jwt, link_spotify
@@ -169,6 +169,77 @@ class MePlaylists(Resource):
         sp = spotipy.Spotify(auth=access_token)
         results = sp.current_user_playlists()
         return jsonify(results)
+
+
+@spotify_ns.route("/blend")
+class Blend(Resource):
+    @auth
+    def get(user, self):
+        # Retrieve the friend's ID from the query parameters
+        friend_id = request.args.get("friend_id")
+        if not friend_id:
+            return {"error": "Friend ID is required"}, 400
+
+        # Call the blend method with the friend's ID
+        return self.blend(friend_id)
+
+    def blend(self, friend_id):
+        # Retrieve the Spotify access token from the session
+        access_token = session.get("spotify_access_token")
+        if not access_token:
+            return {"msg": "Token not found"}, 401
+
+        try:
+            # Initialize Spotify client
+            sp = spotipy.Spotify(auth=access_token)
+
+            # Fetch the current user's playlists
+            user_playlists = sp.current_user_playlists()
+            user_tracks = []
+            for playlist in user_playlists["items"]:
+                playlist_tracks = sp.playlist_items(playlist["id"])
+                user_tracks.extend(playlist_tracks["items"])
+
+            # Fetch the friend's playlists
+            friend = get_user_from_token(friend_id)
+            # print(friend)
+            if not friend or "spotify_id" not in friend:
+                return {"error": "Friend's Spotify account not linked"}, 404
+
+            friend_playlists = sp.user_playlists(
+                friend["spotify_id"], limit=50)
+            # print(f"{friend_playlists}\n\n")
+            friend_tracks = []
+            for playlist in friend_playlists["items"]:
+                playlist_tracks = sp.playlist_items(playlist["id"])
+                if not playlist_tracks or "items" not in playlist_tracks:
+                    continue  # Skip if playlist items are not available
+                for track in playlist_tracks["items"]:
+                    # Ensure track data exists
+                    if "track" in track and track["track"]:
+                        friend_tracks.append(track["track"]["name"])
+            print(f"{friend_tracks}\n\n")
+
+            # Combine and shuffle tracks
+            combined_tracks = user_tracks + friend_tracks
+            track_uris = [track["track"]["uri"]
+                          for track in combined_tracks if "track" in track]
+            random.shuffle(track_uris)
+
+            # Return the blended playlist
+            return {"playlist": [{
+                "id": track["track"]["id"],
+                "title": track["track"]["name"],
+                "artist": track["track"]["artists"][0]["name"],
+                "link": track["track"]["external_urls"]["spotify"],
+                "cover": track["track"]["album"]["images"][0]["url"]
+            } for track in combined_tracks if "track" in track]}
+        except spotipy.exceptions.SpotifyException as e:
+            print(f"Spotify API error: {e}")
+            return {"error": "Failed to blend playlists"}, 500
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            return {"error": "An unexpected error occurred"}, 500
 
 
 @spotify_ns.route("/playlist/<string:playlist_id>/tracks")

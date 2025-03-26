@@ -95,3 +95,8 @@ def get_users():
 
 def filter_popular(track):
     return track["popularity"] > 0 and "GB" in track["availableCountries"]
+
+
+def saved_liked_songs_to_user(user, liked_songs):
+    collection.update_one({"_id": ObjectId(user)}, {
+                          "$set": {"liked_songs": liked_songs}})
