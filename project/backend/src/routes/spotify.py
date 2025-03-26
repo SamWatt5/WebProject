@@ -42,6 +42,18 @@ class HelloWorld(Resource):
 
 @spotify_ns.route("/recommend")
 class RecommendRoute(Resource):
+    def request_reccobeats(self, url):
+        payload = {}
+        headers = {
+            'Accept': 'application/json'
+        }
+        response = requests.get(url, headers=headers, data=payload)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+
+        # Parse the response JSON
+        response_data = response.json()
+        return response_data
+
     @auth
     def get(user, self):
         print("HERE")
@@ -54,38 +66,23 @@ class RecommendRoute(Resource):
             return jsonify({"error": "Seed tracks are required"}), 400
 
         # Construct the external API URL
-        url = f"https://api.reccobeats.com/v1/track/recommendation?size=100&seeds={seed_tracks}"
-
-        print(url)
-
-        # Define headers and payload for the external API request
-        payload = {}
-        headers = {
-            'Accept': 'application/json'
-        }
 
         try:
-            # Make the external API request
-            response = requests.get(url, headers=headers, data=payload)
-            response.raise_for_status()  # Raise an exception for HTTP errors
-
-            # Parse the response JSON
-            response_data = response.json()
-
-            # Filter popular tracks using the `filter_popular` function
-            response_data_popular = list(
-                filter(filter_popular, response_data.get("content", []))
+            recommend_url = f"https://api.reccobeats.com/v1/track/recommendation?size=100&seeds={seed_tracks}"
+            recommend_data = self.request_reccobeats(recommend_url)
+            recommend_data_popular = list(
+                filter(filter_popular, recommend_data.get("content", []))
             )
 
             # Extract IDs from the filtered data
             ids = [track.get("href").split("/")[-1]
-                   for track in response_data_popular if "href" in track]
+                   for track in recommend_data_popular if "href" in track]
             # Convert the list of IDs to a comma-separated string
             ids_string = ",".join(ids)
 
             # Return the IDs and the filtered data
             return jsonify({
-                "recommendations": response_data_popular,
+                "recommendations": recommend_data_popular,
                 "ids": ids_string
             })
         except requests.exceptions.RequestException as e:

@@ -3,48 +3,56 @@ from flask import request, session, jsonify
 from .models import get_user_from_token
 import inspect
 
+
 def admin_auth(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'token' not in session:
-            return {"error": "Token not set"}, 400
-        
-        token = session.get("token")
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            return {"error": "Authorization header missing or invalid"}, 400
+
+        token = auth_header.split("Bearer ")[1]
         if not token:
             return {"error": "Invalid token"}, 400
-        
+
         user = get_user_from_token(token)
         if not user:
             return {"error": "User not found"}, 404
-        
+
         if not user["admin"]:
             return {"error": "Access denied"}, 403
-        
+
         func_signature = inspect.signature(f)
         if "token" in func_signature.parameters:
             return f(user, token, *args, **kwargs)
-        
+
         return f(user, *args, **kwargs)
     return decorated_function
+
 
 def auth(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'token' not in session:
-            return {"error": "Token not set"}, 400
+        # Get the Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            return {"error": "Authorization header missing or invalid"}, 400
 
-        token = session.get("token")
+        # Extract the token from the header
+        token = auth_header.split("Bearer ")[1]
         if not token:
             return {"error": "Invalid token"}, 400
 
+        # Validate the token and get the user
         user = get_user_from_token(token)
         if not user:
             return {"error": "User not found"}, 404
 
+        # Pass the user and token to the wrapped function
         func_signature = inspect.signature(f)
         if "token" in func_signature.parameters:
             return f(user, token, *args, **kwargs)
 
         return f(user, *args, **kwargs)
-    
+
     return decorated_function
