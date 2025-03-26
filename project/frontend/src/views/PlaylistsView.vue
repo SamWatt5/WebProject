@@ -44,7 +44,7 @@ const { friends } = storeToRefs(store);
         </main>
 
         <!-- Choose friend area to display their playlist -->
-        <ScrollArea class="border rounded-md w-[500px] h-[60vh] p-4 flex-grow pt-10">
+        <ScrollArea class="border rounded-md min-w-[500px] h-[60vh] p-4 flex-grow pt-10">
             <div class="flex flex-col gap-4">
                 <div v-for="(friend, index) in friends" :key="index" class="flex-grow">
                     <!-- Friend manage component for each friend -->
