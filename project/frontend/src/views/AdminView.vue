@@ -3,7 +3,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import Sidebar from '@/components/Sidebar.vue';
-import { User, useUser } from '@/stores/user';
+import { type User, useUser } from '@/stores/user';
 import { toast } from 'vue-sonner';
 import { onMounted, ref } from 'vue';
 import { Button } from '@/components/ui/button';

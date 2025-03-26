@@ -39,7 +39,7 @@ const { user } = useUser();
         </main>
         <div class="grid grid-cols-3 pt-10 gap-4">
             <div class="w-full">
-                <UserCard :name="user?.username ?? 'Guest'" :avatar="(user?.first_name?.substring(0, 1) ?? '') + (user?.last_name?.substring(0, 1) ?? '')" joined="January 2021" />
+                <UserCard :spotify_id="user?.spotify_id" :name="user?.username ?? 'Guest'" :avatar="(user?.first_name?.substring(0, 1) ?? '') + (user?.last_name?.substring(0, 1) ?? '')" joined="January 2021" />
             </div>
             <div class="w-full col-span-3">
                 <ListeningToCard class="w-1/3" />
