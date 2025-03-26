@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import ListeningToCard from './ListeningToCard.vue';
+import ListeningToCard from './SongCard.vue';
+import SongCard from './SongCard.vue';
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from './ui/dialog';
 
 
@@ -8,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTrigger } from './ui/dialog'
 <template>
     <Dialog>
         <DialogTrigger asChild>
-            <ListeningToCard />
+            <SongCard />
         </DialogTrigger>
         <DialogContent>
             <DialogHeader>TEST</DialogHeader>

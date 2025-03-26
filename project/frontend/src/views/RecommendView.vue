@@ -12,6 +12,7 @@ interface Track {
 }
 
 const seedTracks = ref(""); // Input for seed tracks
+const friendId = ref(""); // Input for friend's ID
 const recommendations = ref<Track[]>([]); // Store recommendations
 const errorMessage = ref(""); // Store error messages
 const successMessage = ref(""); // Store success messages
@@ -54,6 +55,45 @@ const fetchRecommendations = async () => {
         console.error(error);
     }
 };
+
+const fetchBlend = async () => {
+    errorMessage.value = "";
+    successMessage.value = "";
+    recommendations.value = [];
+
+    try {
+        const response = await fetch(
+            `/api/spotify/blend?friend_id=${friendId.value}`, // Query parameter for friend's ID
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            errorMessage.value = errorData.error || "Failed to fetch blended playlist.";
+            return;
+        }
+
+        const data = await response.json();
+        // Map the response to match the Track interface
+        recommendations.value = data.playlist.map((track: any) => ({
+            id: track.id,
+            trackTitle: track.title,
+            href: track.link,
+            artists: [{ href: "", name: track.artist }], // Assuming a single artist for simplicity
+            popularity: 0, // Popularity is not provided in the response
+            durationMs: 0, // Duration is not provided in the response
+        }));
+    } catch (error) {
+        errorMessage.value = "An error occurred while fetching the blended playlist.";
+        console.error(error);
+    }
+}
 
 const createPlaylist = async () => {
     errorMessage.value = "";
@@ -99,14 +139,14 @@ const redirectToSpotifyLogin = () => {
             Login to Spotify
         </button>
 
-        <form @submit.prevent="fetchRecommendations" class="space-y-4">
+        <form @submit.prevent="fetchBlend" class="space-y-4">
             <div>
-                <label for="seedTracks" class="block font-medium">Seed Tracks (comma-separated IDs):</label>
-                <input id="seedTracks" v-model="seedTracks" type="text" class="border rounded p-2 w-full"
-                    placeholder="e.g., track1,track2" />
+                <label for="seedTracks" class="block font-medium">Friend ID:</label>
+                <input id="seedTracks" v-model="friendId" type="text" class="border rounded p-2 w-full"
+                    placeholder="Enter Friend ID" />
             </div>
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
-                Get Recommendations
+                Get Blended Playlist
             </button>
         </form>
 
@@ -119,7 +159,7 @@ const redirectToSpotifyLogin = () => {
         </div>
 
         <div v-if="recommendations.length" class="mt-4">
-            <h2 class="text-xl font-semibold">Recommendations:</h2>
+            <h2 class="text-xl font-semibold">Blended Playlist:</h2>
             <ul class="list-disc pl-5">
                 <li v-for="track in recommendations" :key="track.id" class="mb-4">
                     <div class="flex flex-col space-y-2">
