@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import PlaylistCard from '@/components/PlaylistCard.vue';
 
 // Extra imports for the friends components
-import FriendManage from '@/components/FriendManage.vue';
+import FriendCreate from '@/components/FriendCreate.vue';
 import UserCard from '@/components/UserCard.vue';
 import { useFriends } from '@/stores/friends';
 import { storeToRefs } from 'pinia';
@@ -41,26 +41,25 @@ const { friends } = storeToRefs(store);
                 </ScrollArea>
             </div>
             <Separator orientation="vertical" class="mx-10" />
-            
         </main>
 
-            <!-- Choose friend area to display their playlist -->
-            <ScrollArea class="border rounded-md whitespace-nowrap h-[60vh] p-4">
-                <div class="grid grid-cols-3 grid-flow-row gap-4">
-                    <div v-for="(friend, index) in friends" :key="index">
-                        <!-- Friend manage component for each friend -->
-                        <FriendManage :userName="friend.username" :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]" :userJoined="'December 2021'" />
-                    </div>
+        <!-- Choose friend area to display their playlist -->
+        <ScrollArea class="border rounded-md min-w-[500px] h-[60vh] p-4 flex-grow pt-10">
+            <div class="flex flex-col gap-4">
+                <div v-for="(friend, index) in friends" :key="index" class="flex-grow">
+                    <!-- Friend manage component for each friend -->
+                    <FriendCreate :userName="friend.username" :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]" :userJoined="'December 2021'" />
                 </div>
-                <!-- Displaying a message when there are no friends -->
-                <div class="grid grid-cols-3 grid-flow-row gap-4" v-if="friends.length === 0">
-                    <UserCard :name="'No friends'" :avatar="'NA'" :joined="'Never'" />
-                </div>
-            </ScrollArea>
+            </div>
+            <!-- Displaying a message when there are no friends -->
+            <div class="flex flex-col gap-4" v-if="friends.length === 0">
+                <UserCard :name="'No friends'" :avatar="'NA'" :joined="'Never'" />
+            </div>
+        </ScrollArea>
 
-        <div class="flex flex-col w-full pt-10 gap-4 mr-4">
+        <div class="flex flex-col w-full min-w-[500px] pt-10 gap-4 mr-4 ml-4"> 
             <Card class="w-full">
-                <CardHeader>
+                <CardHeader class="w-full">
                     <CardTitle class="text-4xl">Playlists</CardTitle>
                     <CardDescription></CardDescription>
                 </CardHeader>

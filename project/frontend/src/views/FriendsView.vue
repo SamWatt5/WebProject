@@ -69,7 +69,11 @@ const refresh = async () => {
                 const friendData = await res.json();
                 if(!friendData.error) {
                     // Adding friend data to the friends list
-                    if(friends.value.length > 0) return;
+                    if(friends.value.length == data.friends.length) {
+                        toast.dismiss("loading-data");
+                        isLoading.value = false;
+                        return;
+                    };
                     setFriends([...friends.value, friendData]);
                 }
             }
@@ -124,7 +128,7 @@ onMounted(async() => {
                     </div>
                 </CardContent>
                 <CardFooter>
-                    <CardDescription>To manage a friend, just click on their tile</CardDescription>
+                    <!-- <CardDescription>To manage a friend, just click on their tile</CardDescription> -->
                 </CardFooter>
             </Card>
             <!-- Scroll area for displaying the list of friends -->
@@ -132,7 +136,7 @@ onMounted(async() => {
                 <div class="grid grid-cols-3 grid-flow-row gap-4">
                     <div v-for="(friend, index) in friends" :key="index">
                         <!-- Friend manage component for each friend -->
-                        <FriendManage :userName="friend.username" :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]" :userJoined="'December 2021'" />
+                        <FriendManage :spotify_id="friend.spotify_id" :userName="friend.username" :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]" :userJoined="'December 2021'" />
                     </div>
                 </div>
                 <!-- Displaying a message when there are no friends -->

@@ -88,7 +88,7 @@ const unfriend = async (username) => {
                             <Spotify class="cursor-pointer mt-2" />
                         </a>
                         <DialogTrigger as-child>
-                            <Button class="mt-2">Manage</Button>
+                            <Button class="mt-2">Mix Playlists</Button>
                         </DialogTrigger>
                        </div>
                     </div>
