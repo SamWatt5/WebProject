@@ -48,7 +48,31 @@ const { friends } = storeToRefs(store);
             <div class="flex flex-col gap-4">
                 <div v-for="(friend, index) in friends" :key="index" class="flex-grow">
                     <!-- Friend manage component for each friend -->
-                    <FriendCreate :userName="friend.username" :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]" :userJoined="'December 2021'" />
+                    <!-- <FriendCreate :userName="friend.username" :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]" :userJoined="'December 2021'" /> -->
+                    <Card class="cursor-pointer">
+                <CardHeader class="flex flex-row">
+                    <Avatar class="w-20 h-20 mt-2">
+                        <AvatarFallback class="text-3xl">{{ (friend.first_name[0] + friend.last_name[0]) }}</AvatarFallback>
+                    </Avatar>
+                    <div class="flex flex-col pl-3">
+                        <CardTitle class="text-4xl">@{{ friend.username }}</CardTitle>
+                        <CardDescription class="flex flex-row">
+                            <CalendarDays class="h-8 w-8 mt-1" /><span class="mt-[3px] text-lg ml-1"> Joined December 991</span>
+                        </CardDescription>
+                        <!-- <<RouterLink as-child :href="`https://open.spotify.com/user/${name}`">
+                <Spotify class="mt-2 cursor-pointer" />
+            </RouterLink>> -->
+                       <div class="flex flex-row justify-between mt-2">
+                        <a :href="`https://open.spotify.com/user/${spotify_id}`" target="_blank">
+                            <Spotify class="cursor-pointer mt-2" />
+                        </a>
+                        <DialogTrigger as-child>
+                            <Button class="mt-2">Manage</Button>
+                        </DialogTrigger>
+                       </div>
+                    </div>
+                </CardHeader>
+            </Card>
                 </div>
             </div>
             <!-- Displaying a message when there are no friends -->
