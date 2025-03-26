@@ -48,7 +48,7 @@ const { friends } = storeToRefs(store);
             <div class="flex flex-col gap-4">
                 <div v-for="(friend, index) in friends" :key="index" class="flex-grow">
                     <!-- Friend manage component for each friend -->
-                    <FriendManage :userName="friend.username" :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]" :userJoined="'December 2021'" />
+                    <FriendCreate :userName="friend.username" :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]" :userJoined="'December 2021'" />
                 </div>
             </div>
             <!-- Displaying a message when there are no friends -->
