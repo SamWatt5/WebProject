@@ -5,14 +5,11 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Spotify from "@/components/icons/Spotify.vue";
 import { string } from "zod";
 
-const spotifyClick = () => {
-    console.log("Spotify clicked");
-}
-
 defineProps({
     name: String,
     avatar: String,
-    joined: String
+    joined: String,
+    spotify_id: String
 })
 </script>
 
@@ -25,7 +22,12 @@ defineProps({
         <div class="flex flex-col pl-3">
             <CardTitle class="text-4xl">@{{ name }}</CardTitle>
             <CardDescription class="flex flex-row"><CalendarDays class="h-8 w-8 mt-1" /><span class="mt-[3px] text-lg ml-1"> Joined {{ joined }}</span></CardDescription>
-            <Spotify class="mt-2 cursor-pointer" @click="spotifyClick" />
+            <!-- <<RouterLink as-child :href="`https://open.spotify.com/user/${name}`">
+                <Spotify class="mt-2 cursor-pointer" />
+            </RouterLink>> -->
+            <a :href="`https://open.spotify.com/user/${spotify_id}`" target="_blank" class="mt-2">
+                <Spotify class="cursor-pointer mt-2" />
+            </a>
         </div>
         </CardHeader>
     </Card>
