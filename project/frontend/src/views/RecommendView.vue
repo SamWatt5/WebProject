@@ -26,6 +26,7 @@ const fetchRecommendations = async () => {
             `/api/spotify/recommend?seed_tracks=${seedTracks.value}`, // Query parameter for seed tracks
             {
                 method: "GET",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -64,6 +65,7 @@ const createPlaylist = async () => {
     try {
         const response = await fetch("/api/spotify/create_playlist", {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },

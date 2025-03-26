@@ -207,6 +207,9 @@ class SpotifyCallback(Resource):
         print(token_info)
         access_token = token_info["access_token"]
 
+        # Store the access token in the session
+        session["spotify_access_token"] = access_token
+
         # Fetch the user's Spotify account information
         sp = spotipy.Spotify(auth=access_token)
         user_info = sp.current_user()
