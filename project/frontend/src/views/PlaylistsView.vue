@@ -47,14 +47,14 @@ interface Track {
     trackTitle: string;
     href: string;
     artists: { href: string; name: string }[];
-    popularity: number;
-    durationMs: number;
+    cover: string;
 }
 
 const friendId = ref(""); // Input for friend's ID
 const recommendations = ref<Track[]>([]); // Store recommendations
 const errorMessage = ref(""); // Store error messages
 const successMessage = ref(""); // Store success messages
+
 
 const fetchBlend = async () => {
     errorMessage.value = "";
@@ -86,8 +86,7 @@ const fetchBlend = async () => {
             trackTitle: track.title,
             href: track.link,
             artists: [{ href: "", name: track.artist }], // Assuming a single artist for simplicity
-            popularity: 0, // Popularity is not provided in the response
-            durationMs: 0, // Duration is not provided in the response
+            cover: track.cover
         }));
     } catch (error) {
         errorMessage.value = "An error occurred while fetching the blended playlist.";
@@ -208,11 +207,15 @@ onMounted(() => {
                     <CardDescription></CardDescription>
                 </CardHeader>
                 <CardContent>
+                    <button v-if="recommendations.length > 0 && " @click="createPlaylist"
+                        class="bg-green-500 text-white px-4 py-2 rounded mt-4">
+                        Create Playlist
+                    </button>
                     <ScrollArea class="h-[80vh]">
                         <div v-for="(track, index) in recommendations" :key="index">
                             <PlaylistCard :title="track.trackTitle"
                                 :artist="track.artists.map(artist => artist.name).join(', ')"
-                                :coverImage="track.href" />
+                                :coverImage="track.cover" />
                         </div>
                         <ScrollBar />
                     </ScrollArea>
