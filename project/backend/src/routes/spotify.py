@@ -195,6 +195,7 @@ class Blend(Resource):
 
         temp = find_user(friend_id, True)
         print(temp)
+
         if not temp:
             return {"error": "Friend not found"}, 404
 
@@ -302,6 +303,7 @@ class SpotifyLogin(Resource):
         # Generate the Spotify authorization URL
         auth_url = sp_oauth.get_authorize_url()
         return redirect(auth_url)
+
 
 
 @spotify_ns.route("/callback")

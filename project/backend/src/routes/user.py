@@ -64,7 +64,7 @@ class FriendsRoute(Resource):
         return list, 200
 
 
-@user_ns.route('/add-friend/<username>')
+@user_ns.route('/friend/<username>')
 class AddFriendRoute(Resource):
     @auth
     def post(user, token, self, username):
@@ -78,12 +78,9 @@ class AddFriendRoute(Resource):
 
         make_friends(token, person["_id"])
         return {"message": "Friend added successfully"}
-
-
-@user_ns.route('/remove-friend/<username>')
-class RemoveFriendRoute(Resource):
+    
     @auth
-    def post(user, token, self, username):
+    def delete(user, token, self, username):
         existing_friends = get_user_friends(user["username"])
         person = find_user_by_username(username, True)
         if not person:

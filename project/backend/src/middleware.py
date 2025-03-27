@@ -48,6 +48,8 @@ def auth(f):
         user = find_user(token, True)
         if not user:
             return {"error": "User not found"}, 404
+        
+        user["_id"] = str(user["_id"])  
 
         # Pass the user and token to the wrapped function
         func_signature = inspect.signature(f)

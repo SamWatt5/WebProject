@@ -8,6 +8,7 @@ admin_ns = Namespace('admin', description='Admin related operations')
 
 @admin_ns.route('/user/<id>')
 class RemoveUser(Resource):
+    @admin_ns.doc(description="Removes a user account")
     @admin_auth
     def delete(self, user, id):
         # Add the code to remove the user from the database here
@@ -15,6 +16,7 @@ class RemoveUser(Resource):
 
 @admin_ns.route('/permissions/<id>')
 class MakeAdminRoute(Resource):
+    @admin_ns.doc(description="Grants admin permissions to a user")
     @admin_auth
     def post(user, self, id):
         foundUser = find_user(id)
@@ -27,6 +29,7 @@ class MakeAdminRoute(Resource):
         make_admin(id)
         return {"message": "User is now an admin"}, 200
 
+    @admin_ns.doc(description="Removes admin permissions from a user")
     @admin_auth
     def delete(user, self, id):
         user = find_user(id)
@@ -41,6 +44,7 @@ class MakeAdminRoute(Resource):
 
 @admin_ns.route('/users')
 class UsersRoute(Resource):
+    @admin_ns.doc(description="Gets all user accounts")
     @admin_auth
     def get(user, self):
         users = get_users()
@@ -52,6 +56,7 @@ class UsersRoute(Resource):
     
 @admin_ns.route("/users/<username>")
 class UserRoute(Resource):
+    @admin_ns.doc(description="Gets a user account")
     @admin_auth
     def get(user, self, username):
         foundUser = find_user_by_username(username, True)
@@ -61,6 +66,7 @@ class UserRoute(Resource):
         foundUser["_id"] = str(foundUser["_id"])
         return foundUser, 200
     
+    @admin_ns.doc(description="Deletes a user account")
     @admin_auth
     def delete(user, self, username):
         foundUser = find_user_by_username(username, True)
