@@ -340,3 +340,33 @@ class LinkSpotifyRoute(Resource):
     def get(user, self):
         # Redirect the user to the Spotify login page
         return redirect("/api/spotify/login")
+
+
+@spotify_ns.route("/top-tracks")
+class TopTracks(Resource):
+    @auth
+    def get(user, self):
+        # Retrieve the Spotify access token from the session
+        access_token = session.get("spotify_access_token")
+        if not access_token:
+            return jsonify({"msg": "Token not found"}), 401
+
+        # Fetch the user's top tracks from Spotify
+        sp = spotipy.Spotify(auth=access_token)
+        results = sp.current_user_top_tracks(limit=50)
+        return jsonify(results)
+
+@spotify_ns.route("/recently-played")
+class RecentlyPlayed(Resource):
+    @auth
+    def get(user, self):
+        # Retrieve the Spotify access token from the session
+        access_token = session.get("spotify_access_token")
+        if not access_token:
+            return jsonify({"msg": "Token not found"}), 401
+
+        # Fetch the user's recently played tracks from Spotify
+        sp = spotipy.Spotify(auth=access_token)
+        results = sp.current_user_recently_played(limit=10)
+        return jsonify(results)
+
