@@ -39,8 +39,8 @@ const form = useForm({
     initialValues: {
         fname: user.value?.first_name,
         lname: user.value?.last_name,
-        email: '',
-        username: '',
+        email: user.value?.email,
+        username: user.value?.username,
         password: ''
     }
 });
