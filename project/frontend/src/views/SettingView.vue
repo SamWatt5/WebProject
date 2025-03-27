@@ -89,9 +89,9 @@ const showPassword = () => {
 };
 
 
-const deleteAccount = () => {
-    const res = fetch("/api/auth/delete", {
-        method: "POST",
+const deleteAccount = async () => {
+    const res = await fetch("/api/user/me", {
+        method: "DELETE",
         headers: {
             "Content-Type": "application/json"
         }

@@ -28,9 +28,9 @@ const unfriend = async (username) => {
         id: "unfriending",
         dismissible: false
     });
-    
-    const res = await fetch(`/api/user/remove-friend/${username}`, {
-        method: "POST",
+
+    const res = await fetch(`/api/user/friends/${username}`, {
+        method: "DELETE",
         headers: {
             "Content-Type": "application/json"
         }
@@ -68,32 +68,32 @@ const unfriend = async (username) => {
 <template>
     <Dialog>
         <!-- <DialogTrigger as-child> -->
-            <!-- <UserCard :spotify_id="spotify_id" :name="userName" :avatar="userAvatar" :joined="userJoined" /> -->
-            <Card class="cursor-pointer">
-                <CardHeader class="flex flex-row">
-                    <Avatar class="w-20 h-20 mt-2">
-                        <AvatarFallback class="text-3xl">{{ userAvatar }}</AvatarFallback>
-                    </Avatar>
-                    <div class="flex flex-col pl-3">
-                        <CardTitle class="text-4xl">@{{ userName }}</CardTitle>
-                        <CardDescription class="flex flex-row">
-                            <CalendarDays class="h-8 w-8 mt-1" /><span class="mt-[3px] text-lg ml-1"> Joined {{ userJoined
-                                }}</span>
-                        </CardDescription>
-                        <!-- <<RouterLink as-child :href="`https://open.spotify.com/user/${name}`">
+        <!-- <UserCard :spotify_id="spotify_id" :name="userName" :avatar="userAvatar" :joined="userJoined" /> -->
+        <Card class="cursor-pointer">
+            <CardHeader class="flex flex-row">
+                <Avatar class="w-20 h-20 mt-2">
+                    <AvatarFallback class="text-3xl">{{ userAvatar }}</AvatarFallback>
+                </Avatar>
+                <div class="flex flex-col pl-3">
+                    <CardTitle class="text-4xl">@{{ userName }}</CardTitle>
+                    <CardDescription class="flex flex-row">
+                        <CalendarDays class="h-8 w-8 mt-1" /><span class="mt-[3px] text-lg ml-1"> Joined {{ userJoined
+                        }}</span>
+                    </CardDescription>
+                    <!-- <<RouterLink as-child :href="`https://open.spotify.com/user/${name}`">
                 <Spotify class="mt-2 cursor-pointer" />
             </RouterLink>> -->
-                       <div class="flex flex-row justify-between mt-2">
+                    <div class="flex flex-row justify-between mt-2">
                         <a :href="`https://open.spotify.com/user/${spotify_id}`" target="_blank">
                             <Spotify class="cursor-pointer mt-2" />
                         </a>
                         <DialogTrigger as-child>
                             <Button class="mt-2">Mix Playlists</Button>
                         </DialogTrigger>
-                       </div>
                     </div>
-                </CardHeader>
-            </Card>
+                </div>
+            </CardHeader>
+        </Card>
         <!-- </DialogTrigger> -->
         <DialogContent>
             <DialogHeader>
