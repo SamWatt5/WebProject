@@ -154,8 +154,8 @@ const redirectToSpotifyLogin = () => {
                                         <Spotify class="cursor-pointer mt-2" />
                                     </a>
                                     <DialogTrigger as-child>
-                                        <Button class="mt-2"
-                                            @click="() => { friendId = friend._id || ''; fetchBlend(); }">Mix
+                                        <Button class="mt-2" @click="() => { friendId = friend[" _id"] || '' ;
+                                            fetchBlend(); }">Mix
                                             Playlists</Button>
                                     </DialogTrigger>
                                 </div>
