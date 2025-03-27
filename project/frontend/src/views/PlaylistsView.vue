@@ -13,6 +13,9 @@ import { Avatar } from '@/components/ui/avatar';
 import { useFriends } from '@/stores/friends';
 import { storeToRefs } from 'pinia';
 import { ref, onMounted } from "vue";
+import { useIsMobile } from '@/hooks/use-mobile';
+import MobileSidebar from '@/components/MobileSidebar.vue';
+import { useUser } from '@/stores/user';
 
 
 const music = ref<string[]>([]); // Reactive array to store music tracks
@@ -56,6 +59,72 @@ const recommendations = ref<Track[]>([]); // Store recommendations
 const errorMessage = ref(""); // Store error messages
 const successMessage = ref(""); // Store success messages
 const isPlaylistCreated = ref(false)
+
+// Displaying a loading toast message
+toast.loading("Loading user data...", {
+  duration: Infinity,
+  id: "loading-data",
+  dismissible: false
+});
+
+
+
+// Using the user store to get and set user data
+let { user, setUser } = useUser();
+
+const { setFriends } = store;
+// Ref to track loading state
+const isLoading = ref(true);
+
+// Function to refresh user and friends data
+const refresh = async () => {
+    try {
+        // Fetching user data from the API
+        const res = await fetch("/api/user/me", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const data = await res.json();
+        
+        if(!data.error) {
+            // Setting user data
+            setUser(data);
+            user = data;
+            // Fetching friends data for each friend
+            for(let friend of data.friends) {
+                const res = await fetch(`/api/user/find/${friend}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+                const friendData = await res.json();
+                if(!friendData.error) {
+                    // Adding friend data to the friends list
+                    if(friends.value.length == data.friends.length) {
+                        toast.dismiss("loading-data");
+                        isLoading.value = false;
+                        return;
+                    };
+                    setFriends([...friends.value, friendData]);
+                }
+            }
+        }
+
+      // Updating loading state and dismissing the toast
+      isLoading.value = false;
+      toast.dismiss("loading-data");
+    } catch(err) {
+      console.error(err);
+    }
+}
+
+// Calling the refresh function when the component is mounted
+onMounted(async() => {
+    refresh();
+});
 
 
 const fetchBlend = async () => {
@@ -153,12 +222,14 @@ onMounted(() => {
 
 <template>
     <!-- Left side -->
-    <div class="flex flex-row">
+    <div class="flex flex-col sm:flex-row">
         <main class="flex h-screen items-center place-self-start">
-            <SidebarProvider :default-open="false" :open="false">
+            <SidebarProvider v-if="!useIsMobile()" :default-open="false" :open="false">
                 <Sidebar />
             </SidebarProvider>
-            <div class="flex flex-col ml-10">
+            <MobileSidebar v-else />
+
+            <div class="hidden sm:flex flex-col ml-10">
                 <ScrollArea class="w-80 h-[75vh] border rounded-lg">
                     <div class="p-4">
                         <div v-for="(song, index) in music" :key="index">
@@ -171,11 +242,11 @@ onMounted(() => {
                     </div>
                 </ScrollArea>
             </div>
-            <Separator orientation="vertical" class="mx-10" />
+            <Separator orientation="vertical" class="hidden sm:inline mx-10" />
         </main>
 
         <!-- Choose friend area to display their playlist -->
-        <ScrollArea class="border rounded-md min-w-[500px] h-[100vh] p-4 flex-grow pt-10">
+        <ScrollArea class="border sm:translate-y-0 -translate-y-[90%] rounded-md min-w-[500px] h-[100vh] p-4 flex-grow pt-10">
             <div class="flex flex-col gap-4">
                 <div v-for="(friend, index) in friends" :key="index" class="flex-grow">
                     <Card class="cursor-pointer">

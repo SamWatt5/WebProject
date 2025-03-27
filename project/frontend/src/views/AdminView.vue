@@ -13,6 +13,8 @@ import { RouterLink } from "vue-router";
 import { isWorker } from '@vueuse/core';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import DialogHeader from '@/components/ui/dialog/DialogHeader.vue';
+import { useIsMobile } from '@/hooks/use-mobile';
+import MobileSidebar from '@/components/MobileSidebar.vue';
 
 let { user, setUser } = useUser();
 let foundUser = ref<User>();
@@ -245,11 +247,12 @@ const deleteUser = async() => {
 <template>
   <div class="flex flex-row" v-if="!isLoading && user && user.admin">
     <main class="flex h-screen items-center place-self-start">
-      <SidebarProvider :default-open="false" :open="false">
-        <Sidebar />
+      <SidebarProvider v-if="!useIsMobile()" :default-open="false" :open="false">
+          <Sidebar />
       </SidebarProvider>
+      <MobileSidebar v-else />
 
-      <div class="flex flex-col ml-10">
+      <div class="hidden sm:flex flex-col ml-10">
         <h1 class="text-4xl text-center mb-4">Users</h1>
         <ScrollArea class="w-80 h-[75vh] border rounded-lg">
           <div class="p-4">
@@ -260,7 +263,7 @@ const deleteUser = async() => {
           </div>
         </ScrollArea>
       </div>
-      <Separator orientation="vertical" class="mx-10" />
+      <Separator orientation="vertical" class="hidden sm:inline mx-10" />
     </main>
     <div class="flex flex-col pt-10 pr-10">
       <Card class="w-full col-span-3 my-4">
@@ -275,16 +278,16 @@ const deleteUser = async() => {
           </div>
         </CardContent>
       </Card>
-      <Card class="w-full" v-if="foundUser">
+      <Card class="max-w-[100vw] min-w-[100vw] w-[100vw]" v-if="foundUser">
         <CardHeader>
           <CardTitle class="text-2xl">Found <span class="text-cyan-500 font-semibold">{{ foundUser?.username }}</span></CardTitle>
           <CardDescription class="text-lg">{{ foundUser?.first_name }} {{ foundUser?.last_name }}</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent class="w-screen text-wrap">
           <h1>User ID: <span class="text-cyan-500 font-semibold">{{ foundUser?.["_id"] }}</span></h1>
           <h1>Email: <span class="text-cyan-500 font-semibold">{{ foundUser?.email }}</span></h1>
           <h1 v-if="foundUser?.spotify_token">Spotify ID: <span class="text-cyan-500 font-semibold">{{ foundUser?.spotify_id }}</span></h1>
-          <h1 v-if="foundUser?.spotify_token">Spotify Token: <span class="text-cyan-500 font-semibold">{{ foundUser?.spotify_token }}</span></h1>
+          <h1 v-if="foundUser?.spotify_token">Spotify Token: <span class="text-cyan-500 font-semibold text-warp">{{ foundUser?.spotify_token }}</span></h1>
           <h1 v-else class="text-cyan-500 underline">User hasn't linked spotify</h1>
 
         </CardContent>

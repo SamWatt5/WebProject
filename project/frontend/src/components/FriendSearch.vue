@@ -125,10 +125,10 @@ const search = async () => {
 
                 <DialogFooter>
                     <DialogClose as-child>
-                        <Button @click="acceptFriendship" variant="default">Yes</Button>
-                    </DialogClose>
-                    <DialogClose as-child>
                         <Button variant="destructive">No</Button>
+                    </DialogClose>
+                    <DialogClose as-child class="mb-2">
+                        <Button @click="acceptFriendship" variant="success">Yes</Button>
                     </DialogClose>
                 </DialogFooter>
             </DialogContent>

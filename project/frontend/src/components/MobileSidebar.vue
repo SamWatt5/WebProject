@@ -33,7 +33,9 @@ const handleLogout = async () => {
 <template>
     <Sheet>
         <SheetTrigger as-child>
-            <Menu />
+            <div class="absolute top-5 left-5">
+                <Menu></Menu>
+            </div>
         </SheetTrigger>
         <SheetContent side="left" class="flex flex-col h-full">
             <SheetHeader>
@@ -45,6 +47,7 @@ const handleLogout = async () => {
                 <MobileButton page="/playlist" text="Playlist" />
                 <MobileButton page="/friends" text="Friends" />
                 <MobileButton page="/settings" text="Settings" />
+                <MobileButton page="/admin" text="Admin" v-if="user?.admin" />
             </ul>
 
             <SheetFooter class="mt-auto">
