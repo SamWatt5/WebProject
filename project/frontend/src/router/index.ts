@@ -38,6 +38,11 @@ const router = createRouter({
       path: "/recommend",
       name: "recommend",
       component: () => import("../views/RecommendView.vue"),
+    },
+    {
+      path: "/settings",
+      name: "settings",
+      component: () => import("../views/SettingView.vue"),
     }
   ],
 })

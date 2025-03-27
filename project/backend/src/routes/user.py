@@ -5,12 +5,14 @@ from ..middleware import auth
 
 user_ns = Namespace('user', description='User related operations')
 
+
 @user_ns.route("/me")
 class MeRoute(Resource):
     @auth
     def get(user, self):
         print(user)
         return user, 200
+
 
 @user_ns.route('/link-spotify/<username>')
 class LinkSpotifyRoute(Resource):
@@ -23,11 +25,12 @@ class LinkSpotifyRoute(Resource):
         # Add the code to link the user's Spotify account here
         return jsonify({"message": "Spotify account linked successfully"})
 
+
 @user_ns.route("/find/<target>")
 class FindRoute(Resource):
     @auth
     def get(user, self, target):
-        
+
         foundTarget = find_user_by_username(target, True)
 
         if not foundTarget:
@@ -44,6 +47,7 @@ class FindRoute(Resource):
 
         return foundTarget, 200
 
+
 @user_ns.route('/friends')
 class FriendsRoute(Resource):
     @auth
@@ -51,9 +55,10 @@ class FriendsRoute(Resource):
         friendsList = get_user_friends(user["username"])
         list = []
         for friend in friendsList:
-            list.append(find_user(str(friend), False))
-        
+            list.append(find_user(str(friend), True))
+
         return list, 200
+
 
 @user_ns.route('/add-friend/<username>')
 class AddFriendRoute(Resource):
@@ -69,6 +74,7 @@ class AddFriendRoute(Resource):
 
         make_friends(token, person["_id"])
         return {"message": "Friend added successfully"}
+
 
 @user_ns.route('/remove-friend/<username>')
 class RemoveFriendRoute(Resource):

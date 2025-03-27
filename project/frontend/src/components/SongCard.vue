@@ -1,6 +1,15 @@
 <script lang="ts" setup>
 import { Card, CardTitle, CardHeader, CardDescription, CardContent } from "@/components/ui/card";
 import PeopleWatching from "./images/PeopleWatching.vue";
+import { defineProps } from "vue";
+
+interface Props {
+    title: string,
+    artist: string,
+    coverImage: string
+}
+
+const props = defineProps<Props>()
 </script>
 
 
@@ -8,13 +17,13 @@ import PeopleWatching from "./images/PeopleWatching.vue";
     <div>
         <Card>
             <CardHeader>
-                
+
             </CardHeader>
             <CardContent class="flex flex-row items-center">
-                <PeopleWatching />
+                <img :src="props.coverImage" alt="Cover" class="w-16 h-16" />
                 <div class="ml-4">
-                    Rein Me In
-                    <CardDescription>Sam Fender</CardDescription>
+                    {{ props.title }}
+                    <CardDescription>{{ props.artist }}</CardDescription>
                 </div>
             </CardContent>
         </Card>

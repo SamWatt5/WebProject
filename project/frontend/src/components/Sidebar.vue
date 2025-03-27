@@ -50,7 +50,7 @@ const handleLogout = async () => {
             <SidebarMenuButton><RouterLink to="/"><Tooltips item="Home"><House /></Tooltips></RouterLink></SidebarMenuButton>
             <SidebarMenuButton><RouterLink to="/playlists"><Tooltips item="Playlists"><ListMusic /></Tooltips></RouterLink></SidebarMenuButton>
             <SidebarMenuButton><RouterLink to="/friends"><Tooltips item="Friends"><Users /></Tooltips></RouterLink></SidebarMenuButton>
-            <SidebarMenuButton><RouterLink to="#"><Tooltips item="Settings"><Settings /></Tooltips></RouterLink></SidebarMenuButton>
+            <SidebarMenuButton><RouterLink to="/settings"><Tooltips item="Settings"><Settings /></Tooltips></RouterLink></SidebarMenuButton>
             <SidebarMenuButton v-if="user?.admin"><RouterLink to="/admin"><Tooltips item="Admin"><ShieldUser /></Tooltips></RouterLink></SidebarMenuButton>
         </SidebarContent>
         <SidebarFooter class="p-1">
