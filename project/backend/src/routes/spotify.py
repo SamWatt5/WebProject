@@ -305,6 +305,7 @@ class SpotifyLogin(Resource):
         return redirect(auth_url)
 
 
+
 @spotify_ns.route("/callback")
 class SpotifyCallback(Resource):
     def get(self):

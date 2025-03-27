@@ -15,21 +15,21 @@ const store = useFriends();
 const { friends } = storeToRefs(store);
 const { setFriends } = store;
 
-const acceptFriendship = async() => {
+const acceptFriendship = async () => {
     toast.loading("Making friends...", {
         duration: Infinity,
         id: "accepting-friendship",
         dismissible: false
     });
 
-    const res = await fetch(`/api/user/add-friend/${user.value?.username}`, {
+    const res = await fetch(`/api/user/friends/${user.value?.username}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         }
     });
     const data = await res.json();
-    if(data.message) {
+    if (data.message) {
         const userData = await fetch(`/api/user/find/${user.value?.username}`, {
             method: "GET",
             headers: {
@@ -60,9 +60,9 @@ const acceptFriendship = async() => {
     }
 }
 
-const search = async() => {
+const search = async () => {
     const input = document.getElementById("search-prompt") as HTMLInputElement;
-    if(input.value.length == 0) {
+    if (input.value.length == 0) {
         toast.error("Please enter a username to search for", {
             duration: 5000
         });
@@ -81,7 +81,7 @@ const search = async() => {
         }
     });
     const data = await res.json();
-    if(data.error) {
+    if (data.error) {
         toast.error("Failed to find user", {
             description: data.error,
             duration: 5000,
@@ -111,7 +111,8 @@ const search = async() => {
         <Dialog :open="open" @update:open="open = $event">
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Do you want to add <span class="text-cyan-500 font-semibold">{{ user?.username }}</span> as a friend?</DialogTitle>
+                    <DialogTitle>Do you want to add <span class="text-cyan-500 font-semibold">{{ user?.username
+                            }}</span> as a friend?</DialogTitle>
                 </DialogHeader>
 
 
