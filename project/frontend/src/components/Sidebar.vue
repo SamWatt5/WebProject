@@ -74,7 +74,7 @@ if(user.value && !user.value?.spotify_id) {
             <DropdownMenu>
                 <DropdownMenuTrigger>
                     <Avatar v-if="user?.email">
-                        <AvatarFallback>{{ user.first_name?.[0] }}{{ user.last_name?.[0] }}</AvatarFallback>
+                        <AvatarFallback>{{ user.first_name?.[0].toUpperCase() }}{{ user.last_name?.[0].toUpperCase() }}</AvatarFallback>
                     </Avatar>
                     <Avatar v-else>
                         <AvatarFallback><Skeleton class="w-12 h-12 rounded-full" /></AvatarFallback>

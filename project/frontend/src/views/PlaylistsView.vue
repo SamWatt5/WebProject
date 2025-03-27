@@ -163,8 +163,8 @@ onMounted(() => {
                     <div class="p-4">
                         <div v-for="(song, index) in music" :key="index">
                             <div class="flex items-center">
-                                <span class="font-bold mr-2">{{ index + 1 }}.</span> <!-- Display the rank -->
-                                <span>{{ song }}</span> <!-- Display the track name -->
+                                <span class="font-bold mr-2">{{ index + 1 }}.</span>
+                                <span>{{ song }}</span>
                             </div>
                             <Separator class="my-2" />
                         </div>
@@ -187,8 +187,7 @@ onMounted(() => {
                             <div class="flex flex-col pl-3">
                                 <CardTitle class="text-4xl">@{{ friend.username }}</CardTitle>
                                 <CardDescription class="flex flex-row">
-                                    <CalendarDays class="h-8 w-8 mt-1" /><span class="mt-[3px] text-lg ml-1"> Joined
-                                        December 991</span>
+
                                 </CardDescription>
                                 <!-- <<RouterLink as-child :href="`https://open.spotify.com/user/${name}`">
                 <Spotify class="mt-2 cursor-pointer" />
