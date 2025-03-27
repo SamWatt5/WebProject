@@ -88,9 +88,6 @@ const showPassword = () => {
     }
 };
 
-const redirectToSpotifyLogin = () => {
-    window.location.href = "/api/spotify/login"; // Redirect to Spotify login endpoint
-};
 
 const deleteAccount = () => {
     const res = fetch("/api/auth/delete", {
@@ -114,6 +111,11 @@ const deleteAccount = () => {
         });
     }
 };
+
+const redirectToSpotifyLogin = () => {
+    window.location.href = "/api/spotify/login"; // Redirect to Spotify login endpoint
+};
+
 
 </script>
 
@@ -185,6 +187,12 @@ const deleteAccount = () => {
                     </FormField>
                     <Button type="submit" class="mt-4" @click="isReadonly = false">Edit</Button>
                     <Button type="button" class="mt-4" variant="link" @click="$router.push('/login')">Confirm & Save</Button>
+                    <Button @click="redirectToSpotifyLogin" class="float-right mt-4 bg-green-500 text-white px-4 py-2 rounded mb-4">
+                        Login to Spotify
+                    </Button>
+                    <Button @click="deleteAccount" class="float-left clear-both mt-4 bg-red-500 text-white px-4 py-2 rounded mb-4">
+                        Delete Account
+                    </Button>
                 </form>
             </CardContent>
             <CardFooter></CardFooter>
