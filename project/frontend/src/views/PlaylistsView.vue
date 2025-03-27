@@ -62,6 +62,7 @@ const fetchBlend = async () => {
     errorMessage.value = "";
     successMessage.value = "";
     recommendations.value = [];
+    isPlaylistCreated.value = false;
 
     try {
         toast.loading('Loading blended playlist...', {
@@ -134,6 +135,7 @@ const createPlaylist = async () => {
         }
 
         successMessage.value = "Playlist created successfully!";
+        isPlaylistCreated.value = true;
     } catch (error) {
         errorMessage.value = "An error occurred while creating the playlist.";
         console.error(error);
@@ -219,13 +221,17 @@ onMounted(() => {
         <div class="flex flex-col w-full min-w-[500px] pt-10 gap-4 mr-4 ml-4">
             <Card class="w-full">
                 <CardHeader class="w-full">
-                    <CardTitle class="text-4xl">Playlists</CardTitle>
+                    <CardTitle class="text-4xl text-center">Playlists</CardTitle>
                     <CardDescription></CardDescription>
                 </CardHeader>
                 <CardContent>
                     <button v-if="recommendations.length > 0 && !isPlaylistCreated" @click="createPlaylist"
-                        class="bg-green-500 text-white px-4 py-2 rounded mt-4">
+                        class="bg-green-500 text-white px-4 py-2 rounded mb-4 mx-auto block">
                         Create Playlist
+                    </button>
+                    <button v-if="isPlaylistCreated" @click=""
+                        class="bg-green-500 text-white px-4 py-2 rounded mb-4 mx-auto block">
+                        Playlist Created Successfully!
                     </button>
                     <ScrollArea class="h-[80vh]">
                         <div v-for="(track, index) in recommendations" :key="index">
