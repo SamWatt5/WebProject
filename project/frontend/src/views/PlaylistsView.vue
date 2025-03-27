@@ -5,6 +5,7 @@ import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import PlaylistCard from '@/components/PlaylistCard.vue';
+import { toast } from 'vue-sonner';
 
 // Extra imports for the friends components
 import UserCard from '@/components/UserCard.vue';
@@ -62,6 +63,11 @@ const fetchBlend = async () => {
     recommendations.value = [];
 
     try {
+        toast.loading('Loading blended playlist...', {
+            id: 'loadingMessage',
+            dismissible: false
+        });
+
         const response = await fetch(
             `/api/spotify/blend?friend_id=${friendId.value}`,
             {
@@ -76,7 +82,16 @@ const fetchBlend = async () => {
         if (!response.ok) {
             const errorData = await response.json();
             errorMessage.value = errorData.error || "Failed to fetch blended playlist.";
-            return;
+            toast.error('Update failed', {
+            duration: 5000,
+            id: 'loadingMessage'
+        });
+        } else {
+            toast.success('Playlists Blended', {
+                description: 'Playlist created.',
+                duration: 5000,
+                id: 'loadingMessage'
+            });
         }
 
         const data = await response.json();
