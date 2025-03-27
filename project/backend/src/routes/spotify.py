@@ -306,44 +306,6 @@ class SpotifyLogin(Resource):
 
 
 
-@spotify_ns.route("/callback-test")
-class SpotifyCallbackTest(Resource):
-    def get(self):
-        print("Callback route hit")
-        # Retrieve the authorization code from the query string
-        code = request.args.get("code")
-        print(f"Authorization code: {code}")
-        if not code:
-            print("Authorization failed: No code provided")
-            return jsonify({"msg": "Authorization failed"}), 400
-
-        # Exchange the authorization code for an access token
-        token_info = sp_oauth.get_access_token(code)
-        print(f"Token info: {token_info}")
-        access_token = token_info["access_token"]
-        refresh_token = token_info["refresh_token"]
-        print(f"Access token: {access_token}")
-        print(f"Refresh token: {refresh_token}")
-
-        # Fetch the user's Spotify account information
-        sp = spotipy.Spotify(auth=access_token)
-        user_info = sp.current_user()
-        print(f"User info: {user_info}")
-        spotify_id = user_info.get("id")
-        print(f"Spotify ID: {spotify_id}")
-
-        # Retrieve the user's token from the session
-        token = session.get("token")
-        print(f"Session token: {token}")
-
-        # Link the Spotify account to the user's profile
-        link_spotify(token, spotify_id, access_token, refresh_token)
-        print("Spotify account linked successfully")
-
-        # Redirect the user to the recommendations page
-        return redirect(f"http://localhost:8080/recommend")
-
-
 @spotify_ns.route("/callback")
 class SpotifyCallback(Resource):
     def get(self):
