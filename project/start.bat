@@ -1,11 +1,9 @@
 @echo off
 
-
-
 cd backend
 ./install
 ./start
 
-cd ../backend
+cd ../../frontend
 npm install
 npm run dev

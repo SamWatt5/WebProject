@@ -195,8 +195,9 @@ class Blend(Resource):
             user_tracks = []
             for playlist in user_playlists["items"]:
                 playlist_tracks = sp.playlist_items(playlist["id"])
-                user_tracks.extend(playlist_tracks["items"])
-
+                for item in playlist_tracks["items"]:
+                    if "track" in item:
+                        user_tracks.append(item["track"])
             # Fetch the friend's playlists
             friend = get_user_from_token(friend_id)
             # print(friend)
@@ -208,29 +209,31 @@ class Blend(Resource):
             # print(f"{friend_playlists}\n\n")
             friend_tracks = []
             for playlist in friend_playlists["items"]:
-                playlist_tracks = sp.playlist_items(playlist["id"])
-                if not playlist_tracks or "items" not in playlist_tracks:
-                    continue  # Skip if playlist items are not available
-                for track in playlist_tracks["items"]:
-                    # Ensure track data exists
-                    if "track" in track and track["track"]:
-                        friend_tracks.append(track["track"]["name"])
+                friend_playlist_tracks = sp.playlist_items(playlist["id"])
+                if not friend_playlist_tracks or "items" not in friend_playlist_tracks:
+                    continue
+                for track in friend_playlist_tracks["items"]:
+                    if "track" in track and isinstance(track["track"], dict):
+                        # store the dict, not just the name
+                        friend_tracks.append(track["track"])
             print(f"{friend_tracks}\n\n")
 
             # Combine and shuffle tracks
             combined_tracks = user_tracks + friend_tracks
-            track_uris = [track["track"]["uri"]
-                          for track in combined_tracks if "track" in track]
-            random.shuffle(track_uris)
+            track_uris = [
+                track["uri"] for track in combined_tracks if "uri" in track
+            ]
 
             # Return the blended playlist
-            return {"playlist": [{
-                "id": track["track"]["id"],
-                "title": track["track"]["name"],
-                "artist": track["track"]["artists"][0]["name"],
-                "link": track["track"]["external_urls"]["spotify"],
-                "cover": track["track"]["album"]["images"][0]["url"]
-            } for track in combined_tracks if "track" in track]}
+            return {
+                "playlist": [{
+                    "id": track["track"]["id"],
+                    "title": track["track"]["name"],
+                    "artist": track["track"]["artists"][0]["name"],
+                    "link": track["track"]["external_urls"]["spotify"],
+                    "cover": track["track"]["album"]["images"][0]["url"]
+                } for track in combined_tracks if track and isinstance(track, dict) and "track" in track]
+            }
         except spotipy.exceptions.SpotifyException as e:
             print(f"Spotify API error: {e}")
             return {"error": "Failed to blend playlists"}, 500

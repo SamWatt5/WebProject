@@ -7,12 +7,13 @@ import inspect
 def admin_auth(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        auth_header = request.headers.get("Authorization")
-        if not auth_header or not auth_header.startswith("Bearer "):
-            return {"error": "Authorization header missing or invalid"}, 400
+        # auth_header = request.headers.get("Authorization")
+        # if not auth_header or not auth_header.startswith("Bearer "):
+        #     return {"error": "Authorization header missing or invalid"}, 400
 
-        token = auth_header.split("Bearer ")[1]
+        token = session.get("token")
         if not token:
+            print("invalid token")
             return {"error": "Invalid token"}, 400
 
         user = get_user_from_token(token)
@@ -34,12 +35,12 @@ def auth(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         # Get the Authorization header
-        auth_header = request.headers.get("Authorization")
-        if not auth_header or not auth_header.startswith("Bearer "):
-            return {"error": "Authorization header missing or invalid"}, 400
+        # auth_header = request.headers.get("Authorization")
+        # if not auth_header or not auth_header.startswith("Bearer "):
+        #     return {"error": "Authorization header missing or invalid"}, 400
 
         # Extract the token from the header
-        token = auth_header.split("Bearer ")[1]
+        token = session.get("token")
         if not token:
             return {"error": "Invalid token"}, 400
 
