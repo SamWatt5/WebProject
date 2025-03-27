@@ -29,15 +29,20 @@ def link_spotify(token, spotify_id, access_token, refresh_token):
     collection.update_one({"_id": ObjectId(token)}, {
                           "$set": {"spotify_id": str(spotify_id), "spotify_token": str(access_token), "spotify_refresh_token": str(refresh_token)}})
 
+
 def refresh_spotify(id, access_token, refresh_token):
-    collection.update_one({"_id": ObjectId(id)}, { "spotify_token": str(access_token), "spotify_refresh_token": str(refresh_token)})
+    collection.update_one({"_id": ObjectId(id)}, {"$set": {"spotify_token": str(
+        access_token), "spotify_refresh_token": str(refresh_token)}})
+
 
 def add_jwt(email, jwt):
     collection.update_one({"email": email}, {
                           "$set": {"jwt": jwt}})
 
+
 def delete_user(username):
     return collection.delete_one({"username": username})
+
 
 def find_user(id, includeId=False):
     if includeId == False:
@@ -82,6 +87,7 @@ def remove_friends(user1, user2):
 
 def get_basic_user_info(user):
     return collection.find_one({"_id": ObjectId(user)}, {"password": False, "spotify_token": False, "spotify_refresh_token": False})
+
 
 def get_user_from_token(token):
     id = ObjectId(token)

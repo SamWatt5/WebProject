@@ -9,7 +9,7 @@ from flask import redirect, session, request, jsonify
 from flask_cors import CORS
 
 from ..middleware import auth
-from ..models import find_user_by_username, get_user_from_token, filter_popular, refresh_spotify
+from ..models import find_user_by_username, get_user_from_token, filter_popular, refresh_spotify, find_user
 from flask_restx import Namespace, Resource
 
 from ..models import add_jwt, link_spotify
@@ -26,17 +26,21 @@ CLIENT_SECRET = os.getenv("SP_CLIENT_SECRET")
 redirect_uri = "http://localhost:8000/api/spotify/callback"
 
 # Define the required Spotify API scopes
-scopes = "user-read-email playlist-read-private playlist-read-collaborative, playlist-modify-public playlist-modify-private"
+scopes = "user-read-email playlist-read-private playlist-read-collaborative, playlist-modify-public playlist-modify-private, user-top-read, user-read-recently-played"
 
 # Initialize Spotify OAuth object
 sp_oauth = SpotifyOAuth(client_id=CLIENT_ID, client_secret=CLIENT_SECRET,
                         redirect_uri=redirect_uri, scope=scopes)
 
+
 def refreshToken(user):
+    print(user)
     refreshed = sp_oauth.refresh_access_token(user["spotify_refresh_token"])
-    refresh_spotify(user["_id"], refreshed["access_token"], refreshed["refresh_token"])
+    refresh_spotify(user["_id"], refreshed["access_token"],
+                    refreshed["refresh_token"])
 
     return refreshed
+
 
 @spotify_ns.route("/")
 class HelloWorld(Resource):
@@ -183,11 +187,28 @@ class Blend(Resource):
             return {"error": "Friend ID is required"}, 400
 
         sp = spotipy.Spotify(auth=user["spotify_token"])
-        try: 
+        try:
             sp.me()
         except spotipy.exceptions.SpotifyException as e:
             if e.http_status == 401:
                 refreshToken(user)
+
+        temp = find_user(friend_id, True)
+        print(temp)
+        if not temp:
+            return {"error": "Friend not found"}, 404
+
+        if not "spotify_token" in temp:
+            return {"error": "Friend's Spotify account not linked"}, 404
+
+        sp = spotipy.Spotify(auth=temp["spotify_token"])
+        try:
+            sp.me()
+        except spotipy.exceptions.SpotifyException as e:
+            if e.http_status == 401:
+                refreshed = refreshToken(temp)
+                temp["spotify_token"] = refreshed["access_token"]
+                sp = spotipy.Spotify(auth=refreshed["access_token"])
 
         # Call the blend method with the friend's ID
         return self.blend(user, friend_id)
@@ -252,7 +273,10 @@ class Blend(Resource):
             }
         except spotipy.exceptions.SpotifyException as e:
             print(f"Spotify API error: {e}")
-            return {"error": "Failed to blend playlists"}, 500
+            {"error": "Failed to blend playlists"}, 500
+        except IndexError as e:
+            print(f"List index out of range: {e}")
+            return {"error": "An error occurred while blending playlists"}, 500
         except Exception as e:
             print(f"Unexpected error: {e}")
             return {"error": "An unexpected error occurred"}, 500
@@ -316,3 +340,33 @@ class LinkSpotifyRoute(Resource):
     def get(user, self):
         # Redirect the user to the Spotify login page
         return redirect("/api/spotify/login")
+
+
+@spotify_ns.route("/top-tracks")
+class TopTracks(Resource):
+    @auth
+    def get(user, self):
+        # Retrieve the Spotify access token from the session
+        access_token = session.get("spotify_access_token")
+        if not access_token:
+            return jsonify({"msg": "Token not found"}), 401
+
+        # Fetch the user's top tracks from Spotify
+        sp = spotipy.Spotify(auth=access_token)
+        results = sp.current_user_top_tracks(limit=50)
+        return jsonify(results)
+
+@spotify_ns.route("/recently-played")
+class RecentlyPlayed(Resource):
+    @auth
+    def get(user, self):
+        # Retrieve the Spotify access token from the session
+        access_token = session.get("spotify_access_token")
+        if not access_token:
+            return jsonify({"msg": "Token not found"}), 401
+
+        # Fetch the user's recently played tracks from Spotify
+        sp = spotipy.Spotify(auth=access_token)
+        results = sp.current_user_recently_played(limit=10)
+        return jsonify(results)
+
