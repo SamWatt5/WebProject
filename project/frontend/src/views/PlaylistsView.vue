@@ -9,6 +9,7 @@ import PlaylistCard from '@/components/PlaylistCard.vue';
 // Extra imports for the friends components
 import FriendCreate from '@/components/FriendCreate.vue';
 import UserCard from '@/components/UserCard.vue';
+import { Avatar } from '@/components/ui/avatar';
 import { useFriends } from '@/stores/friends';
 import { storeToRefs } from 'pinia';
 
