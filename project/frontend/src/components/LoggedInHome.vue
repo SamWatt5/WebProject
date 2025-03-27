@@ -43,14 +43,14 @@ const { user } = useUser();
         </main>
         <div class="grid grid-cols-3 pt-10 gap-4">
             <div class="w-full display-inline">
-                <img src="/TrackMates.png" class="rounded-full w-auto h-[300px] hover:animate-spin" />
+                <img src="/TrackMates.png" class="rounded-full w-auto h-[300px] hover:animate-spin col-span-2" />
             </div>
             
-            <Card class="h-[125px] w-[400px]">
+            <Card class="h-[125px] w-[400px] col-span-2">
                 <p>test</p>
             </Card>
             
-            <Card class="h-[125px] w-[200px] float-left">
+            <Card class="h-[125px] w-[200px] col-span-1 row-start-2">
                 <p>hello</p>
             </Card>
 
