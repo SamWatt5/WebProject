@@ -178,10 +178,10 @@ class Blend(Resource):
             return {"error": "Friend ID is required"}, 400
 
         # Call the blend method with the friend's ID
-        return self.blend(friend_id)
+        return self.blend(user, friend_id)
 
-    def get_playlist_tracks(self, spotipy_returned):
-        access_token = session.get("spotify_access_token")
+    def get_playlist_tracks(self, user, spotipy_returned):
+        access_token = user["spotify_token"]
         if not access_token:
             return {"msg": "Token not found"}, 401
 
@@ -195,10 +195,13 @@ class Blend(Resource):
                     user_tracks.append(item["track"])
         return user_tracks
 
-    def blend(self, friend_id):
+    def blend(self, user, friend_id):
         # Retrieve the Spotify access token from the session
-        access_token = session.get("spotify_access_token")
+        access_token = user["spotify_token"]
+        # print(user)
+        print(access_token)
         if not access_token:
+            print("im here")
             return {"msg": "Token not found"}, 401
 
         try:
@@ -206,7 +209,8 @@ class Blend(Resource):
             sp = spotipy.Spotify(auth=access_token)
 
             # Fetch the current user's playlists
-            user_tracks = self.get_playlist_tracks(sp.current_user_playlists())
+            user_tracks = self.get_playlist_tracks(
+                user, sp.current_user_playlists())
 
             # Fetch the friend's playlists
             friend = get_user_from_token(friend_id)
@@ -214,7 +218,7 @@ class Blend(Resource):
             if not friend or "spotify_id" not in friend:
                 return {"error": "Friend's Spotify account not linked"}, 404
 
-            friend_tracks = self.get_playlist_tracks(sp.user_playlists(
+            friend_tracks = self.get_playlist_tracks(user, sp.user_playlists(
                 friend["spotify_id"], limit=50))
             # print(f"{friend_tracks}\n\n")
 
