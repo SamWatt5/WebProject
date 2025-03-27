@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import request, session, jsonify
-from .models import get_user_from_token
+from .models import get_user_from_token, find_user
 import inspect
 
 
@@ -16,7 +16,7 @@ def admin_auth(f):
             print("invalid token")
             return {"error": "Invalid token"}, 400
 
-        user = get_user_from_token(token)
+        user = find_user(token, True)
         if not user:
             return {"error": "User not found"}, 404
 
@@ -45,7 +45,7 @@ def auth(f):
             return {"error": "Invalid token"}, 400
 
         # Validate the token and get the user
-        user = get_user_from_token(token)
+        user = find_user(token, True)
         if not user:
             return {"error": "User not found"}, 404
 

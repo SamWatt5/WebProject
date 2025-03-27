@@ -32,11 +32,15 @@ scopes = "user-read-email playlist-read-private playlist-read-collaborative, pla
 sp_oauth = SpotifyOAuth(client_id=CLIENT_ID, client_secret=CLIENT_SECRET,
                         redirect_uri=redirect_uri, scope=scopes)
 
+
 def refreshToken(user):
+    print(user)
     refreshed = sp_oauth.refresh_access_token(user["spotify_refresh_token"])
-    refresh_spotify(user["_id"], refreshed["access_token"], refreshed["refresh_token"])
+    refresh_spotify(user["_id"], refreshed["access_token"],
+                    refreshed["refresh_token"])
 
     return refreshed
+
 
 @spotify_ns.route("/")
 class HelloWorld(Resource):
@@ -183,25 +187,28 @@ class Blend(Resource):
             return {"error": "Friend ID is required"}, 400
 
         sp = spotipy.Spotify(auth=user["spotify_token"])
-        try: 
+        try:
             sp.me()
         except spotipy.exceptions.SpotifyException as e:
             if e.http_status == 401:
                 refreshToken(user)
 
-        temp = find_user(friend_id)
+        temp = find_user(friend_id, True)
+        print(temp)
         if not temp:
-            return { "error": "Friend not found" }, 404
-        
+            return {"error": "Friend not found"}, 404
+
         if not "spotify_token" in temp:
-            return { "error": "Friend's Spotify account not linked" }, 404
+            return {"error": "Friend's Spotify account not linked"}, 404
 
         sp = spotipy.Spotify(auth=temp["spotify_token"])
         try:
             sp.me()
         except spotipy.exceptions.SpotifyException as e:
             if e.http_status == 401:
-                refreshToken(temp)
+                refreshed = refreshToken(temp)
+                temp["spotify_token"] = refreshed["access_token"]
+                sp = spotipy.Spotify(auth=refreshed["access_token"])
 
         # Call the blend method with the friend's ID
         return self.blend(user, friend_id)
