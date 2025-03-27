@@ -1,6 +1,6 @@
 // filepath: /Users/mwaka/Documents/WebProject/project/frontend/src/components/Sidebar.vue
 <script setup lang="ts">
-import { Sidebar, SidebarContent, SidebarMenuButton, SidebarFooter, SidebarHeader } from './ui/sidebar';
+import { Sidebar, SidebarContent, SidebarMenuButton, SidebarFooter, useSidebar } from './ui/sidebar';
 import { House, ListMusic, Users, Settings } from 'lucide-vue-next';
 import Tooltips from './sidebarComponents/Tooltips.vue';
 import { Avatar, AvatarFallback } from './ui/avatar';
@@ -11,6 +11,9 @@ import { ShieldUser } from 'lucide-vue-next';
 import { useUser } from '@/stores/user';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
+import { onMounted } from 'vue';
+
+const { openMobile, state, setOpenMobile } = useSidebar();
 
 const { user } = storeToRefs(useUser()); // Ensure reactivity
 const { setUser } = useUser();
@@ -32,6 +35,10 @@ const handleLogout = async () => {
         console.error('Error during logout:', error);
     }
 };
+
+// onMounted(() => {
+    
+// })
 </script>
 
 <template>

@@ -18,21 +18,24 @@ def create_user(fname, lname, email, username, password):
         "password": generate_password_hash(password),
         "spotify_id": None,
         "spotify_token": None,
+        "spotify_refresh_token": None,
         "friends": [],
         "admin": False
     }
     collection.insert_one(user_doc)
 
 
-def link_spotify(token, spotify_id, access_token):
+def link_spotify(token, spotify_id, access_token, refresh_token):
     collection.update_one({"_id": ObjectId(token)}, {
-                          "$set": {"spotify_id": str(spotify_id), "spotify_token": str(access_token)}})
+                          "$set": {"spotify_id": str(spotify_id), "spotify_token": str(access_token), "spotify_refresh_token": str(refresh_token)}})
 
 
 def add_jwt(email, jwt):
     collection.update_one({"email": email}, {
                           "$set": {"jwt": jwt}})
 
+def delete_user(username):
+    return collection.delete_one({"username": username})
 
 def find_user(id, includeId=False):
     if includeId == False:
@@ -75,6 +78,9 @@ def remove_friends(user1, user2):
                           "$pull": {"friends": str(user1)}})
 
 
+def get_basic_user_info(user):
+    return collection.find_one({"_id": ObjectId(user)}, {"password": False, "spotify_token": False, "spotify_refresh_token": False})
+
 def get_user_from_token(token):
     id = ObjectId(token)
     return collection.find_one({"_id": id}, {"_id": False})
@@ -90,7 +96,7 @@ def remove_admin(user):
 
 
 def get_users():
-    return list(collection.find({}, {"_id": False}))
+    return list(collection.find({}))
 
 
 def filter_popular(track):

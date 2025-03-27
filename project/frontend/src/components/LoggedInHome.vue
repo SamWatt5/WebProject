@@ -8,6 +8,8 @@ import { CalendarDays } from "lucide-vue-next";
 import UserCard from './UserCard.vue';
 import ListeningToCard from './ListeningToCard.vue';
 import { useUser } from '@/stores/user';
+import { useIsMobile } from '@/hooks/use-mobile';
+import MobileSidebar from './MobileSidebar.vue';
 
 const music: string[] = Array.from({ length: 50 }).map(
   (_, i) => `Song ${i + 1}`
@@ -20,9 +22,10 @@ const { user } = useUser();
 <template>
     <div class="flex flex-row">
         <main class="flex h-screen items-center place-self-start">
-            <SidebarProvider :default-open="false" :open="false">
+            <SidebarProvider v-if="!useIsMobile()" :default-open="false" :open="false">
                 <Sidebar />
             </SidebarProvider>
+            <MobileSidebar v-else />
 
             <div class="flex flex-col ml-10">
                 <h1 class="text-4xl text-center mb-4">Your Music</h1>

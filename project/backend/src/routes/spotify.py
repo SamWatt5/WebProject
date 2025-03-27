@@ -277,9 +277,7 @@ class SpotifyCallback(Resource):
         token_info = sp_oauth.get_access_token(code)
         print(token_info)
         access_token = token_info["access_token"]
-
-        # Store the access token in the session
-        session["spotify_access_token"] = access_token
+        refresh_token = token_info["refresh_token"]
 
         # Fetch the user's Spotify account information
         sp = spotipy.Spotify(auth=access_token)
@@ -290,7 +288,7 @@ class SpotifyCallback(Resource):
         token = session.get("token")
 
         # Link the Spotify account to the user's profile
-        link_spotify(token, spotify_id, access_token)
+        link_spotify(token, spotify_id, access_token, refresh_token)
 
         # Redirect the user to the recommendations page
         return redirect(f"http://localhost:8080/recommend")
@@ -298,7 +296,7 @@ class SpotifyCallback(Resource):
 
 @spotify_ns.route("/link-spotify")
 class LinkSpotifyRoute(Resource):
-    @jwt_required()
-    def get(self):
+    @auth
+    def get(user, self):
         # Redirect the user to the Spotify login page
         return redirect("/api/spotify/login")

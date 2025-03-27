@@ -1,6 +1,6 @@
 from flask import request, session, jsonify
 from flask_restx import Namespace, Resource
-from ..models import find_user_by_username, get_user_friends, make_friends, remove_friends, get_user_from_token, find_user
+from ..models import find_user_by_username, get_basic_user_info, get_user_friends, make_friends, remove_friends, get_user_from_token, find_user
 from ..middleware import auth
 
 user_ns = Namespace('user', description='User related operations')
@@ -28,16 +28,19 @@ class FindRoute(Resource):
     @auth
     def get(user, self, target):
         
-        foundTarget = find_user_by_username(target)
+        foundTarget = find_user_by_username(target, True)
 
         if not foundTarget:
             try:
-                foundTarget = find_user(target)
+                foundTarget = find_user(target, True)
             except:
                 pass
 
         if not foundTarget:
             return {"error": "User not found"}, 404
+
+        foundTarget = get_basic_user_info(foundTarget["_id"])
+        foundTarget["_id"] = str(foundTarget["_id"])
 
         return foundTarget, 200
 
