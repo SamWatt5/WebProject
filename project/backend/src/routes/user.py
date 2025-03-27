@@ -17,6 +17,10 @@ class MeRoute(Resource):
         data = request.get_json()
         print(data)
 
+    def delete(user, self):
+
+        return { "error": "coming soon" }
+
 
 @user_ns.route('/link-spotify/<username>')
 class LinkSpotifyRoute(Resource):
@@ -64,7 +68,7 @@ class FriendsRoute(Resource):
         return list, 200
 
 
-@user_ns.route('/friend/<username>')
+@user_ns.route('/friends/<username>')
 class AddFriendRoute(Resource):
     @auth
     def post(user, token, self, username):

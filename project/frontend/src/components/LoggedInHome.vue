@@ -21,7 +21,7 @@ const { user } = useUser();
 </script>
 
 <template>
-    <div class="flex flex-row">
+    <div class="flex flex-row max-w-[100vw]">
         <main class="flex h-screen items-center place-self-start">
             <SidebarProvider v-if="!useIsMobile()" :default-open="false" :open="false">
                 <Sidebar />
@@ -41,22 +41,41 @@ const { user } = useUser();
             </div>
             <Separator orientation="vertical" class="mx-10" />
         </main>
-        <div class="grid grid-cols-3 pt-10 gap-4">
-            <div class="w-full display-inline">
-                <img src="/TrackMates.png" class="rounded-full w-auto h-[300px] hover:animate-spin col-span-2" />
+        <div class="flex flex-col">
+            <div class="flex flex-row">
+                <div class="">
+                    <img src="/TrackMates.png" class="rounded-full w-auto h-[300px] hover:animate-spin col-span-2" />
+                </div>
+                
+                <Card class="mt-4">
+                    <CardHeader>
+                        <CardTitle class="text-4xl">Hey there, @<span class="text-cyan-500 font-semibold">{{ user?.username }}</span></CardTitle>
+                        
+                    </CardHeader>
+                    <CardContent>
+                        <!-- <UserCard :user="user" /> -->
+                    </CardContent>
+                </Card>
+                <Card class="mt-4 ml-4">
+                    <CardHeader>
+                        <CardTitle class="text-4xl">Friend 1 @<span class="text-cyan-500 font-semibold">{{ user?.username }}</span></CardTitle>
+                        <CardDescription></CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <!-- <UserCard :user="user" /> -->
+                    </CardContent>
+                </Card>
             </div>
             
-            <Card class="h-[125px] w-[400px] col-span-2">
-                <p>test</p>
-            </Card>
-            
-            <Card class="h-[125px] w-[200px] col-span-1 row-start-2">
-                <p>hello</p>
+            <Card class="w-12">
+                <CardHeader>
+                    <CardTitle>HE</CardTitle>
+                </CardHeader>
             </Card>
 
-            <div class="w-full col-span-3 flex flex-col h-full">
-                <ScrollArea class="border rounded-md col-span-3 w-[95%] mt-4 whitespace-nowrap mt-auto">
-                <div class="flex p-4 space-x-4 w-max mt-auto">
+            <div class="w-[37%] mt-auto mb-12">
+                <ScrollArea class="border rounded-md w-full whitespace-nowrap">
+                <div class="flex p-4 w-full space-x-4 mt-auto">
                     <ListeningToCard />
                     <ListeningToCard />
                     <ListeningToCard />
@@ -73,7 +92,7 @@ const { user } = useUser();
                     <ListeningToCard />
                     <ListeningToCard />
                 </div>
-                <ScrollBar orientation="horizontal" />
+                    <ScrollBar orientation="horizontal" />
                 </ScrollArea>
             </div>
         </div>
