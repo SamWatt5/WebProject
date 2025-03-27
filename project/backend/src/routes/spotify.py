@@ -26,7 +26,7 @@ CLIENT_SECRET = os.getenv("SP_CLIENT_SECRET")
 redirect_uri = "http://localhost:8000/api/spotify/callback"
 
 # Define the required Spotify API scopes
-scopes = "user-read-email playlist-read-private playlist-read-collaborative, playlist-modify-public playlist-modify-private"
+scopes = "user-read-email playlist-read-private playlist-read-collaborative, playlist-modify-public playlist-modify-private, user-top-read, user-read-recently-played"
 
 # Initialize Spotify OAuth object
 sp_oauth = SpotifyOAuth(client_id=CLIENT_ID, client_secret=CLIENT_SECRET,

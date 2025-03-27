@@ -36,12 +36,3 @@ fi
 sleep 5
 # Print a message indicating that the applications are running
 echo "Backend and frontend are running in separate terminals!"
-# Wait for a few seconds to allow the applications to start
-sleep 5
-# Print a message indicating that the applications are running
-echo "Backend and frontend are running in separate terminals!"
-
-# End of script
-# This script is used to set up and run the backend and frontend of the project.
-# It navigates to the backend/src directory, runs the Flask application, and then navigates to the frontend directory to run the React application.
-# The script also checks if each command was successful and prints appropriate messages.        
