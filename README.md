@@ -19,3 +19,9 @@ It's easy to startup our application, simply run this command: `./project/start.
 > python-dotenv
 > spotipy
 >
+
+## URLS
+
+> Our main frontend url is: http://localhost:8080
+> Our main backend url is: http://localhost:8000 however it can be accessed via http://localhost:8080/api
+> Our API Documentation url is: http://localhost:8000/docs
