@@ -41,14 +41,17 @@ const { user } = useUser();
             <Separator orientation="vertical" class="mx-10" />
         </main>
         <div class="grid grid-cols-3 pt-10 gap-4">
-            <div class="w-full">
-                <UserCard :spotify_id="user?.spotify_id" :name="user?.username ?? 'Guest'" :avatar="(user?.first_name?.substring(0, 1) ?? '') + (user?.last_name?.substring(0, 1) ?? '')" joined="January 2021" />
+            <div class="w-full display-inline">
+                <img src="/TrackMates.png" class="rounded-full w-auto h-[300px] hover:animate-spin" />
             </div>
-            <div class="w-full col-span-3">
-                <ListeningToCard class="w-1/3" />
+            
+            <UserCard>
+                
+            </UserCard>
 
-                <ScrollArea class="border rounded-md col-span-3 w-[95%] mt-4 whitespace-nowrap">
-                <div class="flex p-4 space-x-4 w-max">
+            <div class="w-full col-span-3 flex flex-col h-full">
+                <ScrollArea class="border rounded-md col-span-3 w-[95%] mt-4 whitespace-nowrap mt-auto">
+                <div class="flex p-4 space-x-4 w-max mt-auto">
                     <ListeningToCard />
                     <ListeningToCard />
                     <ListeningToCard />
