@@ -78,7 +78,7 @@ class ManageFriendsRoute(Resource):
 
         make_friends(token, person["_id"])
         return {"message": "Friend added successfully"}
-    
+
     @auth
     def delete(user, token, self, username):
         existing_friends = get_user_friends(user["username"])
