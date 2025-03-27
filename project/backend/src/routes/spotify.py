@@ -195,6 +195,7 @@ class Blend(Resource):
 
         temp = find_user(friend_id, True)
         print(temp)
+
         if not temp:
             return {"error": "Friend not found"}, 404
 
