@@ -71,14 +71,15 @@ class AddFriendRoute(Resource):
         existing_friends = get_user_friends(user["username"])
         person = find_user_by_username(username, True)
         if not person:
-            return jsonify({"error": "User not found"}), 404
+            print("the errors here")
+            return {"error": "User not found"}, 404
 
         if person["_id"] in existing_friends:
-            return jsonify({"error": "User is already a friend"}), 400
+            return {"error": "User is already a friend"}, 400
 
         make_friends(token, person["_id"])
         return {"message": "Friend added successfully"}
-    
+
     @auth
     def delete(user, token, self, username):
         existing_friends = get_user_friends(user["username"])
