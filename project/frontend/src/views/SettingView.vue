@@ -38,17 +38,34 @@ const form = useForm({
     validationSchema: formSchema,
     initialValues: {
         fname: user.value?.first_name,
-        lname: '',
+        lname: user.value?.last_name,
         email: '',
         username: '',
         password: ''
     }
 });
 
-
-
-
-
+const onSubmit = form.handleSubmit(async (values) => {
+    const res = await fetch("/api/auth/update", {
+        method: "POST",
+        body: JSON.stringify(values),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    let body = await res.json();
+    if (res.ok) {
+        toast.success('Account updated successfully', {
+            description: 'Your changes have been saved.',
+            duration: 5000
+        });
+    } else {
+        toast.error('Update failed', {
+            description: body.error,
+            duration: 5000
+        });
+    }
+});
 
 const showPassword = () => {
     const passwordInput = document.getElementById("password") as HTMLInputElement;
@@ -88,7 +105,7 @@ const showPassword = () => {
                         <FormItem class="pb-4">
                             <FormLabel>Last Name</FormLabel>
                             <FormControl>
-                                <Input type="text" placeholder="First Name" v-bind="componentField" />
+                                <Input type="text" placeholder="Last Name" v-bind="componentField" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
