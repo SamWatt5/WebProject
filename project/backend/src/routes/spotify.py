@@ -377,11 +377,8 @@ class TopTracks(Resource):
             print(f"Error fetching top tracks: {e}")
             return {"error": "Failed to fetch top tracks"}, 500
 
-<<<<<<< HEAD
-@spotify_ns.route("/recently-played")
-=======
 
->>>>>>> origin/main
+@spotify_ns.route("/recently-played")
 class RecentlyPlayed(Resource):
     @auth
     def get(user, self):
@@ -406,7 +403,8 @@ class RecentlyPlayed(Resource):
                     "artist": ", ".join([artist["name"] for artist in track["track"]["artists"]]),
                     "album": track["track"]["album"]["name"],
                     "link": track["track"]["external_urls"]["spotify"],
-                    "cover_art": track["track"]["album"]["images"][0]["url"]  # Link to the cover art
+                    # Link to the cover art
+                    "cover_art": track["track"]["album"]["images"][0]["url"]
                 }
                 for track in results["items"]
             ]
