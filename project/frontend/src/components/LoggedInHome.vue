@@ -10,6 +10,7 @@ import ListeningToCard from './ListeningToCard.vue';
 import { useUser } from '@/stores/user';
 import { useIsMobile } from '@/hooks/use-mobile';
 import MobileSidebar from './MobileSidebar.vue';
+import SongCard from './SongCard.vue';
 
 const music: string[] = Array.from({ length: 50 }).map(
   (_, i) => `Song ${i + 1}`
@@ -45,9 +46,13 @@ const { user } = useUser();
                 <img src="/TrackMates.png" class="rounded-full w-auto h-[300px] hover:animate-spin" />
             </div>
             
-            <UserCard>
-                
-            </UserCard>
+            <Card class="h-[125px] w-[400px]">
+                <p>test</p>
+            </Card>
+            
+            <Card class="h-[125px] w-[200px] float-left">
+                <p>hello</p>
+            </Card>
 
             <div class="w-full col-span-3 flex flex-col h-full">
                 <ScrollArea class="border rounded-md col-span-3 w-[95%] mt-4 whitespace-nowrap mt-auto">
