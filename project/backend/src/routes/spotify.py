@@ -9,7 +9,7 @@ from flask import redirect, session, request, jsonify
 from flask_cors import CORS
 
 from ..middleware import auth
-from ..models import find_user_by_username, get_user_from_token, filter_popular, refresh_spotify
+from ..models import find_user_by_username, get_user_from_token, filter_popular, refresh_spotify, find_user
 from flask_restx import Namespace, Resource
 
 from ..models import add_jwt, link_spotify
@@ -188,6 +188,20 @@ class Blend(Resource):
         except spotipy.exceptions.SpotifyException as e:
             if e.http_status == 401:
                 refreshToken(user)
+
+        temp = find_user(friend_id)
+        if not temp:
+            return { "error": "Friend not found" }, 404
+        
+        if not "spotify_token" in temp:
+            return { "error": "Friend's Spotify account not linked" }, 404
+
+        sp = spotipy.Spotify(auth=temp["spotify_token"])
+        try:
+            sp.me()
+        except spotipy.exceptions.SpotifyException as e:
+            if e.http_status == 401:
+                refreshToken(temp)
 
         # Call the blend method with the friend's ID
         return self.blend(user, friend_id)
