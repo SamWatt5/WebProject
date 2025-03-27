@@ -90,7 +90,6 @@ const fetchBlend = async () => {
             });
         } else {
             toast.success('Playlists Blended', {
-                description: 'Playlist created.',
                 duration: 5000,
                 id: 'loadingMessage'
             });
@@ -233,6 +232,9 @@ onMounted(() => {
                         class="bg-green-500 text-white px-4 py-2 rounded mb-4 mx-auto block">
                         Playlist Created Successfully!
                     </button>
+                    <div v-if="errorMessage" class="text-red-500 text-center mb-4">
+                        {{ errorMessage }}
+                    </div>
                     <ScrollArea class="h-[80vh]">
                         <div v-for="(track, index) in recommendations" :key="index">
                             <PlaylistCard :title="track.trackTitle"
