@@ -305,7 +305,6 @@ class SpotifyLogin(Resource):
         return redirect(auth_url)
 
 
-
 @spotify_ns.route("/callback")
 class SpotifyCallback(Resource):
     def get(self):
@@ -361,7 +360,7 @@ class TopTracks(Resource):
         try:
             # Fetch the user's top tracks from Spotify
             results = sp.current_user_top_tracks(limit=50)
-            
+
             # Format the results to include only relevant details
             formatted_results = [
                 {
@@ -372,13 +371,17 @@ class TopTracks(Resource):
                 }
                 for track in results["items"]
             ]
-            
+
             return {"tracks": formatted_results}, 200
         except Exception as e:
             print(f"Error fetching top tracks: {e}")
             return {"error": "Failed to fetch top tracks"}, 500
 
+<<<<<<< HEAD
 @spotify_ns.route("/recently-played")
+=======
+
+>>>>>>> origin/main
 class RecentlyPlayed(Resource):
     @auth
     def get(user, self):
