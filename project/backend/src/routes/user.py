@@ -13,6 +13,10 @@ class MeRoute(Resource):
         print(user)
         return user, 200
 
+    def patch(user, self):
+        data = request.get_json()
+        print(data)
+
 
 @user_ns.route('/link-spotify/<username>')
 class LinkSpotifyRoute(Resource):
