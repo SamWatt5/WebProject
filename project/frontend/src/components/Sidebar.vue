@@ -60,7 +60,7 @@ if(user.value && !user.value?.spotify_id) {
 <template>
     <Sidebar collapsible="icon">
         <SidebarHeader class="p-1">
-            <img src="/TrackMates.png" class="rounded-full" />
+            <img src="/TrackMates.png" class="rounded-full hover:animate-spin" />
         </SidebarHeader>
         <SidebarContent class="p-1 pt-4">
             <SidebarMenuButton><RouterLink to="/"><Tooltips item="Home"><House /></Tooltips></RouterLink></SidebarMenuButton>
