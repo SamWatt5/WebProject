@@ -305,7 +305,6 @@ class SpotifyLogin(Resource):
         return redirect(auth_url)
 
 
-
 @spotify_ns.route("/callback")
 class SpotifyCallback(Resource):
     def get(self):
@@ -348,27 +347,71 @@ class LinkSpotifyRoute(Resource):
 class TopTracks(Resource):
     @auth
     def get(user, self):
-        # Retrieve the Spotify access token from the session
-        access_token = session.get("spotify_access_token")
-        if not access_token:
-            return jsonify({"msg": "Token not found"}), 401
+        try:
+            # Initialize Spotify client with the user's token
+            sp = spotipy.Spotify(auth=user["spotify_token"])
+            sp.me()  # Test the token validity
+        except spotipy.exceptions.SpotifyException as e:
+            if e.http_status == 401:  # Token expired
+                refreshed = refreshToken(user)
+                user["spotify_token"] = refreshed["access_token"]
+                sp = spotipy.Spotify(auth=refreshed["access_token"])
 
-        # Fetch the user's top tracks from Spotify
-        sp = spotipy.Spotify(auth=access_token)
-        results = sp.current_user_top_tracks(limit=50)
-        return jsonify(results)
+        try:
+            # Fetch the user's top tracks from Spotify
+            results = sp.current_user_top_tracks(limit=50)
 
+            # Format the results to include only relevant details
+            formatted_results = [
+                {
+                    "name": track["name"],
+                    "artist": ", ".join([artist["name"] for artist in track["artists"]]),
+                    "album": track["album"]["name"],
+                    "link": track["external_urls"]["spotify"]
+                }
+                for track in results["items"]
+            ]
+
+            return {"tracks": formatted_results}, 200
+        except Exception as e:
+            print(f"Error fetching top tracks: {e}")
+            return {"error": "Failed to fetch top tracks"}, 500
+
+<<<<<<< HEAD
 @spotify_ns.route("/recently-played")
+=======
+
+>>>>>>> origin/main
 class RecentlyPlayed(Resource):
     @auth
     def get(user, self):
-        # Retrieve the Spotify access token from the session
-        access_token = session.get("spotify_access_token")
-        if not access_token:
-            return jsonify({"msg": "Token not found"}), 401
+        try:
+            # Initialize Spotify client with the user's token
+            sp = spotipy.Spotify(auth=user["spotify_token"])
+            sp.me()  # Test the token validity
+        except spotipy.exceptions.SpotifyException as e:
+            if e.http_status == 401:  # Token expired
+                refreshed = refreshToken(user)
+                user["spotify_token"] = refreshed["access_token"]
+                sp = spotipy.Spotify(auth=refreshed["access_token"])
 
-        # Fetch the user's recently played tracks from Spotify
-        sp = spotipy.Spotify(auth=access_token)
-        results = sp.current_user_recently_played(limit=10)
-        return jsonify(results)
+        try:
+            # Fetch the user's recently played tracks from Spotify
+            results = sp.current_user_recently_played(limit=10)
 
+            # Format the results to include only relevant details
+            formatted_results = [
+                {
+                    "name": track["track"]["name"],
+                    "artist": ", ".join([artist["name"] for artist in track["track"]["artists"]]),
+                    "album": track["track"]["album"]["name"],
+                    "link": track["track"]["external_urls"]["spotify"],
+                    "cover_art": track["track"]["album"]["images"][0]["url"]  # Link to the cover art
+                }
+                for track in results["items"]
+            ]
+            print(formatted_results[0])
+            return {"recently_played": formatted_results}, 200
+        except Exception as e:
+            print(f"Error fetching recently played tracks: {e}")
+            return {"error": "Failed to fetch recently played tracks"}, 500
