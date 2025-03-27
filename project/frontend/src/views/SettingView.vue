@@ -14,7 +14,30 @@ import { onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useUser } from '@/stores/user';
 
-const { user } = storeToRefs(useUser());
+let { user } = storeToRefs(useUser());
+const { setUser } = useUser();
+
+onMounted(async() => {
+    try {
+      const res = await fetch("/api/user/me", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      const data = await res.json();
+
+      if(!data.error) {
+        setUser(data);
+        console.log("Set user successfully", data);
+        user = data;
+      }
+    //   isLoading.value = false;
+    //   toast.dismiss("loading-data");
+    } catch(err) {
+      console.error(err);
+    }
+});
 
 const formSchema = toTypedSchema(z.object({
     fname: z.string().nonempty({
@@ -37,17 +60,13 @@ const formSchema = toTypedSchema(z.object({
 const form = useForm({
     validationSchema: formSchema,
     initialValues: {
-        fname: user.value?.first_name,
-        lname: '',
-        email: '',
-        username: '',
-        password: ''
+        fname: user.value?.first_name ?? "unknwon",
+        lname: user.value?.last_name ?? "unknwon",
+        email: user.value?.email ?? "unknwon",
+        username: user.value?.username ?? "unknwon",
+        password: user.value?.password
     }
 });
-
-
-
-
 
 
 const showPassword = () => {

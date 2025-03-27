@@ -21,11 +21,6 @@ const music: string[] = Array.from({ length: 50 }).map(
   (_, i) => `Song ${i + 1}`
 );
 
-// Function to handle friend click event
-const friendClick = (friend: string) => {
-    console.log("Friend clicked");
-}
-
 // Using the user store to get and set user data
 let { user, setUser } = useUser();
 // Using the friends store to get and set friends data

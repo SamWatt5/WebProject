@@ -29,6 +29,8 @@ def link_spotify(token, spotify_id, access_token, refresh_token):
     collection.update_one({"_id": ObjectId(token)}, {
                           "$set": {"spotify_id": str(spotify_id), "spotify_token": str(access_token), "spotify_refresh_token": str(refresh_token)}})
 
+def refresh_spotify(id, access_token, refresh_token):
+    collection.update_one({"_id": ObjectId(id)}, { "spotify_token": str(access_token), "spotify_refresh_token": str(refresh_token)})
 
 def add_jwt(email, jwt):
     collection.update_one({"email": email}, {

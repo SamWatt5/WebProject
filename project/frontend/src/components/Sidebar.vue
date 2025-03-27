@@ -12,6 +12,8 @@ import { useUser } from '@/stores/user';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { onMounted } from 'vue';
+import { toast } from 'vue-sonner';
+import { Button } from './ui/button';
 
 const { openMobile, state, setOpenMobile } = useSidebar();
 
@@ -35,6 +37,20 @@ const handleLogout = async () => {
         console.error('Error during logout:', error);
     }
 };
+
+if(user.value && !user.value?.spotify_id) {
+    toast.info("You haven't linked your Spotify Account yet!",{
+            duration: Infinity,
+            id: "spotify-info",
+            dismissible: false,
+            action: {
+                label: "Link Spotify",
+                onClick: () => {
+                    router.push("/settings");
+                }
+            }
+    })
+}
 
 // onMounted(() => {
     

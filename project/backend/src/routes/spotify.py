@@ -9,7 +9,7 @@ from flask import redirect, session, request, jsonify
 from flask_cors import CORS
 
 from ..middleware import auth
-from ..models import find_user_by_username, get_user_from_token, filter_popular
+from ..models import find_user_by_username, get_user_from_token, filter_popular, refresh_spotify
 from flask_restx import Namespace, Resource
 
 from ..models import add_jwt, link_spotify
@@ -32,6 +32,11 @@ scopes = "user-read-email playlist-read-private playlist-read-collaborative, pla
 sp_oauth = SpotifyOAuth(client_id=CLIENT_ID, client_secret=CLIENT_SECRET,
                         redirect_uri=redirect_uri, scope=scopes)
 
+def refreshToken(user):
+    refreshed = sp_oauth.refresh_access_token(user["spotify_refresh_token"])
+    refresh_spotify(user["_id"], refreshed["access_token"], refreshed["refresh_token"])
+
+    return refreshed
 
 @spotify_ns.route("/")
 class HelloWorld(Resource):
@@ -176,6 +181,13 @@ class Blend(Resource):
         friend_id = request.args.get("friend_id")
         if not friend_id:
             return {"error": "Friend ID is required"}, 400
+
+        sp = spotipy.Spotify(auth=user["spotify_token"])
+        try: 
+            sp.me()
+        except spotipy.exceptions.SpotifyException as e:
+            if e.http_status == 401:
+                refreshToken(user)
 
         # Call the blend method with the friend's ID
         return self.blend(user, friend_id)
