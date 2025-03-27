@@ -49,6 +49,10 @@ const form = useForm({
 const isReadonly = ref(true);
 
 const onSubmit = form.handleSubmit(async (values) => {
+    toast.loading('Saving user data...',{
+        id:'loadingMessage',
+        dismissible:false
+    })
     const res = await fetch("/api/auth/update", {
         method: "POST",
         body: JSON.stringify(values),
@@ -60,12 +64,14 @@ const onSubmit = form.handleSubmit(async (values) => {
     if (res.ok) {
         toast.success('Account updated successfully', {
             description: 'Your changes have been saved.',
-            duration: 5000
+            duration: 5000,
+            id:'loadingMessage'
         });
     } else {
         toast.error('Update failed', {
             description: body.error,
-            duration: 5000
+            duration: 5000,
+            id:'loadingMessage'
         });
     }
 });
@@ -81,6 +87,7 @@ const showPassword = () => {
         passwordButton.textContent = "Show Password";
     }
 };
+
 </script>
 
 <template>
@@ -142,7 +149,7 @@ const showPassword = () => {
                         </FormItem>
                     </FormField>
                     <Button type="submit" class="mt-4" @click="isReadonly = false">Edit</Button>
-                    <Button type="button" class="mt-4" variant="link" @click="$router.push('/login')">Confirm</Button>
+                    <Button type="button" class="mt-4" variant="link" @click="$router.push('/login')">Confirm & Save</Button>
                 </form>
             </CardContent>
             <CardFooter></CardFooter>
