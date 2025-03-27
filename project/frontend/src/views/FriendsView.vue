@@ -52,9 +52,9 @@ const isLoading = ref(true);
 
 // Displaying a loading toast message
 toast.loading("Loading user data...", {
-  duration: Infinity,
-  id: "loading-data",
-  dismissible: false
+    duration: Infinity,
+    id: "loading-data",
+    dismissible: false
 });
 
 // Function to refresh user and friends data
@@ -68,13 +68,13 @@ const refresh = async () => {
             }
         });
         const data = await res.json();
-        
-        if(!data.error) {
+
+        if (!data.error) {
             // Setting user data
             setUser(data);
             user = data;
             // Fetching friends data for each friend
-            for(let friend of data.friends) {
+            for (let friend of data.friends) {
                 const res = await fetch(`/api/user/find/${friend}`, {
                     method: "GET",
                     headers: {
@@ -82,9 +82,9 @@ const refresh = async () => {
                     }
                 });
                 const friendData = await res.json();
-                if(!friendData.error) {
+                if (!friendData.error) {
                     // Adding friend data to the friends list
-                    if(friends.value.length == data.friends.length) {
+                    if (friends.value.length == data.friends.length) {
                         toast.dismiss("loading-data");
                         isLoading.value = false;
                         return;
@@ -94,16 +94,16 @@ const refresh = async () => {
             }
         }
 
-      // Updating loading state and dismissing the toast
-      isLoading.value = false;
-      toast.dismiss("loading-data");
-    } catch(err) {
-      console.error(err);
+        // Updating loading state and dismissing the toast
+        isLoading.value = false;
+        toast.dismiss("loading-data");
+    } catch (err) {
+        console.error(err);
     }
 }
 
 // Calling the refresh function when the component is mounted
-onMounted(async() => {
+onMounted(async () => {
     refresh();
 });
 
@@ -159,13 +159,14 @@ onMounted(() => {
                 <div class="grid grid-cols-3 grid-flow-row gap-4">
                     <div v-for="(friend, index) in friends" :key="index">
                         <!-- Friend manage component for each friend -->
-                        <FriendManage :spotify_id="friend.spotify_id" :userName="friend.username" :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]" :userJoined="'December 2021'" />
+                        <FriendManage :spotify_id="friend.spotify_id" :userName="friend.username"
+                            :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]"" />
                     </div>
                 </div>
                 <!-- Displaying a message when there are no friends -->
-                <div class="grid grid-cols-3 grid-flow-row gap-4" v-if="friends.length === 0">
-                    <UserCard :name="'No friends'" :avatar="'NA'" :joined="'Never'" />
-                </div>
+                <div class=" grid grid-cols-3 grid-flow-row gap-4" v-if="friends.length === 0">
+                            <UserCard :name="'No friends'" :avatar="'NA'" :joined="'Never'" />
+                    </div>
             </ScrollArea>
         </div>
     </div>

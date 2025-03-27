@@ -77,8 +77,6 @@ const unfriend = async (username) => {
                 <div class="flex flex-col pl-3">
                     <CardTitle class="text-4xl">@{{ userName }}</CardTitle>
                     <CardDescription class="flex flex-row">
-                        <CalendarDays class="h-8 w-8 mt-1" /><span class="mt-[3px] text-lg ml-1"> Joined {{ userJoined
-                        }}</span>
                     </CardDescription>
                     <!-- <<RouterLink as-child :href="`https://open.spotify.com/user/${name}`">
                 <Spotify class="mt-2 cursor-pointer" />
