@@ -1,12 +1,22 @@
 from flask import request, session, redirect
 from ..models import add_jwt, create_user, find_user_by_username, verify_password
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, reqparse
 from ..middleware import auth
 
 auth_ns = Namespace("auth", description="Authentication operations")
 
 @auth_ns.route("/signup")
 class SignupRoute(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument("fname", type=str, required=True, help="First name is required")
+    parser.add_argument("lname", type=str, required=True, help="Last name is required")
+    parser.add_argument("email", type=str, required=True, help="Email is required")
+    parser.add_argument("username", type=str, required=True, help="Username is required")
+    parser.add_argument("password", type=str, required=True, help="Password is required")
+    parser.add_argument("profilePicUrl", type=str, required=False, help="Profile picture URL is required")
+
+    @auth_ns.doc(description="Creates a new user account")
+    @auth_ns.expect(parser)
     def post(self):
         data = request.get_json()
         print("I've been called")
@@ -44,6 +54,8 @@ class SignupRoute(Resource):
 
 @auth_ns.route("/login")
 class LoginRoute(Resource):
+
+    @auth_ns.doc(description="Logs the user into the application")
     def post(self):
         data = request.get_json()
         if not data:
@@ -66,12 +78,21 @@ class LoginRoute(Resource):
 
 @auth_ns.route("/callback")
 class CallbackRoute(Resource):
+
+    @auth_ns.doc(description="Callback route for Spotify authentication")
+    @auth_ns.doc(params={"code": {
+        "description": "The code provided by Spotify",
+        "in": "query",
+        "type": "string",
+        "required": True
+    }})
     def get(self):
         session["token"] = request.args.get("code")
         return redirect("http://localhost:8080/")
 
 @auth_ns.route("/logout", methods=["POST"])
 class LogoutRoute(Resource):
+    @auth_ns.doc(description="Logs the user out of the application")
     def post(self):
         print("I have been called")
         session.clear()
