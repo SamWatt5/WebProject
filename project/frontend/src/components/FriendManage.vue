@@ -69,13 +69,13 @@ const unfriend = async (username) => {
     <Dialog>
         <!-- <DialogTrigger as-child> -->
         <!-- <UserCard :spotify_id="spotify_id" :name="userName" :avatar="userAvatar" :joined="userJoined" /> -->
-        <Card class="cursor-pointer">
+        <Card class="cursor-pointer w-full">
             <CardHeader class="flex flex-row">
                 <Avatar class="w-20 h-20 mt-2">
                     <AvatarFallback class="text-3xl">{{ userAvatar }}</AvatarFallback>
                 </Avatar>
-                <div class="flex flex-col pl-3">
-                    <CardTitle class="text-4xl">@{{ userName }}</CardTitle>
+                <div class="flex flex-col pl-3 w-full">
+                    <CardTitle class="text-2xl">@{{ userName }}</CardTitle>
                     <CardDescription class="flex flex-row">
                     </CardDescription>
                     <!-- <<RouterLink as-child :href="`https://open.spotify.com/user/${name}`">

@@ -92,7 +92,7 @@ onMounted(() => {
             </SidebarProvider>
             <MobileSidebar v-else />
 
-            <div class="flex flex-col ml-10">
+            <div class="sm:flex hidden flex-col ml-10">
                 <h1 class="text-4xl text-center mb-4">Your Music</h1>
                 <ScrollArea class="w-80 h-[75vh] border rounded-lg">
                     <div class="p-4">
@@ -106,10 +106,10 @@ onMounted(() => {
                     </div>
                 </ScrollArea>
             </div>
-            <Separator orientation="vertical" class="mx-10" />
+            <Separator orientation="vertical" class="hidden sm:inline mx-10" />
         </main>
         <div class="grid grid-cols-3 pt-10 gap-4">
-            <div class="flex flex-row col-span-3 w-full justify-between">
+            <div class="flex flex-col sm:flex-row col-span-3 w-full justify-between">
                 <div class="mx-12">
                     <img src="/TrackMates.png" class="rounded-full h-[300px] w-[300px] hover:animate-spin col-span-2" />
                 </div>

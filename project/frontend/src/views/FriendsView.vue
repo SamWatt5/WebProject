@@ -15,6 +15,8 @@ import { useFriends } from '@/stores/friends';
 import FriendSearch from '@/components/FriendSearch.vue';
 import { storeToRefs } from 'pinia';
 import UserCard from '@/components/UserCard.vue';
+import MobileSidebar from '@/components/MobileSidebar.vue';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 
 const music = ref<string[]>([]); // Reactive array to store music tracks
@@ -117,10 +119,11 @@ onMounted(() => {
     <div class="flex flex-row">
         <main class="flex h-screen items-center place-self-start">
             <!-- Sidebar component -->
-            <SidebarProvider :default-open="false" :open="false">
+            <SidebarProvider v-if="!useIsMobile()" :default-open="false" :open="false">
                 <Sidebar />
             </SidebarProvider>
-            <div class="flex flex-col ml-10">
+            <MobileSidebar v-else />
+            <div class="sm:flex flex-col hidden ml-10">
                 <h1 class="text-4xl text-center mb-4">Your Music</h1>
                 <!-- Scroll area for displaying the list of songs -->
                 <ScrollArea class="w-80 h-[75vh] border rounded-lg">
@@ -135,9 +138,9 @@ onMounted(() => {
                     </div>
                 </ScrollArea>
             </div>
-            <Separator orientation="vertical" class="mx-10" />
+            <Separator orientation="vertical" class="hidden sm:inline mx-10" />
         </main>
-        <div class="flex flex-col pt-10 gap-4 mr-4">
+        <div class="flex flex-col pt-10 gap-4 mr-4 flex-1">
             <!-- Card component for managing friends -->
             <Card class="mt-4 overflow-hidden">
                 <CardHeader>
@@ -156,7 +159,7 @@ onMounted(() => {
             </Card>
             <!-- Scroll area for displaying the list of friends -->
             <ScrollArea class="border rounded-md whitespace-nowrap h-[60vh] p-4">
-                <div class="grid grid-cols-3 grid-flow-row gap-4">
+                <div class="grid sm:grid-cols-2 grid-cols-1 grid-flow-row gap-4 w-full">
                     <div v-for="(friend, index) in friends" :key="index">
                         <!-- Friend manage component for each friend -->
                         <FriendManage :spotify_id="friend.spotify_id" :userName="friend.username"
