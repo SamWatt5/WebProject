@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Card, CardTitle, CardHeader, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardTitle, CardHeader, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import PeopleWatching from "./images/PeopleWatching.vue";
 
 // Define props for the component
@@ -17,6 +17,11 @@ defineProps({
         required: false, // The cover image URL is optional
         default: "", // Default to an empty string if not provided
     },
+    label: {
+        type: Boolean,
+        default: true,
+        required: false,
+    }
 });
 </script>
 
@@ -24,7 +29,7 @@ defineProps({
     <div>
         <Card>
             <CardHeader>
-                <CardTitle>
+                <CardTitle v-if="label">
                     Recently Listened to
                 </CardTitle>
             </CardHeader>
@@ -44,6 +49,7 @@ defineProps({
                     <CardDescription>{{ artist }}</CardDescription>
                 </div>
             </CardContent>
+            <CardFooter v-if="!label"></CardFooter>
         </Card>
     </div>
 </template>

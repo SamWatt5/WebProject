@@ -3,7 +3,7 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import Sidebar from '@/components/Sidebar.vue';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ListeningToCard from './ListeningToCard.vue';
 import { useUser } from '@/stores/user';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -109,20 +109,28 @@ onMounted(() => {
             <Separator orientation="vertical" class="mx-10" />
         </main>
         <div class="grid grid-cols-3 pt-10 gap-4">
-            <div class="w-full display-inline">
-                <img src="/TrackMates.png" class="rounded-full w-auto h-[300px] hover:animate-spin col-span-2" />
+            <div class="flex flex-row col-span-3 w-full justify-evenly">
+                <div class="mx-4">
+                    <img src="/TrackMates.png" class="rounded-full h-[300px] w-[300px] hover:animate-spin col-span-2" />
+                </div>
+                
+                <Card>
+                    <CardHeader>
+                        <CardTitle class="text-4xl">Hey, @<span class="text-cyan-500 font-semibold">{{ user?.username }}</span></CardTitle>
+                    </CardHeader>
+                    <CardContent class="flex flex-col space-y-1">
+                        <div class="flex flex-row">You've listened to <span class="font-semibold inline">&nbsp;{{ recentlyPlayed.length }} </span>&nbsp;tracks recently. Your most recent song is:</div>
+                        <ListeningToCard v-if="recentlyPlayed[0]" :title="recentlyPlayed[0]?.title" :artist="recentlyPlayed[0]?.artist" :cover-image="recentlyPlayed[0]?.coverImage" :label="false"/>
+                    </CardContent>
+                </Card>
             </div>
-            
-            <Card class="h-[125px] w-[400px] col-span-2">
-                <p>test</p>
-            </Card>
             
             <Card class="h-[125px] w-[200px] col-span-1 row-start-2">
                 <p>hello</p>
             </Card>
 
-            <div class="w-full col-span-3 flex flex-col h-full">
-                <ScrollArea class="border rounded-md col-span-3 w-[95%] mt-4 whitespace-nowrap mt-auto">
+            <div class="w-full col-span-3 flex flex-col h-full mb-12">
+                <ScrollArea class="border rounded-md col-span-3 w-[95%] mb-12 whitespace-nowrap mt-auto">
                     <div class="flex p-4 space-x-4 w-max mt-auto">
                         <ListeningToCard
                             v-for="(track, index) in recentlyPlayed"
