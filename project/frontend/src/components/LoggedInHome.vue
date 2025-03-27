@@ -3,17 +3,26 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import Sidebar from '@/components/Sidebar.vue';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Card, CardDescription, CardTitle, CardHeader, CardContent } from '@/components/ui/card';
-import { CalendarDays } from "lucide-vue-next";
-import UserCard from './UserCard.vue';
+import { Card } from '@/components/ui/card';
 import ListeningToCard from './ListeningToCard.vue';
 import { useUser } from '@/stores/user';
 import { useIsMobile } from '@/hooks/use-mobile';
 import MobileSidebar from './MobileSidebar.vue';
-import SongCard from './SongCard.vue';
-import { ref, onMounted } from "vue";
+import { ref, onMounted } from 'vue';
 
-const music = ref<string[]>([]); // Reactive array to store music tracks
+// Reactive array to store music tracks
+const music = ref<string[]>([]);
+
+// Reactive array to store recently played tracks
+interface RecentlyPlayedTrack {
+    title: string;
+    artist: string;
+    coverImage: string;
+}
+
+const recentlyPlayed = ref<RecentlyPlayedTrack[]>([]);
+
+// Fetch top tracks from the API
 const fetchTopTracks = async () => {
     try {
         const response = await fetch('/api/spotify/top-tracks', {
@@ -37,10 +46,41 @@ const fetchTopTracks = async () => {
     }
 };
 
+// Fetch recently played tracks from the API
+const fetchRecentlyPlayed = async () => {
+    try {
+        const response = await fetch('/api/spotify/recently-played', {
+            method: 'GET',
+            credentials: 'include', // Include cookies for authentication
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            console.error('Failed to fetch recently played tracks:', response.statusText);
+            return;
+        }
+
+        const data = await response.json();
+        // Map the response to extract relevant details
+        recentlyPlayed.value = data.recently_played.map((track: any) => ({
+            title: track.name, // Match the prop name expected by ListeningToCard
+            artist: track.artist,
+            coverImage: track.cover_art, // Match the prop name expected by ListeningToCard
+        }));
+        console.log('Recently played tracks:', recentlyPlayed.value);
+    } catch (error) {
+        console.error('Error fetching recently played tracks:', error);
+    }
+};
+
 const { user } = useUser();
-// Fetch top tracks when the component is mounted
+
+// Fetch data when the component is mounted
 onMounted(() => {
     fetchTopTracks();
+    fetchRecentlyPlayed();
 });
 </script>
 
@@ -83,24 +123,16 @@ onMounted(() => {
 
             <div class="w-full col-span-3 flex flex-col h-full">
                 <ScrollArea class="border rounded-md col-span-3 w-[95%] mt-4 whitespace-nowrap mt-auto">
-                <div class="flex p-4 space-x-4 w-max mt-auto">
-                    <ListeningToCard />
-                    <ListeningToCard />
-                    <ListeningToCard />
-                    <ListeningToCard />
-                    <ListeningToCard />
-                    <ListeningToCard />
-                    <ListeningToCard />
-                    <ListeningToCard />
-                    <ListeningToCard />
-                    <ListeningToCard />
-                    <ListeningToCard />
-                    <ListeningToCard />
-                    <ListeningToCard />
-                    <ListeningToCard />
-                    <ListeningToCard />
-                </div>
-                <ScrollBar orientation="horizontal" />
+                    <div class="flex p-4 space-x-4 w-max mt-auto">
+                        <ListeningToCard
+                            v-for="(track, index) in recentlyPlayed"
+                            :key="index"
+                            :title="track.title"
+                            :artist="track.artist"
+                            :coverImage="track.coverImage"
+                        />
+                    </div>
+                    <ScrollBar orientation="horizontal" />
                 </ScrollArea>
             </div>
         </div>

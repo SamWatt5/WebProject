@@ -378,6 +378,7 @@ class TopTracks(Resource):
             print(f"Error fetching top tracks: {e}")
             return {"error": "Failed to fetch top tracks"}, 500
 
+@spotify_ns.route("/recently-played")
 class RecentlyPlayed(Resource):
     @auth
     def get(user, self):
@@ -394,7 +395,20 @@ class RecentlyPlayed(Resource):
         try:
             # Fetch the user's recently played tracks from Spotify
             results = sp.current_user_recently_played(limit=10)
-            return results, 200
+
+            # Format the results to include only relevant details
+            formatted_results = [
+                {
+                    "name": track["track"]["name"],
+                    "artist": ", ".join([artist["name"] for artist in track["track"]["artists"]]),
+                    "album": track["track"]["album"]["name"],
+                    "link": track["track"]["external_urls"]["spotify"],
+                    "cover_art": track["track"]["album"]["images"][0]["url"]  # Link to the cover art
+                }
+                for track in results["items"]
+            ]
+            print(formatted_results[0])
+            return {"recently_played": formatted_results}, 200
         except Exception as e:
             print(f"Error fetching recently played tracks: {e}")
             return {"error": "Failed to fetch recently played tracks"}, 500
