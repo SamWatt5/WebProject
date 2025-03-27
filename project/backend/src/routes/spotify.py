@@ -377,11 +377,7 @@ class TopTracks(Resource):
             print(f"Error fetching top tracks: {e}")
             return {"error": "Failed to fetch top tracks"}, 500
 
-<<<<<<< HEAD
 @spotify_ns.route("/recently-played")
-=======
-
->>>>>>> origin/main
 class RecentlyPlayed(Resource):
     @auth
     def get(user, self):
