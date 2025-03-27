@@ -109,12 +109,12 @@ onMounted(() => {
             <Separator orientation="vertical" class="mx-10" />
         </main>
         <div class="grid grid-cols-3 pt-10 gap-4">
-            <div class="flex flex-row col-span-3 w-full justify-evenly">
-                <div class="mx-4">
+            <div class="flex flex-row col-span-3 w-full justify-between">
+                <div class="mx-12">
                     <img src="/TrackMates.png" class="rounded-full h-[300px] w-[300px] hover:animate-spin col-span-2" />
                 </div>
                 
-                <Card>
+                <Card class="flex-1 mr-4">
                     <CardHeader>
                         <CardTitle class="text-4xl">Hey, @<span class="text-cyan-500 font-semibold">{{ user?.username }}</span></CardTitle>
                     </CardHeader>
