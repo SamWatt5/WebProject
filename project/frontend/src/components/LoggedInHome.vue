@@ -124,10 +124,7 @@ onMounted(() => {
                     </CardContent>
                 </Card>
             </div>
-            
-            <Card class="h-[125px] w-[200px] col-span-1 row-start-2">
-                <p>hello</p>
-            </Card>
+
 
             <div class="w-full col-span-3 flex flex-col h-full mb-12">
                 <ScrollArea class="border rounded-md col-span-3 w-[95%] mb-12 whitespace-nowrap mt-auto">
