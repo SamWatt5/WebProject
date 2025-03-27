@@ -194,13 +194,8 @@ class Blend(Resource):
                 refreshToken(user)
 
         temp = find_user(friend_id, True)
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
         print(temp)
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
         if not temp:
             return {"error": "Friend not found"}, 404
 
