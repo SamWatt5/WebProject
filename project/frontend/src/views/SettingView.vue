@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+import { SidebarProvider } from '@/components/ui/sidebar';
+import Sidebar from '@/components/Sidebar.vue';
+import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -98,10 +102,18 @@ const showPassword = () => {
 </script>
 
 <template>
-    <main>
+    
+    <main class="flex h-screen items-center place-self-start">
+            <SidebarProvider :default-open="false" :open="false">
+                <Sidebar />
+            </SidebarProvider>
+            
+            
+        
+
         <Card class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 sm:w-1/2 w-[95%]">
             <CardHeader>
-                <CardTitle><h1 class="text-3xl text-center">Register</h1></CardTitle>
+                <CardTitle><h1 class="text-3xl text-center">Your account info</h1></CardTitle>
             </CardHeader>
             <CardContent>
                 <form @submit="onSubmit">
@@ -151,8 +163,8 @@ const showPassword = () => {
                             <FormMessage />
                         </FormItem>
                     </FormField>
-                    <Button type="submit" class="mt-4">Register</Button>
-                    <Button type="button" class="mt-4" variant="link" @click="$router.push('/login')">Login</Button>
+                    <Button type="submit" class="mt-4">Edit</Button>
+                    <Button type="button" class="mt-4" variant="link" @click="$router.push('/login')">Confirm</Button>
                 </form>
             </CardContent>
             <CardFooter></CardFooter>
