@@ -273,7 +273,10 @@ class Blend(Resource):
             }
         except spotipy.exceptions.SpotifyException as e:
             print(f"Spotify API error: {e}")
-            return {"error": "Failed to blend playlists"}, 500
+            {"error": "Failed to blend playlists"}, 500
+        except IndexError as e:
+            print(f"List index out of range: {e}")
+            return {"error": "An error occurred while blending playlists"}, 500
         except Exception as e:
             print(f"Unexpected error: {e}")
             return {"error": "An unexpected error occurred"}, 500
