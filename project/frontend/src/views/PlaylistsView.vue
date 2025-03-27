@@ -5,6 +5,7 @@ import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import PlaylistCard from '@/components/PlaylistCard.vue';
+import { toast } from 'vue-sonner';
 
 // Extra imports for the friends components
 import UserCard from '@/components/UserCard.vue';
@@ -47,14 +48,15 @@ interface Track {
     trackTitle: string;
     href: string;
     artists: { href: string; name: string }[];
-    popularity: number;
-    durationMs: number;
+    cover: string;
 }
 
 const friendId = ref(""); // Input for friend's ID
 const recommendations = ref<Track[]>([]); // Store recommendations
 const errorMessage = ref(""); // Store error messages
 const successMessage = ref(""); // Store success messages
+const isPlaylistCreated = ref(false)
+
 
 const fetchBlend = async () => {
     errorMessage.value = "";
@@ -62,6 +64,11 @@ const fetchBlend = async () => {
     recommendations.value = [];
 
     try {
+        toast.loading('Loading blended playlist...', {
+            id: 'loadingMessage',
+            dismissible: false
+        });
+
         const response = await fetch(
             `/api/spotify/blend?friend_id=${friendId.value}`,
             {
@@ -76,7 +83,16 @@ const fetchBlend = async () => {
         if (!response.ok) {
             const errorData = await response.json();
             errorMessage.value = errorData.error || "Failed to fetch blended playlist.";
-            return;
+            toast.error('Update failed', {
+                duration: 5000,
+                id: 'loadingMessage'
+            });
+        } else {
+            toast.success('Playlists Blended', {
+                description: 'Playlist created.',
+                duration: 5000,
+                id: 'loadingMessage'
+            });
         }
 
         const data = await response.json();
@@ -86,8 +102,7 @@ const fetchBlend = async () => {
             trackTitle: track.title,
             href: track.link,
             artists: [{ href: "", name: track.artist }], // Assuming a single artist for simplicity
-            popularity: 0, // Popularity is not provided in the response
-            durationMs: 0, // Duration is not provided in the response
+            cover: track.cover
         }));
     } catch (error) {
         errorMessage.value = "An error occurred while fetching the blended playlist.";
@@ -208,11 +223,15 @@ onMounted(() => {
                     <CardDescription></CardDescription>
                 </CardHeader>
                 <CardContent>
+                    <button v-if="recommendations.length > 0 && !isPlaylistCreated" @click="createPlaylist"
+                        class="bg-green-500 text-white px-4 py-2 rounded mt-4">
+                        Create Playlist
+                    </button>
                     <ScrollArea class="h-[80vh]">
                         <div v-for="(track, index) in recommendations" :key="index">
                             <PlaylistCard :title="track.trackTitle"
                                 :artist="track.artists.map(artist => artist.name).join(', ')"
-                                :coverImage="track.href" />
+                                :coverImage="track.cover" />
                         </div>
                         <ScrollBar />
                     </ScrollArea>

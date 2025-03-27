@@ -106,7 +106,8 @@ class RecommendRoute(Resource):
 
 @spotify_ns.route("/create_playlist")
 class CreatePlaylist(Resource):
-    def post(self):
+    @auth
+    def post(user, self):
         # Parse the request body
         data = request.get_json()
         print(data)
@@ -115,7 +116,7 @@ class CreatePlaylist(Resource):
             return {"error": "No track IDs provided"}, 400
 
             # Retrieve the Spotify access token from the session
-        access_token = session.get("spotify_access_token")
+        access_token = user["spotify_token"]
         if not access_token:
             return {"msg": "Token not found"}, 401
 
@@ -270,6 +271,7 @@ class Blend(Resource):
                     "title": track["name"],
                     "artist": track["artists"][0]["name"],
                     "link": track["external_urls"]["spotify"],
+                    "cover": track["album"]["images"][0]["url"]
                 } for track in combined_tracks if track and isinstance(track, dict)]
             }
         except spotipy.exceptions.SpotifyException as e:
@@ -377,6 +379,7 @@ class TopTracks(Resource):
             print(f"Error fetching top tracks: {e}")
             return {"error": "Failed to fetch top tracks"}, 500
 
+
 @spotify_ns.route("/recently-played")
 class RecentlyPlayed(Resource):
     @auth
@@ -402,7 +405,8 @@ class RecentlyPlayed(Resource):
                     "artist": ", ".join([artist["name"] for artist in track["track"]["artists"]]),
                     "album": track["track"]["album"]["name"],
                     "link": track["track"]["external_urls"]["spotify"],
-                    "cover_art": track["track"]["album"]["images"][0]["url"]  # Link to the cover art
+                    # Link to the cover art
+                    "cover_art": track["track"]["album"]["images"][0]["url"]
                 }
                 for track in results["items"]
             ]
