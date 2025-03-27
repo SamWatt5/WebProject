@@ -64,7 +64,7 @@ class FriendsRoute(Resource):
         return list, 200
 
 
-@user_ns.route('/friend/<username>')
+@user_ns.route('/friends/<username>')
 class AddFriendRoute(Resource):
     @auth
     def post(user, token, self, username):
