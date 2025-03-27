@@ -55,6 +55,7 @@ const friendId = ref(""); // Input for friend's ID
 const recommendations = ref<Track[]>([]); // Store recommendations
 const errorMessage = ref(""); // Store error messages
 const successMessage = ref(""); // Store success messages
+const isPlaylistCreated = ref(false)
 
 
 const fetchBlend = async () => {
@@ -83,9 +84,9 @@ const fetchBlend = async () => {
             const errorData = await response.json();
             errorMessage.value = errorData.error || "Failed to fetch blended playlist.";
             toast.error('Update failed', {
-            duration: 5000,
-            id: 'loadingMessage'
-        });
+                duration: 5000,
+                id: 'loadingMessage'
+            });
         } else {
             toast.success('Playlists Blended', {
                 description: 'Playlist created.',
@@ -222,7 +223,7 @@ onMounted(() => {
                     <CardDescription></CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <button v-if="recommendations.length > 0 && " @click="createPlaylist"
+                    <button v-if="recommendations.length > 0 && !isPlaylistCreated" @click="createPlaylist"
                         class="bg-green-500 text-white px-4 py-2 rounded mt-4">
                         Create Playlist
                     </button>
