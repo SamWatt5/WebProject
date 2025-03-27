@@ -13,6 +13,7 @@ import { toast } from 'vue-sonner';
 import { onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useUser } from '@/stores/user';
+import { ref } from 'vue';
 
 const { user } = storeToRefs(useUser());
 
@@ -45,7 +46,13 @@ const form = useForm({
     }
 });
 
+const isReadonly = ref(true);
+
 const onSubmit = form.handleSubmit(async (values) => {
+    toast.loading('Saving user data...',{
+        id:'loadingMessage',
+        dismissible:false
+    })
     const res = await fetch("/api/auth/update", {
         method: "POST",
         body: JSON.stringify(values),
@@ -57,12 +64,14 @@ const onSubmit = form.handleSubmit(async (values) => {
     if (res.ok) {
         toast.success('Account updated successfully', {
             description: 'Your changes have been saved.',
-            duration: 5000
+            duration: 5000,
+            id:'loadingMessage'
         });
     } else {
         toast.error('Update failed', {
             description: body.error,
-            duration: 5000
+            duration: 5000,
+            id:'loadingMessage'
         });
     }
 });
@@ -78,6 +87,7 @@ const showPassword = () => {
         passwordButton.textContent = "Show Password";
     }
 };
+
 </script>
 
 <template>
@@ -96,7 +106,7 @@ const showPassword = () => {
                         <FormItem class="pb-4">
                             <FormLabel>First Name</FormLabel>
                             <FormControl>
-                                <Input type="text" placeholder="First Name" v-bind="componentField" />
+                                <Input type="text" placeholder="First Name" v-bind="componentField" :readonly="isReadonly" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -105,7 +115,7 @@ const showPassword = () => {
                         <FormItem class="pb-4">
                             <FormLabel>Last Name</FormLabel>
                             <FormControl>
-                                <Input type="text" placeholder="Last Name" v-bind="componentField" />
+                                <Input type="text" placeholder="Last Name" v-bind="componentField" :readonly="isReadonly" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -114,7 +124,7 @@ const showPassword = () => {
                         <FormItem class="pb-4">
                             <FormLabel>Email</FormLabel>
                             <FormControl>
-                                <Input type="email" placeholder="Email" v-bind="componentField" />
+                                <Input type="email" placeholder="Email" v-bind="componentField" :readonly="isReadonly"/>
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -123,7 +133,7 @@ const showPassword = () => {
                         <FormItem class="pb-4">
                             <FormLabel>Username</FormLabel>
                             <FormControl>
-                                <Input type="text" placeholder="Username" v-bind="componentField" />
+                                <Input type="text" placeholder="Username" v-bind="componentField" :readonly="isReadonly"/>
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -132,14 +142,14 @@ const showPassword = () => {
                         <FormItem class="pb-4">
                             <FormLabel>Password</FormLabel>
                             <FormControl>
-                                <Input id="password" type="password" placeholder="Password" v-bind="componentField" />
+                                <Input id="password" type="password" placeholder="Password" v-bind="componentField" :readonly="isReadonly"/>
                             </FormControl>
                             <FormDescription><Button id="password-button" @click="showPassword" type="button" variant="outline">Show Password</Button></FormDescription>
                             <FormMessage />
                         </FormItem>
                     </FormField>
-                    <Button type="submit" class="mt-4">Edit</Button>
-                    <Button type="button" class="mt-4" variant="link" @click="$router.push('/login')">Confirm</Button>
+                    <Button type="submit" class="mt-4" @click="isReadonly = false">Edit</Button>
+                    <Button type="button" class="mt-4" variant="link" @click="$router.push('/login')">Confirm & Save</Button>
                 </form>
             </CardContent>
             <CardFooter></CardFooter>
