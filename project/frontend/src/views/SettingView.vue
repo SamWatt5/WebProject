@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { SidebarProvider } from '@/components/ui/sidebar';
 import Sidebar from '@/components/Sidebar.vue';
-import { Separator } from '@/components/ui/separator';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -12,6 +10,11 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { useForm } from 'vee-validate';
 import Darkmode from '@/components/Darkmode.vue';
 import { toast } from 'vue-sonner';
+import { onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useUser } from '@/stores/user';
+
+const { user } = storeToRefs(useUser());
 
 const formSchema = toTypedSchema(z.object({
     fname: z.string().nonempty({
@@ -34,82 +37,37 @@ const formSchema = toTypedSchema(z.object({
 const form = useForm({
     validationSchema: formSchema,
     initialValues: {
-        fname: '',
+        fname: user.value?.first_name,
         lname: '',
         email: '',
         username: '',
         password: ''
     }
-})
+});
 
-const onSubmit = form.handleSubmit(async (values) => {
-    const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        body: JSON.stringify(values),
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
-    let body = await res.json();
-    if (res.ok) {
-        toast.success('Registration successful', {
-            description: 'Logging in...',
-            duration: 5000
-        });
 
-        // Automatically log in the user
-        const loginRes = await fetch("/api/auth/login", {
-            method: "POST",
-            body: JSON.stringify({ username: values.username, password: values.password }),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        let loginBody = await loginRes.json();
-        if (loginRes.ok) {
-            toast.success('Login successful', {
-                description: 'Redirecting...',
-                duration: 5000
-            });
-            setTimeout(() => {
-                location.href = "/api/auth/callback?code=" + loginBody.code;
-            }, 2000);
-        } else {
-            toast.error('Login attempt failed', {
-                description: loginBody.error,
-                duration: 5000
-            });
-        }
-    } else {
-        toast.error('Register attempt failed', {
-            description: body.error,
-            duration: 5000
-        });
-    }
-})
+
+
+
 
 const showPassword = () => {
     const passwordInput = document.getElementById("password") as HTMLInputElement;
     const passwordButton = document.getElementById("password-button") as HTMLButtonElement;
-    if(passwordInput.type === "password") {
+    if (passwordInput.type === "password") {
         passwordInput.type = "text";
         passwordButton.textContent = "Hide Password";
     } else {
         passwordInput.type = "password";
         passwordButton.textContent = "Show Password";
     }
-}
+};
 </script>
 
 <template>
-    
     <main class="flex h-screen items-center place-self-start">
-            <SidebarProvider :default-open="false" :open="false">
-                <Sidebar />
-            </SidebarProvider>
-            
-            
-        
+        <SidebarProvider :default-open="false" :open="false">
+            <Sidebar />
+        </SidebarProvider>
 
         <Card class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 sm:w-1/2 w-[95%]">
             <CardHeader>
@@ -130,7 +88,7 @@ const showPassword = () => {
                         <FormItem class="pb-4">
                             <FormLabel>Last Name</FormLabel>
                             <FormControl>
-                                <Input type="text" placeholder="Last Name" v-bind="componentField" />
+                                <Input type="text" placeholder="First Name" v-bind="componentField" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -170,7 +128,7 @@ const showPassword = () => {
             <CardFooter></CardFooter>
         </Card>
         <div class="absolute bottom-4 right-4">
-            <Darkmode />
+            
         </div>
     </main>
 </template>
