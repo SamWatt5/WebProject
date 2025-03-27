@@ -90,8 +90,8 @@ const showPassword = () => {
 
 
 const deleteAccount = async () => {
-    const res = await fetch("/api/auth/delete", {
-        method: "POST",
+    const res = await fetch("/api/user/me", {
+        method: "DELETE",
         headers: {
             "Content-Type": "application/json"
         }
