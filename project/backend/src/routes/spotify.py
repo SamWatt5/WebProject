@@ -195,7 +195,10 @@ class Blend(Resource):
 
         temp = find_user(friend_id, True)
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         print(temp)
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         if not temp:
