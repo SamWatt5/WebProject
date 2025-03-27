@@ -88,6 +88,33 @@ const showPassword = () => {
     }
 };
 
+const redirectToSpotifyLogin = () => {
+    window.location.href = "/api/spotify/login"; // Redirect to Spotify login endpoint
+};
+
+const deleteAccount = () => {
+    const res = fetch("/api/auth/delete", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    if (res.ok) {
+        toast.success('Account deleted successfully', {
+            description: 'Your account has been deleted.',
+            duration: 5000
+        });
+        setTimeout(() => {
+            location.href = "/";
+        }, 2000);
+    } else {
+        toast.error('Delete failed', {
+            description: 'An error occurred while deleting your account.',
+            duration: 5000
+        });
+    }
+};
+
 </script>
 
 <template>
@@ -150,6 +177,12 @@ const showPassword = () => {
                     </FormField>
                     <Button type="submit" class="mt-4" @click="isReadonly = false">Edit</Button>
                     <Button type="button" class="mt-4" variant="link" @click="$router.push('/login')">Confirm & Save</Button>
+                    <button @click="redirectToSpotifyLogin" class="float-right mt-4 bg-green-500 text-white px-4 py-2 rounded mb-4">
+                        Login to Spotify
+                    </button>
+                    <button @click="deleteAccount" class="clear-both float-left mt-2 bg-red-500 text-white px-4 py-2 rounded mb-4">
+                        Delete Account
+                    </button>
                 </form>
             </CardContent>
             <CardFooter></CardFooter>
