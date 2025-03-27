@@ -180,6 +180,21 @@ class Blend(Resource):
         # Call the blend method with the friend's ID
         return self.blend(friend_id)
 
+    def get_playlist_tracks(self, spotipy_returned):
+        access_token = session.get("spotify_access_token")
+        if not access_token:
+            return {"msg": "Token not found"}, 401
+
+        # Initialize Spotify client
+        sp = spotipy.Spotify(auth=access_token)
+        user_tracks = []
+        for playlist in spotipy_returned["items"]:
+            playlist_tracks = sp.playlist_items(playlist["id"])
+            for item in playlist_tracks["items"]:
+                if "track" in item:
+                    user_tracks.append(item["track"])
+        return user_tracks
+
     def blend(self, friend_id):
         # Retrieve the Spotify access token from the session
         access_token = session.get("spotify_access_token")
@@ -191,48 +206,33 @@ class Blend(Resource):
             sp = spotipy.Spotify(auth=access_token)
 
             # Fetch the current user's playlists
-            user_playlists = sp.current_user_playlists()
-            user_tracks = []
-            for playlist in user_playlists["items"]:
-                playlist_tracks = sp.playlist_items(playlist["id"])
-                for item in playlist_tracks["items"]:
-                    if "track" in item:
-                        user_tracks.append(item["track"])
+            user_tracks = self.get_playlist_tracks(sp.current_user_playlists())
+
             # Fetch the friend's playlists
             friend = get_user_from_token(friend_id)
             # print(friend)
             if not friend or "spotify_id" not in friend:
                 return {"error": "Friend's Spotify account not linked"}, 404
 
-            friend_playlists = sp.user_playlists(
-                friend["spotify_id"], limit=50)
-            # print(f"{friend_playlists}\n\n")
-            friend_tracks = []
-            for playlist in friend_playlists["items"]:
-                friend_playlist_tracks = sp.playlist_items(playlist["id"])
-                if not friend_playlist_tracks or "items" not in friend_playlist_tracks:
-                    continue
-                for track in friend_playlist_tracks["items"]:
-                    if "track" in track and isinstance(track["track"], dict):
-                        # store the dict, not just the name
-                        friend_tracks.append(track["track"])
-            print(f"{friend_tracks}\n\n")
+            friend_tracks = self.get_playlist_tracks(sp.user_playlists(
+                friend["spotify_id"], limit=50))
+            # print(f"{friend_tracks}\n\n")
 
             # Combine and shuffle tracks
-            combined_tracks = user_tracks + friend_tracks
-            track_uris = [
-                track["uri"] for track in combined_tracks if "uri" in track
-            ]
+            combined_tracks = []
+            for track in user_tracks:
+                if track in friend_tracks:
+                    combined_tracks.append(track)
+            print(combined_tracks[0])
 
             # Return the blended playlist
             return {
                 "playlist": [{
-                    "id": track["track"]["id"],
-                    "title": track["track"]["name"],
-                    "artist": track["track"]["artists"][0]["name"],
-                    "link": track["track"]["external_urls"]["spotify"],
-                    "cover": track["track"]["album"]["images"][0]["url"]
-                } for track in combined_tracks if track and isinstance(track, dict) and "track" in track]
+                    "id": track["id"],
+                    "title": track["name"],
+                    "artist": track["artists"][0]["name"],
+                    "link": track["external_urls"]["spotify"],
+                } for track in combined_tracks if track and isinstance(track, dict)]
             }
         except spotipy.exceptions.SpotifyException as e:
             print(f"Spotify API error: {e}")
