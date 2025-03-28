@@ -18,6 +18,7 @@ interface RecentlyPlayedTrack {
     title: string;
     artist: string;
     coverImage: string;
+    link: string;
 }
 
 const recentlyPlayed = ref<RecentlyPlayedTrack[]>([]);
@@ -113,14 +114,18 @@ onMounted(() => {
                 <div class="mx-12">
                     <img src="/TrackMates.png" class="rounded-full h-[300px] w-[300px] hover:animate-spin col-span-2" />
                 </div>
-                
+
                 <Card class="flex-1 mr-4">
                     <CardHeader>
-                        <CardTitle class="text-4xl">Hey, @<span class="text-cyan-500 font-semibold">{{ user?.username }}</span></CardTitle>
+                        <CardTitle class="text-4xl">Hey, @<span class="text-cyan-500 font-semibold">{{ user?.username
+                                }}</span></CardTitle>
                     </CardHeader>
                     <CardContent class="flex flex-col space-y-1">
-                        <div class="flex flex-row">You've listened to <span class="font-semibold inline">&nbsp;{{ recentlyPlayed.length }} </span>&nbsp;tracks recently. Your most recent song is:</div>
-                        <ListeningToCard v-if="recentlyPlayed[0]" :title="recentlyPlayed[0]?.title" :artist="recentlyPlayed[0]?.artist" :cover-image="recentlyPlayed[0]?.coverImage" :label="false"/>
+                        <div class="flex flex-row">You've listened to <span class="font-semibold inline">&nbsp;{{
+                            recentlyPlayed.length }} </span>&nbsp;tracks recently. Your most recent song is:</div>
+                        <ListeningToCard v-if="recentlyPlayed[0]" :title="recentlyPlayed[0]?.title"
+                            :artist="recentlyPlayed[0]?.artist" :cover-image="recentlyPlayed[0]?.coverImage"
+                            :link="recentlyPlayed[0].link" :label="false" />
                     </CardContent>
                 </Card>
             </div>
@@ -129,13 +134,8 @@ onMounted(() => {
             <div class="w-full col-span-3 flex flex-col h-full mb-12">
                 <ScrollArea class="border rounded-md col-span-3 w-[95%] mb-12 whitespace-nowrap mt-auto">
                     <div class="flex p-4 space-x-4 w-max mt-auto">
-                        <ListeningToCard
-                            v-for="(track, index) in recentlyPlayed"
-                            :key="index"
-                            :title="track.title"
-                            :artist="track.artist"
-                            :coverImage="track.coverImage"
-                        />
+                        <ListeningToCard v-for="(track, index) in recentlyPlayed" :key="index" :title="track.title"
+                            :artist="track.artist" :coverImage="track.coverImage" :link="track.link" />
                     </div>
                     <ScrollBar orientation="horizontal" />
                 </ScrollArea>
