@@ -32,25 +32,27 @@ defineProps({
 
 <template>
     <div>
-        <Card>
-            <CardHeader>
-                <CardTitle v-if="label">
-                    Recently Listened to
-                </CardTitle>
-            </CardHeader>
-            <CardContent class="flex flex-row items-center">
-                <!-- Display the cover image if provided -->
-                <a :href="link" v-if="coverImage"><img :src="coverImage" alt="Cover Art"
-                        class="w-16 h-16 rounded-md object-cover" /></a>
-                <PeopleWatching v-else /> <!-- Fallback icon if no cover image is provided -->
-                <div class="ml-4">
-                    <!-- Display the track title -->
-                    <p class="font-bold">{{ title }}</p>
-                    <!-- Display the artist name -->
-                    <CardDescription>{{ artist }}</CardDescription>
-                </div>
-            </CardContent>
-            <CardFooter v-if="!label"></CardFooter>
-        </Card>
+        <a :href="link">
+            <Card>
+                <CardHeader>
+                    <CardTitle v-if="label">
+                        Recently Listened to
+                    </CardTitle>
+                </CardHeader>
+                <CardContent class="flex flex-row items-center">
+                    <!-- Display the cover image if provided -->
+                    <img v-if="coverImage" :src="coverImage" alt="Cover Art"
+                        class="w-16 h-16 rounded-md object-cover" />
+                    <PeopleWatching v-else /> <!-- Fallback icon if no cover image is provided -->
+                    <div class="ml-4">
+                        <!-- Display the track title -->
+                        <p class="font-bold">{{ title }}</p>
+                        <!-- Display the artist name -->
+                        <CardDescription>{{ artist }}</CardDescription>
+                    </div>
+                </CardContent>
+                <CardFooter v-if="!label"></CardFooter>
+            </Card>
+        </a>
     </div>
 </template>

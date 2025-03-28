@@ -334,7 +334,7 @@ class SpotifyCallback(Resource):
         link_spotify(token, spotify_id, access_token, refresh_token)
 
         # Redirect the user to the recommendations page
-        return redirect(f"http://localhost:8080/recommend")
+        return redirect(f"http://localhost:8080/settings")
 
 
 @spotify_ns.route("/link-spotify")

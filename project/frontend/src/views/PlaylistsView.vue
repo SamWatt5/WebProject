@@ -66,9 +66,9 @@ const isPlaylistCreated = ref(false)
 
 // Displaying a loading toast message
 toast.loading("Loading user data...", {
-  duration: Infinity,
-  id: "loading-data",
-  dismissible: false
+    duration: Infinity,
+    id: "loading-data",
+    dismissible: false
 });
 
 
@@ -91,13 +91,13 @@ const refresh = async () => {
             }
         });
         const data = await res.json();
-        
-        if(!data.error) {
+
+        if (!data.error) {
             // Setting user data
             setUser(data);
             user = data;
             // Fetching friends data for each friend
-            for(let friend of data.friends) {
+            for (let friend of data.friends) {
                 const res = await fetch(`/api/user/find/${friend}`, {
                     method: "GET",
                     headers: {
@@ -105,9 +105,9 @@ const refresh = async () => {
                     }
                 });
                 const friendData = await res.json();
-                if(!friendData.error) {
+                if (!friendData.error) {
                     // Adding friend data to the friends list
-                    if(friends.value.length == data.friends.length) {
+                    if (friends.value.length == data.friends.length) {
                         toast.dismiss("loading-data");
                         isLoading.value = false;
                         return;
@@ -117,16 +117,16 @@ const refresh = async () => {
             }
         }
 
-      // Updating loading state and dismissing the toast
-      isLoading.value = false;
-      toast.dismiss("loading-data");
-    } catch(err) {
-      console.error(err);
+        // Updating loading state and dismissing the toast
+        isLoading.value = false;
+        toast.dismiss("loading-data");
+    } catch (err) {
+        console.error(err);
     }
 }
 
 // Calling the refresh function when the component is mounted
-onMounted(async() => {
+onMounted(async () => {
     refresh();
 });
 
@@ -253,7 +253,8 @@ onMounted(() => {
         </main>
 
         <!-- Choose friend area to display their playlist -->
-        <ScrollArea class="border sm:translate-y-0 -translate-y-[90%] rounded-md min-w-[500px] h-[100vh] p-4 flex-grow pt-10">
+        <ScrollArea
+            class="border sm:translate-y-0 -translate-y-[90%] rounded-md min-w-[500px] h-[100vh] p-4 flex-grow pt-10">
             <div class="flex flex-col gap-4">
                 <div v-for="(friend, index) in friends" :key="index" class="flex-grow">
                     <Card>
@@ -313,8 +314,8 @@ onMounted(() => {
                     <ScrollArea class="h-[80vh]">
                         <div v-for="(track, index) in recommendations" :key="index">
                             <PlaylistCard :title="track.trackTitle"
-                                :artist="track.artists.map(artist => artist.name).join(', ')"
-                                :coverImage="track.cover" />
+                                :artist="track.artists.map(artist => artist.name).join(', ')" :coverImage="track.cover"
+                                :link="track.href" />
                         </div>
                         <ScrollBar />
                     </ScrollArea>
