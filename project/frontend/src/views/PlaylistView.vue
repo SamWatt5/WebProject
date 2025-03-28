@@ -1,4 +1,7 @@
 <script setup lang="ts">
+/**
+ * This file is OLD and contains nothing, but removing it causes issues with node, so it stays!
+ */
 import Sidebar from "@/components/Sidebar.vue";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import SidebarProvider from "@/components/ui/sidebar/SidebarProvider.vue";
@@ -49,7 +52,7 @@ const playlistClick = () => {
       <div class="col-span-2"></div>
       <ScrollArea class="border rounded-md col-span-3 w-[95%] whitespace-nowrap">
         <div class="flex p-4 space-x-4 w-max">
-            <!-- Add the playlist cards here :) -->
+          <!-- Add the playlist cards here :) -->
         </div>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>

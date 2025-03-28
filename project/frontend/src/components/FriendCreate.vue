@@ -1,4 +1,28 @@
 <script type="ts" setup>
+/**
+ * FriendCreate.vue
+ *
+ * A component for managing a user's friends, including displaying friend details
+ * and providing options to mix playlists or unfriend a user.
+ *
+ * Features:
+ * - Displays a friend's avatar, username, join date, and Spotify profile link.
+ * - Allows users to unfriend a friend with confirmation.
+ * - Provides a button to mix playlists with the friend.
+ * - Uses Pinia for state management and `vue-sonner` for toast notifications.
+ *
+ * Props:
+ * - userName (String): The friend's username.
+ * - userAvatar (String): The friend's avatar or fallback text.
+ * - userJoined (String): The date the friend joined.
+ * - spotify_id (String): The friend's Spotify user ID.
+ *
+ * Dependencies:
+ * - Pinia: For state management.
+ * - vue-sonner: For toast notifications.
+ * - Custom UI components: Dialog, Button, Card, Avatar, etc.
+ */
+
 import { Dialog, DialogTrigger, DialogContent, DialogClose, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import UserCard from "./UserCard.vue";
 import { Button } from "./ui/button";
@@ -11,17 +35,28 @@ import { Avatar, AvatarFallback } from "./ui/avatar";
 import Spotify from "./icons/Spotify.vue";
 import { defineProps } from "vue";
 
+// Define props for the component
 defineProps({
     userName: String,
     userAvatar: String,
     userJoined: String,
     spotify_id: String
-})
+});
 
+// Initialize the friends store
 let store = useFriends();
 let { friends } = storeToRefs(store); // Ensure `friends` is reactive
 let { setFriends } = store;
 
+/**
+ * Unfriends a user by sending a DELETE request to the API.
+ *
+ * Args:
+ * - username (String): The username of the friend to unfriend.
+ *
+ * Returns:
+ * - None
+ */
 const unfriend = async (username) => {
     toast.loading("Unfriending...", {
         duration: Infinity,
@@ -61,14 +96,12 @@ const unfriend = async (username) => {
             toast.dismiss("unfriending");
         }, 5000);
     }
-}
+};
 </script>
-
 
 <template>
     <Dialog>
-        <!-- <DialogTrigger as-child> -->
-        <!-- <UserCard :spotify_id="spotify_id" :name="userName" :avatar="userAvatar" :joined="userJoined" /> -->
+        <!-- Friend card displaying user details -->
         <Card class="cursor-pointer">
             <CardHeader class="flex flex-row">
                 <Avatar class="w-20 h-20 mt-2">
@@ -77,16 +110,15 @@ const unfriend = async (username) => {
                 <div class="flex flex-col pl-3">
                     <CardTitle class="text-4xl">@{{ userName }}</CardTitle>
                     <CardDescription class="flex flex-row">
-                        <CalendarDays class="h-8 w-8 mt-1" /><span class="mt-[3px] text-lg ml-1"> Joined {{ userJoined
-                        }}</span>
+                        <CalendarDays class="h-8 w-8 mt-1" />
+                        <span class="mt-[3px] text-lg ml-1">Joined {{ userJoined }}</span>
                     </CardDescription>
-                    <!-- <<RouterLink as-child :href="`https://open.spotify.com/user/${name}`">
-                <Spotify class="mt-2 cursor-pointer" />
-            </RouterLink>> -->
                     <div class="flex flex-row justify-between mt-2">
+                        <!-- Spotify profile link -->
                         <a :href="`https://open.spotify.com/user/${spotify_id}`" target="_blank">
                             <Spotify class="cursor-pointer mt-2" />
                         </a>
+                        <!-- Button to mix playlists -->
                         <DialogTrigger as-child>
                             <Button class="mt-2">Mix Playlists</Button>
                         </DialogTrigger>
@@ -94,7 +126,8 @@ const unfriend = async (username) => {
                 </div>
             </CardHeader>
         </Card>
-        <!-- </DialogTrigger> -->
+
+        <!-- Dialog content for managing the friend -->
         <DialogContent>
             <DialogHeader>
                 <DialogTitle>Manage <span class="text-cyan-500 font-semibold">{{ userName }}</span></DialogTitle>
@@ -102,9 +135,11 @@ const unfriend = async (username) => {
             </DialogHeader>
 
             <DialogFooter>
+                <!-- Unfriend button -->
                 <DialogClose asChild>
                     <Button variant="destructive" @click="unfriend(userName)">Unfriend</Button>
                 </DialogClose>
+                <!-- Close button -->
                 <DialogClose as-child>
                     <Button>Close</Button>
                 </DialogClose>

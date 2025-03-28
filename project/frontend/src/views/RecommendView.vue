@@ -1,7 +1,14 @@
 <script setup lang="ts">
+/**
+ * RecommendView.vue
+ *
+ * This file was just used for testing, but we're keeping it in incase removing it breaks something, i.e. PlaylistView :)
+ */
+
+// Import Vue composables
 import { ref } from "vue";
 
-// Define the structure of a track based on the response
+// Define the structure of a track based on the API response
 interface Track {
     id: string;
     trackTitle: string;
@@ -11,12 +18,16 @@ interface Track {
     durationMs: number;
 }
 
+// Reactive state variables
 const seedTracks = ref(""); // Input for seed tracks
-const friendId = ref(""); // Input for friend's ID
+const friendId = ref(""); // Input for friend's Spotify ID
 const recommendations = ref<Track[]>([]); // Store recommendations
 const errorMessage = ref(""); // Store error messages
 const successMessage = ref(""); // Store success messages
 
+/**
+ * Fetches recommendations based on seed tracks.
+ */
 const fetchRecommendations = async () => {
     errorMessage.value = "";
     successMessage.value = "";
@@ -56,6 +67,9 @@ const fetchRecommendations = async () => {
     }
 };
 
+/**
+ * Fetches a blended playlist with a friend's Spotify account.
+ */
 const fetchBlend = async () => {
     errorMessage.value = "";
     successMessage.value = "";
@@ -63,7 +77,7 @@ const fetchBlend = async () => {
 
     try {
         const response = await fetch(
-            `/api/spotify/blend?friend_id=${friendId.value}`, // Query parameter for friend's ID
+            `/api/spotify/blend?friend_id=${friendId.value}`, // Query parameter for friend's Spotify ID
             {
                 method: "GET",
                 credentials: "include",
@@ -93,8 +107,11 @@ const fetchBlend = async () => {
         errorMessage.value = "An error occurred while fetching the blended playlist.";
         console.error(error);
     }
-}
+};
 
+/**
+ * Creates a playlist from the recommended tracks.
+ */
 const createPlaylist = async () => {
     errorMessage.value = "";
     successMessage.value = "";
@@ -125,6 +142,9 @@ const createPlaylist = async () => {
     }
 };
 
+/**
+ * Redirects the user to Spotify login.
+ */
 const redirectToSpotifyLogin = () => {
     window.location.href = "/api/spotify/login"; // Redirect to Spotify login endpoint
 };
@@ -139,6 +159,7 @@ const redirectToSpotifyLogin = () => {
             Login to Spotify
         </button>
 
+        <!-- Form to fetch blended playlist -->
         <form @submit.prevent="fetchBlend" class="space-y-4">
             <div>
                 <label for="seedTracks" class="block font-medium">Friend ID:</label>
@@ -150,14 +171,17 @@ const redirectToSpotifyLogin = () => {
             </button>
         </form>
 
+        <!-- Error message -->
         <div v-if="errorMessage" class="mt-4 text-red-500">
             {{ errorMessage }}
         </div>
 
+        <!-- Success message -->
         <div v-if="successMessage" class="mt-4 text-green-500">
             {{ successMessage }}
         </div>
 
+        <!-- Display recommendations -->
         <div v-if="recommendations.length" class="mt-4">
             <h2 class="text-xl font-semibold">Blended Playlist:</h2>
             <ul class="list-disc pl-5">
