@@ -137,3 +137,26 @@ class LogoutRoute(Resource):
         """
         session.clear()
         return redirect("http://localhost:8080/")
+
+@auth_ns.route("/test-user-id")
+class TestUserIdRoute(Resource):
+    """
+    Endpoint to retrieve a user ID and user dictionary for testing purposes.
+
+    Methods:
+        post(): Retrieves the user ID and user dictionary for a given username.
+    """
+    def post(self):
+        # Get the username from the request
+        username = request.json.get("username")
+        if not username:
+            return {"error": "Username is required"}, 400
+
+        # Find the user by username and include the _id field
+        user = find_user_by_username(username, includeId=True)
+        if not user:
+            return {"error": "User not found"}, 404
+
+        # Return the user ID and user dictionary
+        user["_id"] = str(user["_id"])  # Convert ObjectId to string
+        return {"user_id": user["_id"], "user": user}, 200
