@@ -106,7 +106,8 @@ class RecommendRoute(Resource):
 
 @spotify_ns.route("/create_playlist")
 class CreatePlaylist(Resource):
-    def post(self):
+    @auth
+    def post(user, self):
         # Parse the request body
         data = request.get_json()
         print(data)
@@ -115,7 +116,7 @@ class CreatePlaylist(Resource):
             return {"error": "No track IDs provided"}, 400
 
             # Retrieve the Spotify access token from the session
-        access_token = session.get("spotify_access_token")
+        access_token = user["spotify_token"]
         if not access_token:
             return {"msg": "Token not found"}, 401
 
@@ -270,6 +271,7 @@ class Blend(Resource):
                     "title": track["name"],
                     "artist": track["artists"][0]["name"],
                     "link": track["external_urls"]["spotify"],
+                    "cover": track["album"]["images"][0]["url"]
                 } for track in combined_tracks if track and isinstance(track, dict)]
             }
         except spotipy.exceptions.SpotifyException as e:
@@ -332,7 +334,7 @@ class SpotifyCallback(Resource):
         link_spotify(token, spotify_id, access_token, refresh_token)
 
         # Redirect the user to the recommendations page
-        return redirect(f"http://localhost:8080/recommend")
+        return redirect(f"http://localhost:8080/settings")
 
 
 @spotify_ns.route("/link-spotify")
@@ -408,7 +410,6 @@ class RecentlyPlayed(Resource):
                 }
                 for track in results["items"]
             ]
-            print(formatted_results[0])
             return {"recently_played": formatted_results}, 200
         except Exception as e:
             print(f"Error fetching recently played tracks: {e}")

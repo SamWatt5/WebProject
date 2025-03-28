@@ -25,6 +25,16 @@ def create_user(fname, lname, email, username, password):
     collection.insert_one(user_doc)
 
 
+def update_user(id, fname, lname, email, username, password):
+    user_doc = {
+        "first_name": fname,
+        "last_name": lname,
+        "email": email,
+        "username": username,
+        "password": generate_password_hash(password)
+    }
+    collection.update_one({"_id": ObjectId(id)}, {"$set": user_doc})
+
 def link_spotify(token, spotify_id, access_token, refresh_token):
     collection.update_one({"_id": ObjectId(token)}, {
                           "$set": {"spotify_id": str(spotify_id), "spotify_token": str(access_token), "spotify_refresh_token": str(refresh_token)}})

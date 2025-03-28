@@ -88,6 +88,10 @@ const search = async () => {
             id: "searching-user",
             dismissible: true
         });
+
+        setTimeout(() => {
+            toast.dismiss("searching-user");
+        }, 5000);
     } else {
         user.value = data;
         open.value = true;
@@ -98,6 +102,9 @@ const search = async () => {
             dismissible: true
         });
 
+        setTimeout(() => {
+            toast.dismiss("searching-user");
+        }, 2000);
     }
 
     input.value = "";
@@ -118,10 +125,10 @@ const search = async () => {
 
                 <DialogFooter>
                     <DialogClose as-child>
-                        <Button @click="acceptFriendship" variant="default">Yes</Button>
-                    </DialogClose>
-                    <DialogClose as-child>
                         <Button variant="destructive">No</Button>
+                    </DialogClose>
+                    <DialogClose as-child class="mb-2">
+                        <Button @click="acceptFriendship" variant="success">Yes</Button>
                     </DialogClose>
                 </DialogFooter>
             </DialogContent>

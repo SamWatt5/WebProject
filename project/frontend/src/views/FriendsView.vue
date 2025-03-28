@@ -15,6 +15,9 @@ import { useFriends } from '@/stores/friends';
 import FriendSearch from '@/components/FriendSearch.vue';
 import { storeToRefs } from 'pinia';
 import UserCard from '@/components/UserCard.vue';
+import MobileSidebar from '@/components/MobileSidebar.vue';
+import { useIsMobile } from '@/hooks/use-mobile';
+import router from '@/router';
 
 // Creating a list of 50 songs
 const music: string[] = Array.from({ length: 50 }).map(
@@ -32,9 +35,9 @@ const isLoading = ref(true);
 
 // Displaying a loading toast message
 toast.loading("Loading user data...", {
-  duration: Infinity,
-  id: "loading-data",
-  dismissible: false
+    duration: Infinity,
+    id: "loading-data",
+    dismissible: false
 });
 
 // Function to refresh user and friends data
@@ -48,13 +51,13 @@ const refresh = async () => {
             }
         });
         const data = await res.json();
-        
-        if(!data.error) {
+
+        if (!data.error) {
             // Setting user data
             setUser(data);
             user = data;
             // Fetching friends data for each friend
-            for(let friend of data.friends) {
+            for (let friend of data.friends) {
                 const res = await fetch(`/api/user/find/${friend}`, {
                     method: "GET",
                     headers: {
@@ -62,9 +65,9 @@ const refresh = async () => {
                     }
                 });
                 const friendData = await res.json();
-                if(!friendData.error) {
+                if (!friendData.error) {
                     // Adding friend data to the friends list
-                    if(friends.value.length == data.friends.length) {
+                    if (friends.value.length == data.friends.length) {
                         toast.dismiss("loading-data");
                         isLoading.value = false;
                         return;
@@ -74,17 +77,21 @@ const refresh = async () => {
             }
         }
 
-      // Updating loading state and dismissing the toast
-      isLoading.value = false;
-      toast.dismiss("loading-data");
-    } catch(err) {
-      console.error(err);
+        // Updating loading state and dismissing the toast
+        isLoading.value = false;
+        toast.dismiss("loading-data");
+    } catch (err) {
+        console.error(err);
     }
 }
 
 // Calling the refresh function when the component is mounted
-onMounted(async() => {
+onMounted(async () => {
     refresh();
+
+    if(!user) {
+        router.push("/login");
+    }
 });
 </script>
 
@@ -92,10 +99,11 @@ onMounted(async() => {
     <div class="flex flex-row">
         <main class="flex h-screen items-center place-self-start">
             <!-- Sidebar component -->
-            <SidebarProvider :default-open="false" :open="false">
+            <SidebarProvider v-if="!useIsMobile()" :default-open="false" :open="false">
                 <Sidebar />
             </SidebarProvider>
-            <div class="flex flex-col ml-10">
+            <MobileSidebar v-else />
+            <div class="sm:flex flex-col hidden ml-10">
                 <h1 class="text-4xl text-center mb-4">Your Music</h1>
                 <!-- Scroll area for displaying the list of songs -->
                 <ScrollArea class="w-80 h-[75vh] border rounded-lg">
@@ -107,9 +115,9 @@ onMounted(async() => {
                 </div>
                 </ScrollArea>
             </div>
-            <Separator orientation="vertical" class="mx-10" />
+            <Separator orientation="vertical" class="hidden sm:inline mx-10" />
         </main>
-        <div class="flex flex-col pt-10 gap-4 mr-4">
+        <div class="flex flex-col pt-10 gap-4 mr-4 flex-1">
             <!-- Card component for managing friends -->
             <Card class="mt-4 overflow-hidden">
                 <CardHeader>
@@ -128,15 +136,16 @@ onMounted(async() => {
             </Card>
             <!-- Scroll area for displaying the list of friends -->
             <ScrollArea class="border rounded-md whitespace-nowrap h-[60vh] p-4">
-                <div class="grid grid-cols-3 grid-flow-row gap-4">
+                <div class="grid sm:grid-cols-2 grid-cols-1 grid-flow-row gap-4 w-full">
                     <div v-for="(friend, index) in friends" :key="index">
                         <!-- Friend manage component for each friend -->
-                        <FriendManage :spotify_id="friend.spotify_id" :userName="friend.username" :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]" :userJoined="'December 2021'" />
+                        <FriendManage :spotify_id="friend.spotify_id" :userName="friend.username"
+                            :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]"" />
                     </div>
                 </div>
                 <!-- Displaying a message when there are no friends -->
-                <div class="grid grid-cols-3 grid-flow-row gap-4" v-if="friends.length === 0">
-                    <UserCard :name="'No friends'" :avatar="'NA'" :joined="'Never'" />
+                <div class="flex align-center justify-center" v-if="friends.length === 0">
+                    <h1 class="text-3xl">It appears you have <span class="text-red-500 font-bold">0</span> friends. Unlucky "mate"</h1>
                 </div>
             </ScrollArea>
         </div>

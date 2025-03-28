@@ -14,8 +14,12 @@ import { onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useUser } from '@/stores/user';
 import { ref } from 'vue';
+import { useIsMobile } from '@/hooks/use-mobile';
+import MobileSidebar from '@/components/MobileSidebar.vue';
+import router from '@/router';
 
 const { user } = storeToRefs(useUser());
+
 
 const formSchema = toTypedSchema(z.object({
     fname: z.string().nonempty({
@@ -116,14 +120,19 @@ const redirectToSpotifyLogin = () => {
     window.location.href = "/api/spotify/login"; // Redirect to Spotify login endpoint
 };
 
-
+onMounted(() => {
+    if(!user.value) {
+        router.push("/login")
+    }
+})
 </script>
 
 <template>
     <main class="flex h-screen items-center place-self-start">
-        <SidebarProvider :default-open="false" :open="false">
+        <SidebarProvider v-if="!useIsMobile()" :default-open="false" :open="false">
             <Sidebar />
         </SidebarProvider>
+        <MobileSidebar v-else />
 
         <Card class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 sm:w-1/2 w-[95%]">
             <CardHeader>

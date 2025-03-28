@@ -3,17 +3,17 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { SidebarProvider } from './ui/sidebar';
 import Sidebar from '@/components/Sidebar.vue';
 import { Button } from './ui/button';
-</script>
-
-<script lang="ts">
+import { useIsMobile } from '@/hooks/use-mobile';
+import MobileSidebar from './MobileSidebar.vue';
 
 </script>
 
 <template>
     <div class="grid grid-cols-[auto_1fr] max-h-full overflow-hidden max-w-full h-screen">
-        <SidebarProvider :default-open="false" :open="false">
+        <SidebarProvider v-if="!useIsMobile()" :default-open="false" :open="false">
             <Sidebar />
         </SidebarProvider>
+        <MobileSidebar v-else />
 
         <div class="flex items-center justify-center flex-col">
             <div class="-z-10">
