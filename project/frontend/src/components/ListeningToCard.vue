@@ -17,6 +17,11 @@ defineProps({
         required: false, // The cover image URL is optional
         default: "", // Default to an empty string if not provided
     },
+    link: {
+        type: String,
+        required: false,
+        default: ""
+    },
     label: {
         type: Boolean,
         default: true,
@@ -35,12 +40,8 @@ defineProps({
             </CardHeader>
             <CardContent class="flex flex-row items-center">
                 <!-- Display the cover image if provided -->
-                <img
-                    v-if="coverImage"
-                    :src="coverImage"
-                    alt="Cover Art"
-                    class="w-16 h-16 rounded-md object-cover"
-                />
+                <a :href="link"><img v-if="coverImage" :src="coverImage" alt="Cover Art"
+                        class="w-16 h-16 rounded-md object-cover" /></a>
                 <PeopleWatching v-else /> <!-- Fallback icon if no cover image is provided -->
                 <div class="ml-4">
                     <!-- Display the track title -->
