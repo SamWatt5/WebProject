@@ -230,59 +230,59 @@ class Blend(Resource):
                     user_tracks.append(item["track"])
         return user_tracks
 
+    def blend(self, user, friend_id):
+        # Retrieve the Spotify access token from the session
+        access_token = user["spotify_token"]
+        # print(user)
+        print(access_token)
+        if not access_token:
+            print("im here")
+            return {"msg": "Token not found"}, 401
 
-def blend(self, user, friend_id):
-    # Retrieve the Spotify access token from the session
-    access_token = user["spotify_token"]
-    if not access_token:
-        return {"msg": "Token not found"}, 401
+        try:
+            # Initialize Spotify client
+            sp = spotipy.Spotify(auth=access_token)
 
-    try:
-        # Initialize Spotify client
-        sp = spotipy.Spotify(auth=access_token)
+            # Fetch the current user's playlists
+            user_tracks = self.get_playlist_tracks(
+                user, sp.current_user_playlists())
 
-        # Fetch the current user's playlists
-        user_tracks = self.get_playlist_tracks(
-            user, sp.current_user_playlists())
+            # Fetch the friend's playlists
+            friend = get_user_from_token(friend_id)
+            # print(friend)
+            if not friend or "spotify_id" not in friend:
+                return {"error": "Friend's Spotify account not linked"}, 404
 
-        # Fetch the friend's playlists
-        friend = get_user_from_token(friend_id)
-        if not friend or "spotify_id" not in friend:
-            return {"error": "Friend's Spotify account not linked"}, 404
+            friend_tracks = self.get_playlist_tracks(user, sp.user_playlists(
+                friend["spotify_id"], limit=50))
+            # print(f"{friend_tracks}\n\n")
 
-        friend_tracks = self.get_playlist_tracks(
-            user, sp.user_playlists(friend["spotify_id"], limit=50))
+            # Combine and shuffle tracks
+            combined_tracks = []
+            for track in user_tracks:
+                if track in friend_tracks:
+                    combined_tracks.append(track)
+            print(combined_tracks[0])
 
-        # Combine and shuffle tracks
-        combined_tracks = []
-        for track in user_tracks:
-            if track in friend_tracks:
-                combined_tracks.append(track)
-
-        # Format the combined tracks
-        formatted_playlist = [
-            {
-                "id": track["id"],
-                "title": track["name"],
-                "artist": track["artists"][0]["name"],
-                "link": track["external_urls"]["spotify"],
-                "cover": track["album"]["images"][0]["url"]
+            # Return the blended playlist
+            return {
+                "playlist": [{
+                    "id": track["id"],
+                    "title": track["name"],
+                    "artist": track["artists"][0]["name"],
+                    "link": track["external_urls"]["spotify"],
+                    "cover": track["album"]["images"][0]["url"]
+                } for track in combined_tracks if track and isinstance(track, dict)]
             }
-            for track in combined_tracks if track and isinstance(track, dict)
-        ]
-
-        # Return the formatted playlist
-        return {"playlist": formatted_playlist}, 200
-
-    except spotipy.exceptions.SpotifyException as e:
-        print(f"Spotify API error: {e}")
-        return {"error": "Failed to blend playlists"}, 500
-    except IndexError as e:
-        print(f"List index out of range: {e}")
-        return {"error": "An error occurred while blending playlists"}, 500
-    except Exception as e:
-        print(f"Unexpected error: {e}")
-        return {"error": "An unexpected error occurred"}, 500
+        except spotipy.exceptions.SpotifyException as e:
+            print(f"Spotify API error: {e}")
+            {"error": "Failed to blend playlists"}, 500
+        except IndexError as e:
+            print(f"List index out of range: {e}")
+            return {"error": "An error occurred while blending playlists"}, 500
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            return {"error": "An unexpected error occurred"}, 500
 
 
 @spotify_ns.route("/playlist/<string:playlist_id>/tracks")
@@ -410,7 +410,6 @@ class RecentlyPlayed(Resource):
                 }
                 for track in results["items"]
             ]
-            print(formatted_results[0])
             return {"recently_played": formatted_results}, 200
         except Exception as e:
             print(f"Error fetching recently played tracks: {e}")
