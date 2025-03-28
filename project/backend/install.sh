@@ -10,5 +10,5 @@ source .venv/bin/activate
 # Install the required packages
 echo "Installing packages..."
 pip install --upgrade pip
-pip install python-dotenv spotipy flask flask_cors flask_jwt_extended pymongo flask_session flask-restx
+pip install python-dotenv spotipy flask flask_cors requests flask_jwt_extended pymongo flask_session flask-restx
 echo "Packages installed"
