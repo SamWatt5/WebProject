@@ -57,6 +57,14 @@ import router from '@/router';
 
 // Reactive state variables
 const music = ref<string[]>([]); // Stores the user's top tracks
+type Track = {
+    id: string;
+    trackTitle: string;
+    href: string;
+    artists: { href: string; name: string }[];
+    cover: string;
+};
+
 const recommendations = ref<Track[]>([]); // Stores blended playlist recommendations
 const friendId = ref(""); // Stores the selected friend's ID
 const errorMessage = ref(""); // Stores error messages
@@ -287,7 +295,7 @@ onMounted(() => {
                             <a :href="`https://open.spotify.com/user/${friend.spotify_id}`" target="_blank">
                                 <Spotify class="cursor-pointer mt-2" />
                             </a>
-                            <Button class="mt-2" @click="() => { friendId.value = friend._id || ''; fetchBlend(); }">
+                            <Button class="mt-2" @click="() => { friendId = friend._id || ''; fetchBlend(); }">
                                 MixPlaylists
                             </Button>
                         </CardFooter>
