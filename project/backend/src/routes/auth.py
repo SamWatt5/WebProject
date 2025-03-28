@@ -88,6 +88,8 @@ class LoginRoute(Resource):
             return {"error": "User not found"}, 404
 
         if verify_password(user["password"], password):
+            # Set the token in the session
+            session["token"] = str(user["_id"])  # Use the user's ID as the token
             return {"message": "Login successful", "code": str(user["_id"])}, 200
         else:
             return {"error": "Invalid credentials"}, 401

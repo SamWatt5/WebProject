@@ -184,7 +184,7 @@ class UserRoute(Resource):
         delete_user(username)
         return {"message": "User removed successfully"}, 200
 
-@admin_ns.route('/test/grant-admin/<id>')
+@admin_ns.route('/test-grant-admin/<id>')
 class TestGrantAdminRoute(Resource):
     """
     Test-only endpoint to grant admin privileges to a user without authentication.
@@ -195,24 +195,23 @@ class TestGrantAdminRoute(Resource):
     @admin_ns.doc(description="Grants admin privileges to a user without authentication (TEST ONLY)")
     def post(self, id):
         """
-        Grants admin privileges to a user without requiring authentication.
+        Grants admin permissions to a user.
 
         Args:
-            id (str): The ID of the user to be granted admin privileges.
+            id (str): The ID of the user to be granted admin permissions.
 
         Returns:
             Response: A success message or an error response.
         """
-        print(f"[DEBUG] TEST POST /test/grant-admin/{id} called")
+        print(f"[DEBUG] TEST POST /test-grant-admin/{id} called")
         print(f"[DEBUG] Target user ID: {id}")
 
         foundUser = find_user(id)
-        print(foundUser)
         print(f"[DEBUG] Found user: {foundUser}")
 
         if not foundUser:
             print(f"[DEBUG] User with ID {id} not found")
-            return {f"error": "User not found"}, 404 
+            return {"error": "User not found"}, 404
 
         if foundUser["admin"]:
             print(f"[DEBUG] User with ID {id} is already an admin")

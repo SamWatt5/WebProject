@@ -12,6 +12,9 @@ RESET = "\033[0m"
 # Global variable to store user information
 USER_DICT = None
 
+# Create a session object to persist cookies
+session = requests.Session()
+
 
 def print_result(test_case, description, result, expected):
     """
@@ -29,7 +32,7 @@ def get_user_info(username):
     global USER_DICT
     url = f"{BASE_URL}/auth/test-user-id"
     payload = {"username": username}
-    response = requests.post(url, json=payload)
+    response = session.post(url, json=payload)  # Use the session object
     if response.status_code == 200:
         USER_DICT = response.json().get("user")
         print(f"{BLUE}User dictionary retrieved: {USER_DICT}{RESET}")
@@ -48,7 +51,7 @@ def test_signup():
         "username": "johndoe",
         "password": "Password123"
     }
-    response = requests.post(url, json=payload)
+    response = session.post(url, json=payload)  # Use the session object
     print_result("TC-BACK-001", "Verify user signup", response.status_code, 201)
 
 
@@ -58,27 +61,46 @@ def test_login():
 
     # Valid credentials
     valid_payload = {"username": "johndoe", "password": "Password123"}
-    valid_response = requests.post(url, json=valid_payload)
+    valid_response = session.post(url, json=valid_payload)  # Use the session object
     print_result("TC-BACK-002", "Login with valid credentials", valid_response.status_code, 200)
+
+    # Debugging: Print cookies stored in the session
+    print(f"Session cookies: {session.cookies.get_dict()}")
 
     # Invalid password
     invalid_password_payload = {"username": "johndoe", "password": "WrongPassword"}
-    invalid_password_response = requests.post(url, json=invalid_password_payload)
+    invalid_password_response = session.post(url, json=invalid_password_payload)  # Use the session object
     print_result("TC-BACK-002", "Login with invalid password", invalid_password_response.status_code, 401)
 
     # User not found
     invalid_user_payload = {"username": "nonexistentuser", "password": "Password123"}
-    invalid_user_response = requests.post(url, json=invalid_user_payload)
+    invalid_user_response = session.post(url, json=invalid_user_payload)  # Use the session object
     print_result("TC-BACK-002", "Login with nonexistent user", invalid_user_response.status_code, 404)
 
 
-# TC-BACK-004: Test granting and removing admin privileges
 
-# TC-BACK-006: Verify that an individual user can be found and removed
+def make_admin():
+    if not USER_DICT:
+        print(f"{RED}[FAIL]{RESET} TC-BACK-004: User dictionary not found. Run test_signup and get_user_info first.")
+        return
 
+    url = f"{BASE_URL}/admin/test-grant-admin/{USER_DICT['_id']}"
+    payload = {"user": USER_DICT}  # Include the user parameter in the request payload
+    response = session.post(url, json=payload)  # Use the session object
+    print_result("TESTCALL", "Grant admin privileges", response.status_code, 200)
 
+# TC-BACK-004: Test granting admin privileges
+def test_grant_admin():
+    """
+    Test granting admin privileges to a user using session tokens.
+    """
+    if not USER_DICT:
+        print(f"{RED}[FAIL]{RESET} TC-BACK-004: User dictionary not found. Run test_signup and get_user_info first.")
+        return
 
-# TC-BACK-007: Verify user info retrieval, update, and deletion
+    url = f"{BASE_URL}/admin/permissions/{USER_DICT['_id']}"
+    response = session.post(url, headers={"Content-Type": "application/json"})  # Use the session object
+    print_result("TC-BACK-004", "Grant admin privileges", response.status_code, 200)
 
 
 
@@ -90,4 +112,5 @@ if __name__ == "__main__":
     get_user_info("johndoe")  # Retrieve the user dictionary for the test user
     time.sleep(1)  # Add a 1-second delay
     test_login()
- 
+    time.sleep(1)  # Add a 1-second delay
+    test_grant_admin()
