@@ -160,6 +160,7 @@ class CreatePlaylist(Resource):
             return {"error": "An unexpected error occurred"}, 500
 
 
+# Not using
 @spotify_ns.route("/me_playlists")
 class MePlaylists(Resource):
     def get(self):
@@ -284,7 +285,7 @@ class Blend(Resource):
             print(f"Unexpected error: {e}")
             return {"error": "An unexpected error occurred"}, 500
 
-
+# Not using i thinl TO DELETE
 @spotify_ns.route("/playlist/<string:playlist_id>/tracks")
 class PlaylistTracks(Resource):
     def get(self, playlist_id):

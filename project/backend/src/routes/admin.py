@@ -6,6 +6,7 @@ from ..middleware import admin_auth
 
 admin_ns = Namespace('admin', description='Admin related operations')
 
+#Not in use TO DELETE
 @admin_ns.route('/user/<id>')
 class RemoveUser(Resource):
     @admin_ns.doc(description="Removes a user account")

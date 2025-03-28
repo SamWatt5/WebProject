@@ -33,7 +33,7 @@ class MeRoute(Resource):
         remove_user(user["username"])
         return {"message": "User removed successfully"}, 200
 
-
+# Not in use
 @user_ns.route('/link-spotify/<username>')
 class LinkSpotifyRoute(Resource):
     def post(self, username):
