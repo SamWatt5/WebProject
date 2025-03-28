@@ -8,10 +8,7 @@ import ListeningToCard from './ListeningToCard.vue';
 import { useUser } from '@/stores/user';
 import { useIsMobile } from '@/hooks/use-mobile';
 import MobileSidebar from './MobileSidebar.vue';
-import SongCard from './SongCard.vue';
-import { ref } from 'vue';
-// Reactive array to store music tracks
-const music = ref<string[]>([]);
+import { ref, onMounted } from 'vue';
 
 // Reactive array to store recently played tracks
 interface RecentlyPlayedTrack {
@@ -23,6 +20,8 @@ interface RecentlyPlayedTrack {
 
 const recentlyPlayed = ref<RecentlyPlayedTrack[]>([]);
 
+// Reactive array to store music tracks
+const music = ref<string[]>([]);
 // Fetch top tracks from the API
 const fetchTopTracks = async () => {
     try {
@@ -77,6 +76,11 @@ const fetchRecentlyPlayed = async () => {
 };
 
 const { user } = useUser();
+
+onMounted(() => {
+    fetchTopTracks();
+    fetchRecentlyPlayed();
+});
 
 </script>
 

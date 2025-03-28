@@ -44,7 +44,7 @@ const handleLogout = async () => {
             </SheetHeader>
             <ul class="flex-1">
                 <MobileButton page="/" text="Home" />
-                <MobileButton page="/playlist" text="Playlist" />
+                <MobileButton page="/playlists" text="Playlists" />
                 <MobileButton page="/friends" text="Friends" />
                 <MobileButton page="/settings" text="Settings" />
                 <MobileButton page="/admin" text="Admin" v-if="user?.admin" />

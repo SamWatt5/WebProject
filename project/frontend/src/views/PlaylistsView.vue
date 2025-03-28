@@ -21,9 +21,30 @@ import Spotify from '@/components/icons/Spotify.vue';
 import CardFooter from '@/components/ui/card/CardFooter.vue';
 import router from '@/router';
 
-const music: string[] = Array.from({ length: 50 }).map(
-    (_, i) => `Song ${i + 1}`
-);
+
+const music = ref<string[]>([]); // Reactive array to store music tracks
+const fetchTopTracks = async () => {
+    try {
+        const response = await fetch('/api/spotify/top-tracks', {
+            method: 'GET',
+            credentials: 'include', // Include cookies for authentication
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            console.error('Failed to fetch top tracks:', response.statusText);
+            return;
+        }
+
+        const data = await response.json();
+        // Map the response to extract track names
+        music.value = data.tracks.map((track: any) => track.name);
+    } catch (error) {
+        console.error('Error fetching top tracks:', error);
+    }
+};
 
 // Using the friends store to get and set friends data
 const store = useFriends();
@@ -196,6 +217,7 @@ const createPlaylist = async () => {
 const redirectToSpotifyLogin = () => {
     window.location.href = "/api/spotify/login"; // Redirect to Spotify login endpoint
 };
+
 // Fetch top tracks when the component is mounted
 onMounted(() => {
     fetchTopTracks();
