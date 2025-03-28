@@ -317,7 +317,7 @@ class Blend(Resource):
             # Combine and shuffle tracks
             combined_tracks = []
             for track in user_tracks:
-                if track in friend_tracks:
+                if track in friend_tracks and track not in combined_tracks:
                     combined_tracks.append(track)
 
             # Return the blended playlist
@@ -341,6 +341,8 @@ class Blend(Resource):
             return {"error": "An unexpected error occurred"}, 500
 
 # Not using i thinl TO DELETE
+
+
 @spotify_ns.route("/playlist/<string:playlist_id>/tracks")
 class PlaylistTracks(Resource):
     def get(self, playlist_id):
