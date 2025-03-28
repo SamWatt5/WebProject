@@ -10,6 +10,8 @@ cd src
 start cmd /k py -m flask run --host=0.0.0.0 --port=8000
 echo "Backend server online"
 cd ../../frontend
+echo "Installing packages"
+echo "Packages installed"
 echo "Starting the frontend server"
-start cmd /k npm run dev
+npm install && start cmd /k npm run dev
 echo "Frontend server online"
