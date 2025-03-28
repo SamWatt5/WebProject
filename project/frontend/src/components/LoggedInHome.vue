@@ -9,6 +9,7 @@ import { useUser } from '@/stores/user';
 import { useIsMobile } from '@/hooks/use-mobile';
 import MobileSidebar from './MobileSidebar.vue';
 import SongCard from './SongCard.vue';
+import { ref } from 'vue';
 // Reactive array to store music tracks
 const music = ref<string[]>([]);
 
