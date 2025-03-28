@@ -65,7 +65,7 @@ const isPlaylistCreated = ref(false); // Indicates if a playlist has been create
 const isLoading = ref(true); // Tracks loading state
 
 // Access the user and friends stores
-const { user, setUser } = useUser();
+let { user, setUser } = useUser();
 const store = useFriends();
 const { friends } = storeToRefs(store);
 const { setFriends } = store;
