@@ -194,7 +194,7 @@ class ManageFriendsRoute(Resource):
             return {"error": "User is already a friend"}, 400
 
         make_friends(token, person["_id"])
-        return {"message": "Friend added successfully"}
+        return {"message": "Friend added successfully"}, 200
 
     @auth
     def delete(user, token, self, username):
@@ -220,4 +220,4 @@ class ManageFriendsRoute(Resource):
             return jsonify({"error": "User is not a friend"}), 400
 
         remove_friends(token, person["_id"])
-        return {"message": "Friend removed successfully"}
+        return {"message": "Friend removed successfully"}, 200
