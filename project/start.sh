@@ -5,9 +5,11 @@ echo "Welcome to the project setup script!"
 
 # Install the required packages
 echo "Installing required packages..."
-# Navigate to the install.sh script and run it
-chmod +x backend/install.sh
-./backend/install.sh
+# Navigate to the backend directory, run install.sh, and return to the root directory
+cd backend
+chmod +x install.sh
+./install.sh
+cd ..
 
 # Navigate to the backend/src directory and run the Flask application in a new terminal
 echo "Starting the Flask backend..."
