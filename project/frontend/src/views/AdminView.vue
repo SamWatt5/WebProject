@@ -286,8 +286,7 @@ const deleteUser = async() => {
         <CardContent class="w-screen text-wrap">
           <h1>User ID: <span class="text-cyan-500 font-semibold">{{ foundUser?.["_id"] }}</span></h1>
           <h1>Email: <span class="text-cyan-500 font-semibold">{{ foundUser?.email }}</span></h1>
-          <h1 v-if="foundUser?.spotify_token">Spotify ID: <span class="text-cyan-500 font-semibold">{{ foundUser?.spotify_id }}</span></h1>
-          <h1 v-if="foundUser?.spotify_token">Spotify Token: <span class="text-cyan-500 font-semibold text-warp">{{ foundUser?.spotify_token }}</span></h1>
+          <h1 v-if="foundUser?.spotify_id">Spotify ID: <span class="text-cyan-500 font-semibold">{{ foundUser?.spotify_id }}</span></h1>
           <h1 v-else class="text-cyan-500 underline">User hasn't linked spotify</h1>
 
         </CardContent>

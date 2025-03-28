@@ -16,6 +16,9 @@ import { ref, onMounted } from "vue";
 import { useIsMobile } from '@/hooks/use-mobile';
 import MobileSidebar from '@/components/MobileSidebar.vue';
 import { useUser } from '@/stores/user';
+import { Button } from '@/components/ui/button';
+import Spotify from '@/components/icons/Spotify.vue';
+import CardFooter from '@/components/ui/card/CardFooter.vue';
 
 
 const music = ref<string[]>([]); // Reactive array to store music tracks
@@ -249,7 +252,7 @@ onMounted(() => {
         <ScrollArea class="border sm:translate-y-0 -translate-y-[90%] rounded-md min-w-[500px] h-[100vh] p-4 flex-grow pt-10">
             <div class="flex flex-col gap-4">
                 <div v-for="(friend, index) in friends" :key="index" class="flex-grow">
-                    <Card class="cursor-pointer">
+                    <Card>
                         <CardHeader class="flex flex-row">
                             <Avatar class="w-20 h-20 mt-2">
                                 <AvatarFallback class="text-3xl">{{ (friend.first_name[0] + friend.last_name[0]) }}
@@ -263,21 +266,19 @@ onMounted(() => {
                                 <!-- <<RouterLink as-child :href="`https://open.spotify.com/user/${name}`">
                 <Spotify class="mt-2 cursor-pointer" />
             </RouterLink>> -->
-                                <div class="flex flex-row justify-between mt-2">
-                                    <a :href="`https://open.spotify.com/user/${friend.spotify_id}`" target="_blank">
-                                        <Spotify class="cursor-pointer mt-2" />
-                                    </a>
-                                    <DialogTrigger as-child>
-                                        <Button class="mt-2" @click="() => {
-                                            friendId = friend._id || '';
-                                            fetchBlend();
-                                        }">
-                                            MixPlaylists
-                                        </Button>
-                                    </DialogTrigger>
-                                </div>
                             </div>
                         </CardHeader>
+                        <CardFooter class="flex flex-row justify-between mt-2">
+                            <a :href="`https://open.spotify.com/user/${friend.spotify_id}`" target="_blank">
+                                <Spotify class="cursor-pointer mt-2" />
+                            </a>
+                            <Button class="mt-2" @click="() => {
+                                friendId = friend._id || '';
+                                fetchBlend();
+                            }">
+                                MixPlaylists
+                            </Button>
+                        </CardFooter>
                     </Card>
                 </div>
             </div>
