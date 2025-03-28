@@ -40,7 +40,7 @@ defineProps({
             </CardHeader>
             <CardContent class="flex flex-row items-center">
                 <!-- Display the cover image if provided -->
-                <a :href="link"><img v-if="coverImage" :src="coverImage" alt="Cover Art"
+                <a :href="link" v-if="coverImage"><img :src="coverImage" alt="Cover Art"
                         class="w-16 h-16 rounded-md object-cover" /></a>
                 <PeopleWatching v-else /> <!-- Fallback icon if no cover image is provided -->
                 <div class="ml-4">

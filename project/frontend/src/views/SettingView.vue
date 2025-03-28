@@ -16,8 +16,10 @@ import { useUser } from '@/stores/user';
 import { ref } from 'vue';
 import { useIsMobile } from '@/hooks/use-mobile';
 import MobileSidebar from '@/components/MobileSidebar.vue';
+import router from '@/router';
 
 const { user } = storeToRefs(useUser());
+
 
 const formSchema = toTypedSchema(z.object({
     fname: z.string().nonempty({
@@ -118,6 +120,11 @@ const redirectToSpotifyLogin = () => {
     window.location.href = "/api/spotify/login"; // Redirect to Spotify login endpoint
 };
 
+onMounted(() => {
+    if(!user.value) {
+        router.push("/login")
+    }
+})
 </script>
 
 <template>

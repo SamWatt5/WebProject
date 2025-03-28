@@ -17,6 +17,7 @@ import { storeToRefs } from 'pinia';
 import UserCard from '@/components/UserCard.vue';
 import MobileSidebar from '@/components/MobileSidebar.vue';
 import { useIsMobile } from '@/hooks/use-mobile';
+import router from '@/router';
 
 
 const music = ref<string[]>([]); // Reactive array to store music tracks
@@ -107,6 +108,10 @@ const refresh = async () => {
 // Calling the refresh function when the component is mounted
 onMounted(async () => {
     refresh();
+
+    if(!user) {
+        router.push("/login");
+    }
 });
 
 // Fetch top tracks when the component is mounted
@@ -167,9 +172,9 @@ onMounted(() => {
                     </div>
                 </div>
                 <!-- Displaying a message when there are no friends -->
-                <div class=" grid grid-cols-3 grid-flow-row gap-4" v-if="friends.length === 0">
-                            <UserCard :name="'No friends'" :avatar="'NA'" :joined="'Never'" />
-                    </div>
+                <div class="flex align-center justify-center" v-if="friends.length === 0">
+                    <h1 class="text-3xl">It appears you have <span class="text-red-500 font-bold">0</span> friends. Unlucky "mate"</h1>
+                </div>
             </ScrollArea>
         </div>
     </div>

@@ -19,6 +19,7 @@ import { useUser } from '@/stores/user';
 import { Button } from '@/components/ui/button';
 import Spotify from '@/components/icons/Spotify.vue';
 import CardFooter from '@/components/ui/card/CardFooter.vue';
+import router from '@/router';
 
 
 const music = ref<string[]>([]); // Reactive array to store music tracks
@@ -220,6 +221,9 @@ const redirectToSpotifyLogin = () => {
 // Fetch top tracks when the component is mounted
 onMounted(() => {
     fetchTopTracks();
+    if(!user) {
+        router.push('/login');
+    }
 });
 </script>
 
