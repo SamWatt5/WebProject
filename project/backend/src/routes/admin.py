@@ -55,14 +55,23 @@ class MakeAdminRoute(Resource):
         Returns:
             Response: A success message or an error response.
         """
+        print(f"[DEBUG] POST /permissions/{id} called")
+        print(f"[DEBUG] Authenticated admin user: {user}")
+        print(f"[DEBUG] Target user ID: {id}")
+
         foundUser = find_user(id)
+        print(f"[DEBUG] Found user: {foundUser}")
+
         if not foundUser:
+            print(f"[DEBUG] User with ID {id} not found")
             return {"error": "User not found"}, 404
 
         if foundUser["admin"]:
+            print(f"[DEBUG] User with ID {id} is already an admin")
             return {"error": "User is already an admin"}, 400
 
         make_admin(id)
+        print(f"[DEBUG] User with ID {id} has been granted admin privileges")
         return {"message": "User is now an admin"}, 200
 
     @admin_ns.doc(description="Removes admin permissions from a user")
@@ -78,14 +87,23 @@ class MakeAdminRoute(Resource):
         Returns:
             Response: A success message or an error response.
         """
-        user = find_user(id)
-        if not user:
+        print(f"[DEBUG] DELETE /permissions/{id} called")
+        print(f"[DEBUG] Authenticated admin user: {user}")
+        print(f"[DEBUG] Target user ID: {id}")
+
+        foundUser = find_user(id)
+        print(f"[DEBUG] Found user: {foundUser}")
+
+        if not foundUser:
+            print(f"[DEBUG] User with ID {id} not found")
             return {"error": "User not found"}, 404
 
-        if not user["admin"]:
+        if not foundUser["admin"]:
+            print(f"[DEBUG] User with ID {id} is not an admin")
             return {"error": "User is not an admin"}, 400
 
         remove_admin(id)
+        print(f"[DEBUG] Admin privileges removed for user with ID {id}")
         return {"message": "User is no longer an admin"}, 200
 
 
@@ -165,3 +183,41 @@ class UserRoute(Resource):
 
         delete_user(username)
         return {"message": "User removed successfully"}, 200
+
+@admin_ns.route('/test/grant-admin/<id>')
+class TestGrantAdminRoute(Resource):
+    """
+    Test-only endpoint to grant admin privileges to a user without authentication.
+
+    Methods:
+        post(id): Grants admin privileges to a user by ID.
+    """
+    @admin_ns.doc(description="Grants admin privileges to a user without authentication (TEST ONLY)")
+    def post(self, id):
+        """
+        Grants admin privileges to a user without requiring authentication.
+
+        Args:
+            id (str): The ID of the user to be granted admin privileges.
+
+        Returns:
+            Response: A success message or an error response.
+        """
+        print(f"[DEBUG] TEST POST /test/grant-admin/{id} called")
+        print(f"[DEBUG] Target user ID: {id}")
+
+        foundUser = find_user(id)
+        print(foundUser)
+        print(f"[DEBUG] Found user: {foundUser}")
+
+        if not foundUser:
+            print(f"[DEBUG] User with ID {id} not found")
+            return {f"error": "User not found"}, 404 
+
+        if foundUser["admin"]:
+            print(f"[DEBUG] User with ID {id} is already an admin")
+            return {"error": "User is already an admin"}, 400
+
+        make_admin(id)
+        print(f"[DEBUG] User with ID {id} has been granted admin privileges")
+        return {"message": "User is now an admin (TEST ONLY)"}, 200
