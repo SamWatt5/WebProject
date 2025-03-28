@@ -8,11 +8,38 @@ user_ns = Namespace('user', description='User related operations')
 
 @user_ns.route("/me")
 class MeRoute(Resource):
+    """
+    Endpoint to manage the authenticated user's account.
+
+    Methods:
+        get(user): Retrieves the authenticated user's information.
+        patch(user): Updates the authenticated user's information.
+        delete(user): Deletes the authenticated user's account.
+    """
     @auth
     def get(user, self):
+        """
+        Retrieves the authenticated user's information.
+
+        Args:
+            user (dict): The authenticated user.
+
+        Returns:
+            Response: The user's information.
+        """
         return user, 200
 
+    @auth
     def patch(user, self):
+        """
+        Updates the authenticated user's information.
+
+        Args:
+            user (dict): The authenticated user.
+
+        Returns:
+            Response: A success message or an error response.
+        """
         data = request.get_json()
         if not "username" in data:
             return {"error": "Username is required"}, 400
@@ -29,14 +56,40 @@ class MeRoute(Resource):
                     data["email"], data["username"], data["password"])
         return {"message": "User updated successfully"}, 200
 
+    @auth
     def delete(user, self):
+        """
+        Deletes the authenticated user's account.
+
+        Args:
+            user (dict): The authenticated user.
+
+        Returns:
+            Response: A success message.
+        """
         remove_user(user["username"])
         return {"message": "User removed successfully"}, 200
 
 
 @user_ns.route('/link-spotify/<username>')
 class LinkSpotifyRoute(Resource):
+    """
+    Endpoint to link a user's Spotify account.
+
+    Methods:
+        post(username): Links the authenticated user's Spotify account.
+    """
+
     def post(self, username):
+        """
+        Links the authenticated user's Spotify account.
+
+        Args:
+            username (str): The username of the user.
+
+        Returns:
+            Response: A success message or an error response.
+        """
         current_user = session.get("username")
 
         if current_user != username:
@@ -48,9 +101,24 @@ class LinkSpotifyRoute(Resource):
 
 @user_ns.route("/find/<target>")
 class FindRoute(Resource):
+    """
+    Endpoint to find a user by username or ID.
+
+    Methods:
+        get(user, target): Retrieves a user's information by username or ID.
+    """
     @auth
     def get(user, self, target):
+        """
+        Retrieves a user's information by username or ID.
 
+        Args:
+            user (dict): The authenticated user.
+            target (str): The username or ID of the target user.
+
+        Returns:
+            Response: The target user's information or an error response.
+        """
         foundTarget = find_user_by_username(target, True)
 
         if not foundTarget:
@@ -70,8 +138,23 @@ class FindRoute(Resource):
 
 @user_ns.route('/friends')
 class FriendsRoute(Resource):
+    """
+    Endpoint to manage the authenticated user's friends list.
+
+    Methods:
+        get(user): Retrieves the authenticated user's friends list.
+    """
     @auth
     def get(user, self):
+        """
+        Retrieves the authenticated user's friends list.
+
+        Args:
+            user (dict): The authenticated user.
+
+        Returns:
+            Response: A list of the user's friends.
+        """
         friendsList = get_user_friends(user["username"])
         list = []
         for friend in friendsList:
@@ -82,8 +165,26 @@ class FriendsRoute(Resource):
 
 @user_ns.route('/friends/<username>')
 class ManageFriendsRoute(Resource):
+    """
+    Endpoint to manage friendships.
+
+    Methods:
+        post(user, token, username): Adds a friend to the authenticated user's friends list.
+        delete(user, token, username): Removes a friend from the authenticated user's friends list.
+    """
     @auth
     def post(user, token, self, username):
+        """
+        Adds a friend to the authenticated user's friends list.
+
+        Args:
+            user (dict): The authenticated user.
+            token (str): The user's token.
+            username (str): The username of the friend to add.
+
+        Returns:
+            Response: A success message or an error response.
+        """
         existing_friends = get_user_friends(user["username"])
         person = find_user_by_username(username, True)
         if not person:
@@ -97,6 +198,17 @@ class ManageFriendsRoute(Resource):
 
     @auth
     def delete(user, token, self, username):
+        """
+        Removes a friend from the authenticated user's friends list.
+
+        Args:
+            user (dict): The authenticated user.
+            token (str): The user's token.
+            username (str): The username of the friend to remove.
+
+        Returns:
+            Response: A success message or an error response.
+        """
         existing_friends = get_user_friends(user["username"])
         person = find_user_by_username(username, True)
         if not person:

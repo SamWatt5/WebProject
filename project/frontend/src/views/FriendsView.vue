@@ -1,5 +1,32 @@
 <script lang="ts" setup>
-// Importing necessary components and libraries
+/**
+ * FriendsView.vue
+ *
+ * A component for managing and viewing the user's friends and their top tracks.
+ *
+ * Features:
+ * - Displays the user's top tracks in a scrollable list.
+ * - Allows users to search for and manage their friends.
+ * - Provides a sidebar for navigation and a mobile-friendly sidebar alternative.
+ * - Displays a list of friends with options to manage each friend.
+ * - Shows a message if the user has no friends.
+ *
+ * Dependencies:
+ * - Pinia: For state management (user and friends stores).
+ * - Custom UI components: Sidebar, ScrollArea, Separator, Card, Button, Input, FriendManage, FriendSearch.
+ * - Vue composables: `onMounted`, `ref`.
+ *
+ * State:
+ * - `music` (ref<string[]>): Stores the user's top tracks.
+ * - `user` (ref<User | null>): Stores the current user's information.
+ * - `friends` (ref<User[]>): Stores the list of the user's friends.
+ * - `isLoading` (ref<boolean>): Indicates whether the user and friends data is being loaded.
+ *
+ * Methods:
+ * - `fetchTopTracks()`: Fetches the user's top tracks from the API.
+ * - `refresh()`: Refreshes the user and friends data from the API.
+ */
+
 import { SidebarProvider } from '@/components/ui/sidebar';
 import Sidebar from '@/components/Sidebar.vue';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -14,13 +41,18 @@ import { toast } from 'vue-sonner';
 import { useFriends } from '@/stores/friends';
 import FriendSearch from '@/components/FriendSearch.vue';
 import { storeToRefs } from 'pinia';
-import UserCard from '@/components/UserCard.vue';
 import MobileSidebar from '@/components/MobileSidebar.vue';
 import { useIsMobile } from '@/hooks/use-mobile';
 import router from '@/router';
 
+// Reactive array to store the user's top tracks
+const music = ref<string[]>([]);
 
-const music = ref<string[]>([]); // Reactive array to store music tracks
+/**
+ * Fetches the user's top tracks from the API.
+ *
+ * Updates the `music` array with the track names.
+ */
 const fetchTopTracks = async () => {
     try {
         const response = await fetch('/api/spotify/top-tracks', {
@@ -44,26 +76,32 @@ const fetchTopTracks = async () => {
     }
 };
 
-// Using the user store to get and set user data
+// Access the user store
 let { user, setUser } = useUser();
-// Using the friends store to get and set friends data
+
+// Access the friends store
 let store = useFriends();
 const { friends } = storeToRefs(store);
 const { setFriends } = store;
+
 // Ref to track loading state
 const isLoading = ref(true);
 
-// Displaying a loading toast message
+// Display a loading toast message
 toast.loading("Loading user data...", {
     duration: Infinity,
     id: "loading-data",
     dismissible: false
 });
 
-// Function to refresh user and friends data
+/**
+ * Refreshes the user and friends data from the API.
+ *
+ * Updates the `user` and `friends` state with the fetched data.
+ */
 const refresh = async () => {
     try {
-        // Fetching user data from the API
+        // Fetch user data
         const res = await fetch("/api/user/me", {
             method: "GET",
             headers: {
@@ -73,10 +111,10 @@ const refresh = async () => {
         const data = await res.json();
 
         if (!data.error) {
-            // Setting user data
             setUser(data);
             user = data;
-            // Fetching friends data for each friend
+
+            // Fetch friends data
             for (let friend of data.friends) {
                 const res = await fetch(`/api/user/find/${friend}`, {
                     method: "GET",
@@ -86,30 +124,28 @@ const refresh = async () => {
                 });
                 const friendData = await res.json();
                 if (!friendData.error) {
-                    // Adding friend data to the friends list
-                    if (friends.value.length == data.friends.length) {
+                    if (friends.value.length === data.friends.length) {
                         toast.dismiss("loading-data");
                         isLoading.value = false;
                         return;
-                    };
+                    }
                     setFriends([...friends.value, friendData]);
                 }
             }
         }
 
-        // Updating loading state and dismissing the toast
         isLoading.value = false;
         toast.dismiss("loading-data");
     } catch (err) {
         console.error(err);
     }
-}
+};
 
-// Calling the refresh function when the component is mounted
+// Fetch user and friends data when the component is mounted
 onMounted(async () => {
     refresh();
 
-    if(!user) {
+    if (!user) {
         router.push("/login");
     }
 });
@@ -122,21 +158,22 @@ onMounted(() => {
 
 <template>
     <div class="flex flex-row">
+        <!-- Sidebar -->
         <main class="flex h-screen items-center place-self-start">
-            <!-- Sidebar component -->
             <SidebarProvider v-if="!useIsMobile()" :default-open="false" :open="false">
                 <Sidebar />
             </SidebarProvider>
             <MobileSidebar v-else />
+
+            <!-- Top tracks section -->
             <div class="sm:flex flex-col hidden ml-10">
                 <h1 class="text-4xl text-center mb-4">Your Music</h1>
-                <!-- Scroll area for displaying the list of songs -->
                 <ScrollArea class="w-80 h-[75vh] border rounded-lg">
                     <div class="p-4">
                         <div v-for="(song, index) in music" :key="index">
                             <div class="flex items-center">
-                                <span class="font-bold mr-2">{{ index + 1 }}.</span> <!-- Display the rank -->
-                                <span>{{ song }}</span> <!-- Display the track name -->
+                                <span class="font-bold mr-2">{{ index + 1 }}.</span>
+                                <span>{{ song }}</span>
                             </div>
                             <Separator class="my-2" />
                         </div>
@@ -145,8 +182,9 @@ onMounted(() => {
             </div>
             <Separator orientation="vertical" class="hidden sm:inline mx-10" />
         </main>
+
+        <!-- Friends management section -->
         <div class="flex flex-col pt-10 gap-4 mr-4 flex-1">
-            <!-- Card component for managing friends -->
             <Card class="mt-4 overflow-hidden">
                 <CardHeader>
                     <CardTitle class="text-4xl">Friends</CardTitle>
@@ -154,26 +192,23 @@ onMounted(() => {
                 </CardHeader>
                 <CardContent>
                     <div class="flex flex-row items-center">
-                        <!-- Friend search component -->
                         <FriendSearch />
                     </div>
                 </CardContent>
-                <CardFooter>
-                    <!-- <CardDescription>To manage a friend, just click on their tile</CardDescription> -->
-                </CardFooter>
             </Card>
-            <!-- Scroll area for displaying the list of friends -->
+
+            <!-- Friends list -->
             <ScrollArea class="border rounded-md whitespace-nowrap h-[60vh] p-4">
                 <div class="grid sm:grid-cols-2 grid-cols-1 grid-flow-row gap-4 w-full">
                     <div v-for="(friend, index) in friends" :key="index">
-                        <!-- Friend manage component for each friend -->
                         <FriendManage :spotify_id="friend.spotify_id" :userName="friend.username"
-                            :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]"" />
+                            :userAvatar="friend.first_name?.[0] + friend.last_name?.[0]" />
                     </div>
                 </div>
-                <!-- Displaying a message when there are no friends -->
                 <div class="flex align-center justify-center" v-if="friends.length === 0">
-                    <h1 class="text-3xl">It appears you have <span class="text-red-500 font-bold">0</span> friends. Unlucky "mate"</h1>
+                    <h1 class="text-3xl">
+                        It appears you have <span class="text-red-500 font-bold">0</span> friends. Unlucky "mate"
+                    </h1>
                 </div>
             </ScrollArea>
         </div>
