@@ -19,30 +19,10 @@ import MobileSidebar from '@/components/MobileSidebar.vue';
 import { useIsMobile } from '@/hooks/use-mobile';
 import router from '@/router';
 
-
-const music = ref<string[]>([]); // Reactive array to store music tracks
-const fetchTopTracks = async () => {
-    try {
-        const response = await fetch('/api/spotify/top-tracks', {
-            method: 'GET',
-            credentials: 'include', // Include cookies for authentication
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            console.error('Failed to fetch top tracks:', response.statusText);
-            return;
-        }
-
-        const data = await response.json();
-        // Map the response to extract track names
-        music.value = data.tracks.map((track: any) => track.name);
-    } catch (error) {
-        console.error('Error fetching top tracks:', error);
-    }
-};
+// Creating a list of 50 songs
+const music: string[] = Array.from({ length: 50 }).map(
+  (_, i) => `Song ${i + 1}`
+);
 
 // Using the user store to get and set user data
 let { user, setUser } = useUser();
@@ -113,11 +93,6 @@ onMounted(async () => {
         router.push("/login");
     }
 });
-
-// Fetch top tracks when the component is mounted
-onMounted(() => {
-    fetchTopTracks();
-});
 </script>
 
 <template>
@@ -132,15 +107,12 @@ onMounted(() => {
                 <h1 class="text-4xl text-center mb-4">Your Music</h1>
                 <!-- Scroll area for displaying the list of songs -->
                 <ScrollArea class="w-80 h-[75vh] border rounded-lg">
-                    <div class="p-4">
-                        <div v-for="(song, index) in music" :key="index">
-                            <div class="flex items-center">
-                                <span class="font-bold mr-2">{{ index + 1 }}.</span> <!-- Display the rank -->
-                                <span>{{ song }}</span> <!-- Display the track name -->
-                            </div>
-                            <Separator class="my-2" />
-                        </div>
+                <div class="p-4">
+                    <div v-for="song in music" :key="song">
+                    {{ song }}
+                    <Separator class="my-2" />
                     </div>
+                </div>
                 </ScrollArea>
             </div>
             <Separator orientation="vertical" class="hidden sm:inline mx-10" />
