@@ -195,10 +195,12 @@ onMounted(() => {
                         </FormItem>
                     </FormField>
                     <Button type="submit" class="mt-4" @click="isReadonly = false">Edit</Button>
-                    <Button type="button" class="mt-4" variant="link" @click="$router.push('/login')">Confirm & Save</Button>
-                    
+                    <Button type="button" class="mt-4" variant="link" @click="$router.push('/login')">Confirm &
+                        Save</Button>
+
                 </form>
-                <Button @click="redirectToSpotifyLogin" class="float-right mt-4 bg-green-500 text-white px-4 py-2 rounded mb-4">
+                <Button @click="redirectToSpotifyLogin"
+                    class="float-right mt-4 bg-green-500 text-white px-4 py-2 rounded mb-4">
                     Login to Spotify
                 </Button>
                 <Button @click="deleteAccount" class="float-left  mt-4 bg-red-500 text-white px-4 py-2 rounded mb-4">

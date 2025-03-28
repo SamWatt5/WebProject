@@ -30,7 +30,6 @@ defineProps({
 });
 </script>
 
-
 <template>
     <div>
         <a :href="link">
