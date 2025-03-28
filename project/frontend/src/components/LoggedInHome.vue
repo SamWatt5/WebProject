@@ -10,9 +10,6 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import MobileSidebar from './MobileSidebar.vue';
 import { ref, onMounted } from 'vue';
 
-// Reactive array to store music tracks
-const music = ref<string[]>([]);
-
 // Reactive array to store recently played tracks
 interface RecentlyPlayedTrack {
     title: string;
@@ -23,6 +20,8 @@ interface RecentlyPlayedTrack {
 
 const recentlyPlayed = ref<RecentlyPlayedTrack[]>([]);
 
+// Reactive array to store music tracks
+const music = ref<string[]>([]);
 // Fetch top tracks from the API
 const fetchTopTracks = async () => {
     try {
@@ -78,11 +77,11 @@ const fetchRecentlyPlayed = async () => {
 
 const { user } = useUser();
 
-// Fetch data when the component is mounted
 onMounted(() => {
     fetchTopTracks();
     fetchRecentlyPlayed();
 });
+
 </script>
 
 <template>
@@ -96,15 +95,12 @@ onMounted(() => {
             <div class="sm:flex hidden flex-col ml-10">
                 <h1 class="text-4xl text-center mb-4">Your Music</h1>
                 <ScrollArea class="w-80 h-[75vh] border rounded-lg">
-                    <div class="p-4">
-                        <div v-for="(song, index) in music" :key="index">
-                            <div class="flex items-center">
-                                <span class="font-bold mr-2">{{ index + 1 }}.</span> <!-- Display the rank -->
-                                <span>{{ song }}</span> <!-- Display the track name -->
-                            </div>
-                            <Separator class="my-2" />
-                        </div>
+                <div class="p-4">
+                    <div v-for="song in music" :key="song">
+                    {{ song }}
+                    <Separator class="my-2" />
                     </div>
+                </div>
                 </ScrollArea>
             </div>
             <Separator orientation="vertical" class="hidden sm:inline mx-10" />
@@ -129,7 +125,6 @@ onMounted(() => {
                     </CardContent>
                 </Card>
             </div>
-
 
             <div class="w-full col-span-3 flex flex-col h-full mb-12">
                 <ScrollArea class="border rounded-md col-span-3 w-[95%] mb-12 whitespace-nowrap mt-auto">
