@@ -230,6 +230,7 @@ class Blend(Resource):
                     user_tracks.append(item["track"])
         return user_tracks
 
+
 def blend(self, user, friend_id):
     # Retrieve the Spotify access token from the session
     access_token = user["spotify_token"]
@@ -241,14 +242,16 @@ def blend(self, user, friend_id):
         sp = spotipy.Spotify(auth=access_token)
 
         # Fetch the current user's playlists
-        user_tracks = self.get_playlist_tracks(user, sp.current_user_playlists())
+        user_tracks = self.get_playlist_tracks(
+            user, sp.current_user_playlists())
 
         # Fetch the friend's playlists
         friend = get_user_from_token(friend_id)
         if not friend or "spotify_id" not in friend:
             return {"error": "Friend's Spotify account not linked"}, 404
 
-        friend_tracks = self.get_playlist_tracks(user, sp.user_playlists(friend["spotify_id"], limit=50))
+        friend_tracks = self.get_playlist_tracks(
+            user, sp.user_playlists(friend["spotify_id"], limit=50))
 
         # Combine and shuffle tracks
         combined_tracks = []
@@ -331,7 +334,7 @@ class SpotifyCallback(Resource):
         link_spotify(token, spotify_id, access_token, refresh_token)
 
         # Redirect the user to the recommendations page
-        return redirect(f"http://localhost:8080/recommend")
+        return redirect(f"http://localhost:8080/settings")
 
 
 @spotify_ns.route("/link-spotify")
