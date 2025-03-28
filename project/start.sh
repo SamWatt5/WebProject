@@ -14,25 +14,23 @@ echo "Starting the Flask backend..."
 cd backend/src
 osascript -e 'tell application "Terminal" to do script "cd \"'$(pwd)'\" && source .venv/bin/activate && flask run --host=0.0.0.0 --port=8000"'
 
+# Wait for the Flask server to start
+echo "Waiting for the Flask backend to start..."
+sleep 5
+
+# Run the backend test script in a new terminal
+echo "Running backend tests in a new terminal..."
+cd ..
+osascript -e 'tell application "Terminal" to do script "cd \"'$(pwd)'\" && python3 test_backend_api.py"'
+
+# Wait for the backend tests to complete
+echo "Waiting for backend tests to complete..."
+sleep 10  # Adjust the sleep time if needed
+
 # Navigate to the frontend directory and run the frontend application in a new terminal
 echo "Starting the frontend application..."
-cd ../../frontend
+cd ../frontend
 osascript -e 'tell application "Terminal" to do script "cd \"'$(pwd)'\" && npm install && npm run dev"'
 
-# Check if the backend command was successful
-if [ $? -eq 0 ]; then
-    echo "Backend started successfully!"
-else
-    echo "Failed to start the backend."
-fi
-
-# Check if the frontend command was successful
-if [ $? -eq 0 ]; then
-    echo "Frontend started successfully!"
-else
-    echo "Failed to start the frontend."
-fi
-# Wait for a few seconds to allow the applications to start
-sleep 5
 # Print a message indicating that the applications are running
 echo "Backend and frontend are running in separate terminals!"
