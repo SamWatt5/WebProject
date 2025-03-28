@@ -3,7 +3,7 @@ echo "Starting the application..."
 cd ./backend
 echo "Installing packages"
 call .venv/scripts/activate
-pip install python-dotenv spotipy flask flask_cors pymongo flask_session flask-restx
+pip install python-dotenv spotipy flask flask_cors pymongo flask_session flask-restx requests
 echo "Packages installed"
 echo "Starting the backend server"
 cd src

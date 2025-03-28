@@ -1,27 +1,46 @@
 # CS22002 Web Project
-## How to start
 
-It's easy to startup our application, simply run this command: `./project/start.(sh for mac)(bat for windows)`. This will automatically install all depencies required for both the front and back end and then automatically start both servers.
+## Description
 
-## Depencies List
+This project is a web-based application designed to provide a seamless user experience by integrating a modern frontend with a robust backend. The application leverages Flask for backend development and a JavaScript framework for the frontend, enabling efficient data handling and dynamic user interactions. It is built to demonstrate key concepts in modern web development, including RESTful APIs and third-party API integration.
+
+## Getting Started
+
+To start the application, simply run the following command based on your operating system:
+
+-   **Mac/Linux**: `./project/start.sh`
+-   **Windows**: `./project/start.bat`
+
+This script will:
+
+1. Automatically install all required dependencies for both the frontend and backend.
+2. Start both servers.
+
+## Dependencies
+
 ### Frontend
->
-> Please see `project/frontend/package.json` because there is too many to list
-> :)
->
+
+For a complete list of frontend dependencies, refer to the [`project/frontend/package.json`](project/frontend/package.json) file.
+
 ### Backend
->
-> flask
-> flask_cors
-> flask-restx
-> flask_session
-> pymongo
-> python-dotenv
-> spotipy
->
 
-## URLS
+The backend uses the following dependencies:
 
-> Our main frontend url is: http://localhost:8080
-> Our main backend url is: http://localhost:8000 however it can be accessed via http://localhost:8080/api
-> Our API Documentation url is: http://localhost:8000/docs
+-   `flask`
+-   `flask_cors`
+-   `flask-restx`
+-   `flask_session`
+-   `pymongo`
+-   `python-dotenv`
+-   `spotipy`
+
+## URLs
+
+-   **Frontend**: [http://localhost:8080](http://localhost:8080)
+-   **Backend**: [http://localhost:8000](http://localhost:8000)  
+    (Accessible via [http://localhost:8080/api](http://localhost:8080/api))
+-   **API Documentation**: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+---
+
+Feel free to reach out if you encounter any issues or need further assistance!

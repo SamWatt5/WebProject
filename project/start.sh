@@ -22,7 +22,6 @@ sleep 5
 
 # Run the backend test script in a new terminal
 echo "Running backend tests in a new terminal..."
-cd ..
 osascript -e 'tell application "Terminal" to do script "cd \"'$(pwd)'\" && python3 test_backend_api.py"'
 
 # Wait for the backend tests to complete
@@ -31,7 +30,7 @@ sleep 10  # Adjust the sleep time if needed
 
 # Navigate to the frontend directory and run the frontend application in a new terminal
 echo "Starting the frontend application..."
-cd ../frontend
+cd ../../frontend
 osascript -e 'tell application "Terminal" to do script "cd \"'$(pwd)'\" && npm install && npm run dev"'
 
 # Print a message indicating that the applications are running
