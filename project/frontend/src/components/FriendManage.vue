@@ -28,9 +28,9 @@ const unfriend = async (username) => {
         id: "unfriending",
         dismissible: false
     });
-
-    const res = await fetch(`/api/user/friends/${username}`, {
-        method: "DELETE",
+    
+    const res = await fetch(`/api/user/remove-friend/${username}`, {
+        method: "POST",
         headers: {
             "Content-Type": "application/json"
         }
@@ -81,17 +81,17 @@ const unfriend = async (username) => {
                     <!-- <<RouterLink as-child :href="`https://open.spotify.com/user/${name}`">
                 <Spotify class="mt-2 cursor-pointer" />
             </RouterLink>> -->
-                    <div class="flex flex-row justify-between mt-2">
+                       <div class="flex flex-row justify-between mt-2">
                         <a :href="`https://open.spotify.com/user/${spotify_id}`" target="_blank">
                             <Spotify class="cursor-pointer mt-2" />
                         </a>
                         <DialogTrigger as-child>
                             <Button class="mt-2">Manage</Button>
                         </DialogTrigger>
+                       </div>
                     </div>
-                </div>
-            </CardHeader>
-        </Card>
+                </CardHeader>
+            </Card>
         <!-- </DialogTrigger> -->
         <DialogContent>
             <DialogHeader>
