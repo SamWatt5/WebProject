@@ -1,6 +1,6 @@
 from flask import request, session, jsonify
 from flask_restx import Namespace, Resource
-from ..models import find_user, find_user_by_username, get_basic_user_info, get_user_friends, make_friends, remove_friends, get_user_from_token, update_user, remove_user
+from ..models import find_user, find_user_by_username, verify_password, get_basic_user_info, get_user_friends, make_friends, remove_friends, get_user_from_token, update_user, remove_user
 from ..middleware import auth
 
 user_ns = Namespace('user', description='User related operations')
@@ -51,6 +51,9 @@ class MeRoute(Resource):
             return {"error": "Last name is required"}, 400
         if not "email" in data:
             return {"error": "Email is required"}, 400
+        
+        if not verify_password(user["username"], data["password"]):
+            return {"error": "Invalid password"}, 401
 
         update_user(user["_id"], data["fname"], data["lname"],
                     data["email"], data["username"], data["password"])
