@@ -389,7 +389,7 @@ class SpotifyCallback(Resource):
         print("Received code:", code)
         if not code:
             print("No code provided; returning 400")
-            return jsonify({"msg": "Authorization failed"}), 400
+            return {"msg": "Authorization failed"}, 400
 
         print("Exchanging code for access token")
         token_info = sp_oauth.get_access_token(code)
