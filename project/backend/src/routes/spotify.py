@@ -43,7 +43,7 @@ def refreshToken(user):
     Returns:
         dict: The refreshed token information.
     """
-    print(user)
+    print("Refreshing Token")
     refreshed = sp_oauth.refresh_access_token(user["spotify_refresh_token"])
     refresh_spotify(user["_id"], refreshed["access_token"],
                     refreshed["refresh_token"])
@@ -105,7 +105,6 @@ class RecommendRoute(Resource):
         Returns:
             Response: A JSON response with recommendations or an error message.
         """
-        print("HERE")
         seed_tracks = request.args.get("seed_tracks", "")
         if not seed_tracks:
             return jsonify({"error": "Seed tracks are required"}), 400
@@ -150,7 +149,7 @@ class CreatePlaylist(Resource):
             Response: A success message with playlist details or an error response.
         """
         data = request.get_json()
-        print(data)
+        print("Creating Playlist")
         tracks = data.get("track_ids")
         if not tracks:
             return {"error": "No track IDs provided"}, 400
@@ -236,7 +235,7 @@ class Blend(Resource):
                 refreshToken(user)
 
         temp = find_user(friend_id, True)
-        print(temp)
+        print(f"Blending with {friend_id}")
 
         if not temp:
             return {"error": "Friend not found"}, 404
@@ -249,7 +248,7 @@ class Blend(Resource):
             sp.me()
         except spotipy.exceptions.SpotifyException as e:
             if e.http_status == 401:
-                refreshed = refreshToken(temp)
+                refreshed = refreshToken(user)
                 temp["spotify_token"] = refreshed["access_token"]
                 sp = spotipy.Spotify(auth=refreshed["access_token"])
 
@@ -293,9 +292,9 @@ class Blend(Resource):
             Response: A JSON response with the blended playlist or an error message.
         """
         access_token = user["spotify_token"]
-        print(access_token)
+        print("Blending")
         if not access_token:
-            print("im here")
+            print("Token Not Found")
             return {"msg": "Token not found"}, 401
 
         try:
@@ -370,20 +369,22 @@ class SpotifyCallback(Resource):
     def get(self):
         # Retrieve the authorization code from the query string
         code = request.args.get("code")
-        print(code)
+        print("Spotify Callback Function")
         if not code:
             return jsonify({"msg": "Authorization failed"}), 400
 
         # Exchange the authorization code for an access token
         token_info = sp_oauth.get_access_token(code)
-        print(token_info)
+        print("Got Access Token from Spotify")
         access_token = token_info["access_token"]
         refresh_token = token_info["refresh_token"]
 
         # Fetch the user's Spotify account information
         sp = spotipy.Spotify(auth=access_token)
         user_info = sp.current_user()
+        print(f"{user_info.get("username")} Connecting to Spotify")
         spotify_id = user_info.get("id")
+        print(spotify_id if spotify_id else "No Spotify ID")
 
         # Retrieve the user's token from the session
         token = session.get("token")
