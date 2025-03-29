@@ -13,5 +13,5 @@ cd ../../frontend
 echo "Installing packages"
 echo "Packages installed"
 echo "Starting the frontend server"
-npm install && start cmd /k npm run dev
+npm install && start cmd /k npm run preview
 echo "Frontend server online"
