@@ -51,7 +51,7 @@ if exist package.json (
     npm install
     npm run build
     start cmd /k "npm run preview"
-    start chrome "http://localhost:8080"
+    start http://localhost:8080
 ) else (
     echo package.json not found. Exiting...
     exit /b 1
