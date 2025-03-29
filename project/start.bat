@@ -42,14 +42,16 @@ cd ..\..
 
 :: Wait for the backend tests to complete
 echo Waiting for backend tests to complete...
-timeout /t 30 >nul
+timeout /t 10 >nul
 
 :: Navigate to the frontend directory and run the frontend application in a new terminal
 echo Starting the frontend application...
 cd frontend
 if exist package.json (
     npm install
-    start cmd /k "npm run dev"
+    npm run build
+    start cmd /k "npm run preview"
+    start chrome "http://localhost:8080"
 ) else (
     echo package.json not found. Exiting...
     exit /b 1

@@ -69,6 +69,7 @@ const formSchema = toTypedSchema(z.object({
     username: z.string().nonempty({
         message: "Username is required"
     }),
+    spotify: z.string(),
     password: z.string().nonempty({
         message: "Password is required"
     })
@@ -120,6 +121,7 @@ const form = useForm({
         lname: user.value?.last_name,
         email: user.value?.email,
         username: user.value?.username,
+        spotify: user.value?.spotify_id,
         password: ''
     }
 });

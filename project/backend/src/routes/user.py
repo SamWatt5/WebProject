@@ -52,7 +52,8 @@ class MeRoute(Resource):
         if not "email" in data:
             return {"error": "Email is required"}, 400
         
-        if not verify_password(user["username"], data["password"]):
+        validPassword = verify_password(user["password"], data["password"])
+        if not validPassword:
             return {"error": "Invalid password"}, 401
 
         update_user(user["_id"], data["fname"], data["lname"],

@@ -141,7 +141,7 @@ def test_user_me():
         "lname": "User",
         "email": "updated.email@example.com",
         "username": "updatedjohndoe",
-        "password": "NewPassword123"
+        "password": "Password123"
     }
     response = session.patch(url, json=update_payload, headers={"Content-Type": "application/json"})  # Use the session object
     print_result("TC-BACK-007", "Update authenticated user's info", response.status_code, 200)
