@@ -74,6 +74,19 @@ const formSchema = toTypedSchema(z.object({
     })
 }));
 
+const editMode = () => {
+    isReadonly.value = !isReadonly.value; // Toggle read-only mode
+    if (isReadonly.value) {
+        toast.dismiss("edit-mode");
+    } else {
+        toast.warning('Edit mode enabled', {
+            description: 'You can now edit your account information.',
+            duration: Infinity,
+            id: 'edit-mode'
+        });
+    }
+}
+
 /**
  * Refreshes the user and friends data from the API.
  */
@@ -122,8 +135,8 @@ const onSubmit = form.handleSubmit(async (values) => {
         id: 'loadingMessage',
         dismissible: false
     });
-    const res = await fetch("/api/auth/update", {
-        method: "POST",
+    const res = await fetch("/api/user/me", {
+        method: "PATCH",
         body: JSON.stringify(values),
         headers: {
             "Content-Type": "application/json"
@@ -136,12 +149,18 @@ const onSubmit = form.handleSubmit(async (values) => {
             duration: 5000,
             id: 'loadingMessage'
         });
+        setTimeout(() => {
+            toast.dismiss('loadingMessage');
+        }, 5000)
     } else {
         toast.error('Update failed', {
             description: body.error,
             duration: 5000,
             id: 'loadingMessage'
         });
+        setTimeout(() => {
+            toast.dismiss('loadingMessage');
+        }, 5000)
     }
 });
 
@@ -190,7 +209,6 @@ const deleteAccount = async () => {
  * Redirects the user to Spotify login.
  */
 const redirectToSpotifyLogin = () => {
-    console.log(user)
     window.location.href = "/api/spotify/login"; // Redirect to Spotify login endpoint
 };
 
@@ -201,6 +219,13 @@ onMounted(() => {
             router.push("/login")
         }
     });
+
+    while(!isReadonly) {
+        toast.warning('You are in read-only mode', {
+            description: 'Click "Edit" to enable editing.',
+            duration: Infinity
+        });
+    }
 });
 </script>
 
@@ -262,8 +287,20 @@ onMounted(() => {
                         <FormItem class="pb-4">
                             <FormLabel>Username</FormLabel>
                             <FormControl>
-                                <Input type="text" placeholder="Username" v-bind="componentField"
-                                    :readonly="isReadonly" />
+                                <Input type="text" placeholder="Username" :readonly="isReadonly" v-bind="componentField"
+                                     />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    </FormField>
+
+                    <FormField v-slot="{ componentField }" name="spotify" v-if="user?.spotify_id">
+                        <FormItem class="pb-4">
+                            <FormLabel>Spotify ID</FormLabel>
+                            <FormDescription v-if="!isReadonly">You cannot edit this field</FormDescription>
+                            <FormControl>
+                                <Input type="text" :value="user?.spotify_id" :readonly="true" v-bind="componentField"
+                                     />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -285,9 +322,8 @@ onMounted(() => {
                             <FormMessage />
                         </FormItem>
                     </FormField>
-
                     <!-- Edit and Save buttons -->
-                    <Button type="button" class="mt-4" @click="isReadonly = false">Edit</Button>
+                    <Button type="button" class="mt-4" @click="editMode">Edit</Button>
                     <Button type="submit" class="mt-4" variant="link">Confirm & Save</Button>
                 </form>
 
