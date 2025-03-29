@@ -163,7 +163,8 @@ if __name__ == "__main__":
     get_user_info("johndoe")
     time.sleep(1)   
 
-    # Step 3: Log in as the admin user
+    # Step 3: Log in as the admin user 
+    # dont ask why this isnt a function ;)
     url = f"{BASE_URL}/auth/login"
     payload = {"username": "johndoe", "password": "Password123"}
     response = session.post(url, json=payload)
