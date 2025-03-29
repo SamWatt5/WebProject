@@ -89,7 +89,8 @@ class LoginRoute(Resource):
 
         if verify_password(user["password"], password):
             # Set the token in the session
-            session["token"] = str(user["_id"])  # Use the user's ID as the token
+            # Use the user's ID as the token
+            session["token"] = str(user["_id"])
             return {"message": "Login successful", "code": str(user["_id"])}, 200
         else:
             return {"error": "Invalid credentials"}, 401
@@ -117,6 +118,7 @@ class CallbackRoute(Resource):
         Returns:
             Response: Redirects the user to the frontend application.
         """
+        print("auth callback")
         session["token"] = request.args.get("code")
         return redirect("http://localhost:8080/")
 
@@ -140,6 +142,7 @@ class LogoutRoute(Resource):
         session.clear()
         return redirect("http://localhost:8080/")
 
+
 @auth_ns.route("/test-user-id")
 class TestUserIdRoute(Resource):
     """
@@ -148,6 +151,7 @@ class TestUserIdRoute(Resource):
     Methods:
         post(): Retrieves the user ID and user dictionary for a given username.
     """
+
     def post(self):
         # Get the username from the request
         username = request.json.get("username")

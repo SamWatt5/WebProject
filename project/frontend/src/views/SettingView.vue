@@ -156,6 +156,7 @@ const deleteAccount = async () => {
  * Redirects the user to Spotify login.
  */
 const redirectToSpotifyLogin = () => {
+    console.log(user)
     window.location.href = "/api/spotify/login"; // Redirect to Spotify login endpoint
 };
 

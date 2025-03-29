@@ -30,7 +30,7 @@ scopes = "user-read-email playlist-read-private playlist-read-collaborative, pla
 
 # Initialize Spotify OAuth object
 sp_oauth = SpotifyOAuth(client_id=CLIENT_ID, client_secret=CLIENT_SECRET,
-                        redirect_uri=redirect_uri, scope=scopes)
+                        redirect_uri=redirect_uri, show_dialog=True, cache_path=None, scope=scopes)
 
 
 def refreshToken(user):
@@ -339,61 +339,89 @@ class Blend(Resource):
             print(f"Unexpected error: {e}")
             return {"error": "An unexpected error occurred"}, 500
 
-# Not using i thinl TO DELETE
-
 
 @spotify_ns.route("/playlist/<string:playlist_id>/tracks")
 class PlaylistTracks(Resource):
     def get(self, playlist_id):
+        print("PlaylistTracks GET called with playlist_id:", playlist_id)
         # Retrieve the Spotify access token from the session
         access_token = session.get("spotify_access_token")
+        print("Session spotify_access_token:", access_token)
         if not access_token:
+            print("No access token found; returning 401")
             return jsonify({"msg": "Token not found"}), 401
 
-        # Fetch the tracks in the specified playlist
+        print("Initializing Spotify client")
         sp = spotipy.Spotify(auth=access_token)
+        print("Fetching playlist items")
         results = sp.playlist_items(playlist_id)
+        print("Playlist items fetched:", results)
         return jsonify(results)
 
 
 @spotify_ns.route("/login")
 class SpotifyLogin(Resource):
     def get(self):
+        print("SpotifyLogin GET called")
         # Generate the Spotify authorization URL
+        print("Clearing session")
+        session.pop("spotify_access_token", None)
+        session.pop("spotify_refresh_token", None)
+        sp_oauth = SpotifyOAuth(
+            client_id=CLIENT_ID,
+            client_secret=CLIENT_SECRET,
+            redirect_uri=redirect_uri,
+            show_dialog=True,
+            cache_path=None,
+            scope=scopes
+        )
         auth_url = sp_oauth.get_authorize_url()
+        print("Generated Spotify authorization URL:", auth_url)
         return redirect(auth_url)
 
 
 @spotify_ns.route("/callback")
 class SpotifyCallback(Resource):
     def get(self):
+        print("SpotifyCallback GET called")
         # Retrieve the authorization code from the query string
         code = request.args.get("code")
-        print("Spotify Callback Function")
+        print("Received code:", code)
         if not code:
+            print("No code provided; returning 400")
             return jsonify({"msg": "Authorization failed"}), 400
 
-        # Exchange the authorization code for an access token
+        print("Exchanging code for access token")
         token_info = sp_oauth.get_access_token(code)
-        print("Got Access Token from Spotify")
+        print("Access token info:", token_info)
         access_token = token_info["access_token"]
         refresh_token = token_info["refresh_token"]
 
         # Fetch the user's Spotify account information
+        print("Initializing Spotify client for user info")
         sp = spotipy.Spotify(auth=access_token)
         user_info = sp.current_user()
-        print(f"{user_info.get("username")} Connecting to Spotify")
+        print("Fetched user_info:", user_info)
+
         spotify_id = user_info.get("id")
-        print(spotify_id if spotify_id else "No Spotify ID")
+        print("Spotify user ID:", spotify_id if spotify_id else "None")
 
         # Retrieve the user's token from the session
         token = session.get("token")
+        print("User session token:", token)
+        if not token:
+            print("No user session token found; aborting")
+            return {"msg": "User session not found"}
 
-        # Link the Spotify account to the user's profile
+        print("Clearing old Spotify tokens from session")
+        session.pop("spotify_token", None)
+        session.pop("spotify_refresh_token", None)
+
+        print("Linking Spotify account to user profile")
         link_spotify(token, spotify_id, access_token, refresh_token)
 
-        # Redirect the user to the recommendations page
-        return redirect(f"http://localhost:8080/settings")
+        print("Redirecting to settings page")
+        return redirect("http://localhost:8080/settings")
 
 
 @spotify_ns.route("/link-spotify")
