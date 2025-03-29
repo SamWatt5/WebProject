@@ -22,7 +22,7 @@ sleep 5
 
 # Run the backend test script in a new terminal
 echo "Running backend tests in a new terminal..."
-osascript -e 'tell application "Terminal" to do script "cd \"'$(pwd)'\" && python3 test_backend_api.py"'
+osascript -e 'tell application "Terminal" to do script "cd \"'$(pwd)'\" && source .venv/bin/activate && python3 test_backend_api.py"'
 
 # Wait for the backend tests to complete
 echo "Waiting for backend tests to complete..."
