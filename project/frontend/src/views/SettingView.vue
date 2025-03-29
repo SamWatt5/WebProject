@@ -32,7 +32,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { useForm } from 'vee-validate';
 import Darkmode from '@/components/Darkmode.vue';
 import { toast } from 'vue-sonner';
@@ -44,7 +44,16 @@ import MobileSidebar from '@/components/MobileSidebar.vue';
 import router from '@/router';
 
 // Access the user store
-const { user } = storeToRefs(useUser());
+let { user } = storeToRefs(useUser());
+const { setUser } = useUser();
+const isLoading = ref(true);
+
+// Display a loading toast message
+toast.loading("Loading user data...", {
+    duration: Infinity,
+    id: "loading-data",
+    dismissible: false
+});
 
 // Define the form schema using zod
 const formSchema = toTypedSchema(z.object({
@@ -64,6 +73,31 @@ const formSchema = toTypedSchema(z.object({
         message: "Password is required"
     })
 }));
+
+/**
+ * Refreshes the user and friends data from the API.
+ */
+ const refresh = async () => {
+    try {
+        const res = await fetch("/api/user/me", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const data = await res.json();
+
+        if (!data.error) {
+            setUser(data);
+            user = data;
+        }
+
+        isLoading.value = false;
+        toast.dismiss("loading-data");
+    } catch (err) {
+        console.error(err);
+    }
+};
 
 // Initialize the form with validation schema and default values
 const form = useForm({
@@ -162,9 +196,11 @@ const redirectToSpotifyLogin = () => {
 
 // Redirect unauthorized users to the login page
 onMounted(() => {
-    if (!user.value) {
-        router.push("/login");
-    }
+    refresh().then(() => {
+        if (!user) {
+            router.push("/login")
+        }
+    });
 });
 </script>
 

@@ -364,9 +364,6 @@ class SpotifyLogin(Resource):
     def get(self):
         print("SpotifyLogin GET called")
         # Generate the Spotify authorization URL
-        print("Clearing session")
-        session.pop("spotify_access_token", None)
-        session.pop("spotify_refresh_token", None)
         sp_oauth = SpotifyOAuth(
             client_id=CLIENT_ID,
             client_secret=CLIENT_SECRET,
@@ -392,7 +389,7 @@ class SpotifyCallback(Resource):
             return {"msg": "Authorization failed"}, 400
 
         print("Exchanging code for access token")
-        token_info = sp_oauth.get_access_token(code)
+        token_info = sp_oauth.get_access_token(code, check_cache=False)
         print("Access token info:", token_info)
         access_token = token_info["access_token"]
         refresh_token = token_info["refresh_token"]

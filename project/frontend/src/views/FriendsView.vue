@@ -143,11 +143,11 @@ const refresh = async () => {
 
 // Fetch user and friends data when the component is mounted
 onMounted(async () => {
-    refresh();
-
-    if (!user) {
-        router.push("/login");
-    }
+    refresh().then(() => {
+        if(!user) {
+            router.push("/login")
+        }
+    });
 });
 
 // Fetch top tracks when the component is mounted

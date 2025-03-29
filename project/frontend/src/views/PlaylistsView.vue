@@ -242,11 +242,12 @@ const createPlaylist = async () => {
 
 // Fetch user and friends data on component mount
 onMounted(() => {
-    refresh();
+    refresh().then(() => {
+        if (!user) {
+            router.push('/login');
+        }
+    });
     fetchTopTracks();
-    if (!user) {
-        router.push('/login');
-    }
 });
 </script>
 
