@@ -65,10 +65,10 @@ def test_signup(username, email):
     return False
 
 
-# TC-BACK-004: Test granting admin privileges using the test endpoint
+# TC-BACK-003: Test granting admin privileges using the test endpoint
 def make_admin():
     if not USER_DICT:
-        print(f"{RED}[FAIL]{RESET} TC-BACK-004: User dictionary not found. Run test_signup and get_user_info first.")
+        print(f"{RED}[FAIL]{RESET} TC-BACK-003: User dictionary not found. Run test_signup and get_user_info first.")
         return
 
     url = f"{BASE_URL}/admin/test-grant-admin/{USER_DICT['_id']}"
@@ -76,61 +76,61 @@ def make_admin():
     print_result("TESTCALL", "Grant admin privileges to authenticated user", response.status_code, 200)
 
 
-# TC-BACK-004: Test granting admin privileges to the new user
+# TC-BACK-003: Test granting admin privileges to the new user
 def test_grant_admin():
     if not NEW_USER_DICT:
-        print(f"{RED}[FAIL]{RESET} TC-BACK-004: New user dictionary not found. Run create_user and get_user_info first.")
+        print(f"{RED}[FAIL]{RESET} TC-BACK-003: New user dictionary not found. Run create_user and get_user_info first.")
         return
 
     url = f"{BASE_URL}/admin/permissions/{NEW_USER_DICT['_id']}"
     response = session.post(url, headers={"Content-Type": "application/json"})  # Use the session object
-    print_result("TC-BACK-004", f"Grant admin privileges to user {NEW_USER_DICT['username']}", response.status_code, 200)
+    print_result("TC-BACK-003", f"Grant admin privileges to user {NEW_USER_DICT['username']}", response.status_code, 200)
 
 
-# TC-BACK-004: Test removing admin privileges from the new user
+# TC-BACK-003: Test removing admin privileges from the new user
 def test_remove_admin():
     if not NEW_USER_DICT:
-        print(f"{RED}[FAIL]{RESET} TC-BACK-004: New user dictionary not found. Run create_user and get_user_info first.")
+        print(f"{RED}[FAIL]{RESET} TC-BACK-003: New user dictionary not found. Run create_user and get_user_info first.")
         return
 
     url = f"{BASE_URL}/admin/permissions/{NEW_USER_DICT['_id']}"
     response = session.delete(url, headers={"Content-Type": "application/json"})  # Use the session object
-    print_result("TC-BACK-004", f"Remove admin privileges from user {NEW_USER_DICT['username']}", response.status_code, 200)
+    print_result("TC-BACK-003", f"Remove admin privileges from user {NEW_USER_DICT['username']}", response.status_code, 200)
 
 
-# TC-BACK-005: Verify all user accounts can be retrieved
+# TC-BACK-004: Verify all user accounts can be retrieved
 def test_get_all_users():
     url = f"{BASE_URL}/admin/users"
     response = session.get(url, headers={"Content-Type": "application/json"})  # Use the session object
-    print_result("TC-BACK-005", "Retrieve all user accounts", response.status_code, 200)
+    print_result("TC-BACK-004", "Retrieve all user accounts", response.status_code, 200)
     if response.status_code == 200:
         print(f"{BLUE}All users:{RESET}")
         print(json.dumps(response.json(), indent=4))  # Pretty-print the list of users
 
 
-# TC-BACK-006: Verify that an individual user can be found and removed
+# TC-BACK-005: Verify that an individual user can be found and removed
 def test_user_management(username):
     url = f"{BASE_URL}/admin/users/{username}"
 
     # Find user
     response = session.get(url, headers={"Content-Type": "application/json"})  # Use the session object
-    print_result("TC-BACK-006", f"Find user {username}", response.status_code, 200)
+    print_result("TC-BACK-005", f"Find user {username}", response.status_code, 200)
     if response.status_code == 200:
         print(f"{BLUE}User details for {username}:{RESET}")
         print(json.dumps(response.json(), indent=4))  # Pretty-print the user details
 
     # Remove user
     response = session.delete(url, headers={"Content-Type": "application/json"})  # Use the session object
-    print_result("TC-BACK-006", f"Remove user {username}", response.status_code, 200)
+    print_result("TC-BACK-005", f"Remove user {username}", response.status_code, 200)
 
 
-# TC-BACK-007: Verify that the user's info can be retrieved, updated, and deleted
+# TC-BACK-006: Verify that the user's info can be retrieved, updated, and deleted
 def test_user_me():
     url = f"{BASE_URL}/user/me"
 
     # Retrieve user info
     response = session.get(url, headers={"Content-Type": "application/json"})  # Use the session object
-    print_result("TC-BACK-007", "Retrieve authenticated user's info", response.status_code, 200)
+    print_result("TC-BACK-006", "Retrieve authenticated user's info", response.status_code, 200)
     if response.status_code == 200:
         print(f"{BLUE}Authenticated user's info:{RESET}")
         print(json.dumps(response.json(), indent=4))  # Pretty-print the user's info
@@ -144,11 +144,11 @@ def test_user_me():
         "password": "Password123"
     }
     response = session.patch(url, json=update_payload, headers={"Content-Type": "application/json"})  # Use the session object
-    print_result("TC-BACK-007", "Update authenticated user's info", response.status_code, 200)
+    print_result("TC-BACK-006", "Update authenticated user's info", response.status_code, 200)
 
     # Delete user account
     response = session.delete(url, headers={"Content-Type": "application/json"})  # Use the session object
-    print_result("TC-BACK-007", "Delete authenticated user's account", response.status_code, 200)
+    print_result("TC-BACK-006", "Delete authenticated user's account", response.status_code, 200)
 
 
 # Add sleep between test functions
